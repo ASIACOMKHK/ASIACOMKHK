@@ -11,44 +11,21 @@
 
 ---
 
-## 📊 GitHub 统计
+## 🛠️ 技术栈 & 工具
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=dark&hide_border=true" alt="GitHub 统计" width="48%" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ASIACOMKHK&layout=compact&theme=dark&hide_border=true" alt="常用语言" width="48%" />
-</p>
+![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?logo=visual-studio-code&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white)
 
----
-
-## 🐍 贪吃蛇动画（吃掉你的贡献图）
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ASIACOMKHK/ASIACOMKHK/output/snake.svg" alt="贪吃蛇动画" />
-</p>
+（你可以在这里用徽章列出你熟悉的技术）
 
 ---
 
-## 🎨 3D 贡献日历
+## 📌 我的项目
 
-<p align="center">
-  <img src="./profile-3d-contrib/profile-night-green.svg" alt="3D 贡献图" />
-</p>
-
----
-
-## 📝 最新博客文章
-
-<!-- BLOG-POST-LIST:START -->
-<!-- 这里会自动显示你博客的最新文章 -->
-<!-- BLOG-POST-LIST:END -->
-
----
-
-## ⚡️ 近期 GitHub 动态
-
-<!--START_SECTION:activity-->
-<!-- 这里会自动显示你最近的 Star、Fork、PR 等活动 -->
-<!--END_SECTION:activity-->
+> 这里放你最喜欢的开源项目链接，例如：
+> - [项目1]https://github.com/ASIACOMKHK/edgetunnel
+> - [项目2]https://github.com/ASIACOMKHK/CF-workers-ipcheck
 
 ---
 
