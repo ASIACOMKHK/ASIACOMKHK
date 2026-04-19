@@ -1,16 +1,30 @@
-## Hi there 👋
+# 👋 Hi, I'm ASIACOMKHK!
 
-<!--
-**ASIACOMKHK/ASIACOMKHK** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+A tech enthusiast who loves coding, automation, and building useful tools.
+Welcome to my GitHub profile, hope you find something interesting here!
 
-Here are some ideas to get you started:
+---
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+### 🧑‍💻 About Me
+- 🌱 Currently learning: Web Development & Scripting
+- 🛠️ Building small tools & automation scripts
+- ⚡ Fun fact: I like messing with network & system stuff
+
+---
+
+### 📊 GitHub Stats
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=transparent&count_private=true&include_all_commits=true" alt="Stats" height="180">
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ASIACOMKHK&layout=compact&theme=transparent" alt="Langs" height="180">
+</div>
+
+<div align="center">
+  <img src="https://komarev.com/ghpvc/?username=ASIACOMKHK&color=brightgreen" alt="Views">
+</div>
+
+---
+
+### 🛠️ Tech Stack
+```text
+HTML CSS JavaScript | Python | Git | VS Code
+Windows / Linux | Network Tools | Automation
