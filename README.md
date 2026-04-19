@@ -9,5 +9,5 @@
 ---
 
 <div align="right">
-  [![ASIACOMKHK's GitHub stats](https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=white)](https://github.com/anuraghazra/github-readme-stats)
+  [![ASIACOMKHK's GitHub stats](https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=white&include_all_commits=true&count_private=true)](https://github.com/anuraghazra/github-readme-stats)
 </div>
