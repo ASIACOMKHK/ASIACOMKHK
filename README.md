@@ -9,9 +9,5 @@
 ---
 
 <div align="right">
-  <img 
-    src="https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&locale=zh-CN&custom_title=ASIACOMKHK%20的%20GitHub%20统计数据&theme=white&include_all_commits=true&count_private=true&hide_border=false" 
-    alt="ASIACOMKHK 的 GitHub 统计数据" 
-    width="400"
-  >
+  [![ASIACOMKHK's GitHub stats](https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&locale=zh-CN&custom_title=ASIACOMKHK%20的%20GitHub%20统计数据&theme=white&include_all_commits=true&count_private=true)](https://github.com/anuraghazra/github-readme-stats)
 </div>
