@@ -14,7 +14,6 @@
 ![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?logo=visual-studio-code&logoColor=white)
 ![Markdown](https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white)
 
-（你可以在这里用徽章列出你熟悉的技术）
 
 ---
 
