@@ -5,9 +5,6 @@
 
 感谢你的到访，希望你在这里能找到你需要的东西！
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=ASIACOMKHK&label=Profile%20Views&color=0e75b6&style=flat" alt="访客计数器" />
-</p>
 
 ---
 
