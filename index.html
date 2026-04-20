@@ -3,264 +3,261 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ASIACOMKHK - 个人主页</title>
+  <title>ASIACOMKHK | 个人主页</title>
   <style>
     :root {
-      --bg-color: #f6f8fa;
-      --card-bg: #ffffff;
-      --text-color: #24292e;
-      --secondary-text: #586069;
-      --border-color: #e1e4e8;
-      --tag-bg: #f1f8ff;
-      --tag-color: #0366d6;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
-      --link-color: #0969da;
+      --bg: #f6f8fa;
+      --card: #fff;
+      --text: #24292e;
+      --sub: #586069;
+      --border: #e1e4e8;
+      --theme: #0969da;
+      --light: #f1f8ff;
     }
-
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-color: #0d1117;
-        --card-bg: #161b22;
-        --text-color: #c9d1d9;
-        --secondary-text: #8b949e;
-        --border-color: #30363d;
-        --tag-bg: #23863620;
-        --tag-color: #3fb950;
-        --shadow: 0 1px 3px rgba(0,0,0,0.3);
-        --link-color: #58a6ff;
+        --bg: #0d1117;
+        --card: #161b22;
+        --text: #c9d1d9;
+        --sub: #8b949e;
+        --border: #30363d;
+        --theme: #58a6ff;
+        --light: #1f2937;
       }
     }
-
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      transition: background-color 0.3s, color 0.3s;
-      padding-bottom: 3rem;
+      padding-bottom: 4rem;
     }
-
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 2rem 1rem;
     }
-
-    .profile {
+    .hero {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
-
     .avatar {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--border-color);
+      border: 3px solid var(--border);
       margin-bottom: 1rem;
-      transition: transform 0.3s ease;
+      transition: .3s;
     }
-
     .avatar:hover {
       transform: scale(1.05);
     }
-
-    .name {
-      font-size: 2rem;
-      font-weight: 600;
+    .title {
+      font-size: 2.2rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
     }
-
-    .bio {
+    .typing {
       font-size: 1.1rem;
-      color: var(--secondary-text);
-      max-width: 600px;
-      margin: 0 auto 1.5rem;
+      color: var(--sub);
+      height: 1.6rem;
+      margin-bottom: 1rem;
     }
-
-    .social-links {
-      margin-bottom: 1.5rem;
-    }
-
-    .social-links a {
-      color: var(--link-color);
+    .social a {
+      color: var(--theme);
+      margin: 0 8px;
       text-decoration: none;
-      margin: 0 0.5rem;
-      font-size: 1.2rem;
+      font-weight: 500;
     }
-
-    .social-links a:hover {
+    .social a:hover {
       text-decoration: underline;
     }
-
-    .stats-row {
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+      transition: .2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .tag {
+      display: inline-block;
+      background: var(--light);
+      color: var(--theme);
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      margin: 0 4px 6px 0;
+    }
+    .project {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed var(--border);
+    }
+    .project:last-child {
+      border: none; margin-bottom: 0; padding-bottom: 0;
+    }
+    .project h3 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    .project a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .project a:hover {
+      color: var(--theme);
+    }
+    .project p {
+      color: var(--sub);
+      font-size: 0.95rem;
+    }
+    .skill {
+      margin-bottom: 12px;
+    }
+    .skill-name {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .bar {
+      height: 8px;
+      background: var(--light);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-in {
+      height: 100%;
+      background: var(--theme);
+      border-radius: 4px;
+    }
+    .stats {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
       justify-content: center;
-      margin-bottom: 2rem;
+      margin: 1.5rem 0;
     }
-
-    .stats-row img {
+    .stats img {
       max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-    }
-
-    .card {
-      background: var(--card-bg);
       border-radius: 8px;
-      box-shadow: var(--shadow);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border-color);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .card h2 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 0.5rem;
-    }
-
-    .project {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px dashed var(--border-color);
-    }
-
-    .project:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .project h3 {
-      font-size: 1.15rem;
-      margin-bottom: 0.3rem;
-    }
-
-    .project h3 a {
-      color: var(--text-color);
-      text-decoration: none;
-    }
-
-    .project h3 a:hover {
-      color: var(--tag-color);
-      text-decoration: underline;
-    }
-
-    .project p {
-      color: var(--secondary-text);
-      font-size: 0.95rem;
-    }
-
-    .tags {
-      margin-top: 0.5rem;
-    }
-
-    .tag {
-      display: inline-block;
-      background: var(--tag-bg);
-      color: var(--tag-color);
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin-right: 0.4rem;
-    }
-
-    .visitor-count {
-      text-align: center;
-      margin: 1rem 0;
-      color: var(--secondary-text);
-      font-size: 0.9rem;
-    }
-
     .footer {
       text-align: center;
-      margin-top: 3rem;
-      color: var(--secondary-text);
+      color: var(--sub);
       font-size: 0.9rem;
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="profile">
-    <!-- 头像 -->
-    <img src="https://i.pinimg.com/736x/53/a9/5c/53a95c6e9b31f8af06f0cc692f96ac2d.jpg" alt="Avatar" class="avatar">
-    <h1 class="name">ASIACOMKHK</h1>
-    <p class="bio">热爱技术、乐于解决问题的开发者，开源项目源于日常小需求，欢迎使用与交流。</p>
-
-    <!-- 社交链接 -->
-    <div class="social-links">
+  <div class="hero">
+    <img class="avatar" src="https://avatars.githubusercontent.com/u/172365411?v=4" alt="Avatar">
+    <h1 class="title">ASIACOMKHK</h1>
+    <div class="typing" id="text"></div>
+    <div class="social">
       <a href="https://github.com/ASIACOMKHK" target="_blank">GitHub</a>
-      <a href="mailto:asiacomk@gmail.com">Email</a>
-    </div>
-
-    <!-- 访客计数器 -->
-    <div class="visitor-count">
-      👁️ 访客数：<img src="https://komarev.com/ghpvc/?username=ASIACOMKHK&color=blue" alt="访客统计">
+      <a href="mailto:asiacomkhk@example.com">Email</a>
+      <a href="https://asiacomkhk.github.io/ASIACOMKHK/">Website</a>
     </div>
   </div>
 
-  <!-- GitHub 统计卡片 -->
-  <div class="stats-row">
-    <img src="https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=tokyonight" alt="GitHub Stats">
-    <img src="https://github-readme-streak-stats.herokuapp.com/?user=ASIACOMKHK&theme=tokyonight" alt="GitHub Streak">
-    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ASIACOMKHK&layout=compact&theme=tokyonight" alt="Top Langs">
+  <div class="stats">
+    <img src="https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=transparent&hide_border=true" alt="stats">
+    <img src="https://github-readme-streak-stats.herokuapp.com/?user=ASIACOMKHK&theme=transparent&hide_border=true" alt="streak">
   </div>
 
   <div class="card">
-    <h2>技术栈</h2>
-    <div class="tags">
-      <span class="tag">HTML</span>
-      <span class="tag">CSS</span>
-      <span class="tag">JavaScript</span>
-      <span class="tag">Cloudflare Workers</span>
-      <span class="tag">GitHub Actions</span>
+    <h2>📊 技能掌握</h2>
+    <div class="skill">
+      <div class="skill-name"><span>HTML / CSS</span><span>90%</span></div>
+      <div class="bar"><div class="bar-in" style="width:90%"></div></div>
+    </div>
+    <div class="skill">
+      <div class="skill-name"><span>JavaScript</span><span>75%</span></div>
+      <div class="bar"><div class="bar-in" style="width:75%"></div></div>
+    </div>
+    <div class="skill">
+      <div class="skill-name"><span>Cloudflare Workers</span><span>85%</span></div>
+      <div class="bar"><div class="bar-in" style="width:85%"></div></div>
+    </div>
+    <div class="skill">
+      <div class="skill-name"><span>GitHub Actions</span><span>80%</span></div>
+      <div class="bar"><div class="bar-in" style="width:80%"></div></div>
     </div>
   </div>
 
   <div class="card">
-    <h2>开源项目</h2>
+    <h2>🛠️ 技术栈</h2>
+    <span class="tag">HTML</span>
+    <span class="tag">CSS</span>
+    <span class="tag">JavaScript</span>
+    <span class="tag">Cloudflare Workers</span>
+    <span class="tag">GitHub Pages</span>
+    <span class="tag">Actions</span>
+    <span class="tag">Network</span>
+    <span class="tag">IP Tool</span>
+  </div>
 
+  <div class="card">
+    <h2>🚀 开源项目</h2>
     <div class="project">
-      <h3><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank">IP 检测工具</a></h3>
-      <p>基于 Cloudflare Workers 搭建，快速查询访问者 IP、位置、运营商信息。</p>
-      <div class="tags">
-        <span class="tag">Workers</span>
-        <span class="tag">IP</span>
-      </div>
+      <h3><a href="https://ip.asiacomkhk.workers.dev" target="_blank">IP 信息查询工具</a></h3>
+      <p>基于 Cloudflare Workers 构建，实时查询 IP 地址、地理位置、运营商信息。</p>
     </div>
+    <div class="project">
+      <h3><a href="https://threatmap.asiacomkhk.workers.dev" target="_blank">网络威胁地图</a></h3>
+      <p>轻量级可视化威胁监控页面，简洁高效，无第三方依赖。</p>
+    </div>
+  </div>
 
-    <div class="project">
-      <h3><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank">网络威胁地图页面</a></h3>
-      <p>实时网络威胁数据展示，简洁可视化界面，轻量无依赖。</p>
-      <div class="tags">
-        <span class="tag">可视化</span>
-        <span class="tag">网络安全</span>
-      </div>
-    </div>
+  <div class="card">
+    <h2>📫 联系我</h2>
+    <p style="color:var(--sub);">欢迎交流技术、网络安全、Cloudflare 相关问题~</p>
+    <p style="margin-top:8px;">GitHub：<a style="color:var(--theme)" href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></p>
   </div>
 
   <div class="footer">
-    &copy; 2026 ASIACOMKHK · Built with HTML & CSS
+    &copy; 2026 ASIACOMKHK · All Rights Reserved
   </div>
 </div>
 
+<script>
+  const texts = ["热爱技术 & 网络安全", "Cloudflare 爱好者", "开源项目开发者", "持续学习中..."];
+  let index = 0, charIndex = 0, current = "";
+  const el = document.getElementById("text");
+  function type() {
+    if (charIndex < texts[index].length) {
+      current += texts[index][charIndex++];
+      el.textContent = current;
+      setTimeout(type, 100);
+    } else {
+      setTimeout(() => {
+        current = ""; charIndex = 0;
+        index = (index + 1) % texts.length;
+        type();
+      }, 2000);
+    }
+  }
+  type();
+</script>
 </body>
 </html>
