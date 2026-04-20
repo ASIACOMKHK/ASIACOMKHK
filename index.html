@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ASIACOMKHK | 个人主页</title>
+  <title>ASIACOMKHK | Personal Homepage</title>
   <style>
     :root {
       --bg: #f6f8fa;
@@ -39,6 +39,25 @@
       max-width: 960px;
       margin: 0 auto;
       padding: 2rem 1rem;
+    }
+    .lang-switch {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .lang-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin: 0 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .lang-btn.active {
+      background: var(--theme);
+      color: #fff;
+      border-color: var(--theme);
     }
     .hero {
       text-align: center;
@@ -164,19 +183,31 @@
       font-size: 0.9rem;
       margin-top: 2rem;
     }
+    [data-lang] {
+      display: none;
+    }
+    [data-lang].show {
+      display: block !important;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <div class="lang-switch">
+    <button class="lang-btn" data-lang="zh-CN">简体</button>
+    <button class="lang-btn" data-lang="zh-TW">繁體</button>
+    <button class="lang-btn" data-lang="en">English</button>
+  </div>
+
   <div class="hero">
-    <img class="avatar" src="https://i.pinimg.com/736x/53/a9/5c/53a95c6e9b31f8af06f0cc692f96ac2d.jpg" alt="Avatar">
+    <img class="avatar" src="https://i.pinimg.com/736x/53/a9/5c/53a95c6e9b31f8af06f0cc692f96ac2d.jpg" alt="">
     <h1 class="title">ASIACOMKHK</h1>
     <div class="typing" id="text"></div>
     <div class="social">
-      <a href="https://github.com/ASIACOMKHK" target="_blank">GitHub</a>
-      <a href="mailto:asiacomkhk@example.com">Email</a>
-      <a href="https://asiacomkhk.github.io/ASIACOMKHK/">Website</a>
+      <a href="https://github.com/ASIACOMKHK" target="_blank" data-lang="zh-CN">GitHub</a>
+      <a href="https://github.com/ASIACOMKHK" target="_blank" data-lang="zh-TW">GitHub</a>
+      <a href="https://github.com/ASIACOMKHK" target="_blank" data-lang="en">GitHub</a>
     </div>
   </div>
 
@@ -186,27 +217,31 @@
   </div>
 
   <div class="card">
-    <h2>📊 技能掌握</h2>
+    <h2 data-lang="zh-CN">📊 技能掌握</h2>
+    <h2 data-lang="zh-TW">📊 技能掌握</h2>
+    <h2 data-lang="en">📊 Skills</h2>
     <div class="skill">
-      <div class="skill-name"><span>HTML / CSS</span><span>90%</span></div>
+      <div class="skill-name"><span data-lang="zh-CN">HTML / CSS</span><span data-lang="zh-TW">HTML / CSS</span><span data-lang="en">HTML / CSS</span><span>90%</span></div>
       <div class="bar"><div class="bar-in" style="width:90%"></div></div>
     </div>
     <div class="skill">
-      <div class="skill-name"><span>JavaScript</span><span>75%</span></div>
+      <div class="skill-name"><span data-lang="zh-CN">JavaScript</span><span data-lang="zh-TW">JavaScript</span><span data-lang="en">JavaScript</span><span>75%</span></div>
       <div class="bar"><div class="bar-in" style="width:75%"></div></div>
     </div>
     <div class="skill">
-      <div class="skill-name"><span>Cloudflare Workers</span><span>85%</span></div>
+      <div class="skill-name"><span data-lang="zh-CN">Cloudflare Workers</span><span data-lang="zh-TW">Cloudflare Workers</span><span data-lang="en">Cloudflare Workers</span><span>85%</span></div>
       <div class="bar"><div class="bar-in" style="width:85%"></div></div>
     </div>
     <div class="skill">
-      <div class="skill-name"><span>GitHub Actions</span><span>80%</span></div>
+      <div class="skill-name"><span data-lang="zh-CN">GitHub Actions</span><span data-lang="zh-TW">GitHub Actions</span><span data-lang="en">GitHub Actions</span><span>80%</span></div>
       <div class="bar"><div class="bar-in" style="width:80%"></div></div>
     </div>
   </div>
 
   <div class="card">
-    <h2>🛠️ 技术栈</h2>
+    <h2 data-lang="zh-CN">🛠️ 技术栈</h2>
+    <h2 data-lang="zh-TW">🛠️ 技術棧</h2>
+    <h2 data-lang="en">🛠️ Tech Stack</h2>
     <span class="tag">HTML</span>
     <span class="tag">CSS</span>
     <span class="tag">JavaScript</span>
@@ -218,46 +253,85 @@
   </div>
 
   <div class="card">
-    <h2>🚀 开源项目</h2>
+    <h2 data-lang="zh-CN">🚀 开源项目</h2>
+    <h2 data-lang="zh-TW">🚀 開源項目</h2>
+    <h2 data-lang="en">🚀 Projects</h2>
     <div class="project">
-      <h3><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank">IP 信息查询工具</a></h3>
-      <p>基于 Cloudflare Workers 构建，实时查询 IP 地址、地理位置、运营商信息。</p>
+      <h3><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="zh-CN">IP 信息查询工具</a><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/ target="_blank" data-lang="zh-TW">IP 資訊查詢工具</a><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="en">IP Lookup Tool</a></h3>
+      <p data-lang="zh-CN">基于 Cloudflare Workers 构建，实时查询 IP 地址、地理位置、运营商信息。</p>
+      <p data-lang="zh-TW">基於 Cloudflare Workers 構建，即時查詢 IP 位址、地理位置、營運商資訊。</p>
+      <p data-lang="en">Built with Cloudflare Workers, query IP, location, ISP in real-time.</p>
     </div>
     <div class="project">
-      <h3><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank">网络威胁地图</a></h3>
-      <p>轻量级可视化威胁监控页面，简洁高效，无第三方依赖。</p>
+      <h3><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-CN">网络威胁地图</a><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-TW">網路威脅地圖</a><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="en">Network Threat Map</a></h3>
+      <p data-lang="zh-CN">轻量级可视化威胁监控页面，简洁高效，无第三方依赖。</p>
+      <p data-lang="zh-TW">輕量級視覺化威脅監控頁面，簡潔高效，無第三方依賴。</p>
+      <p data-lang="en">Lightweight threat monitor, clean & fast, no dependencies.</p>
     </div>
   </div>
 
   <div class="card">
-    <h2>📫 联系我</h2>
-    <p style="color:var(--sub);">欢迎交流技术、网络安全、Cloudflare 相关问题~</p>
+    <h2 data-lang="zh-CN">📫 联系我</h2>
+    <h2 data-lang="zh-TW">📫 聯繫我</h2>
+    <h2 data-lang="en">📫 Contact</h2>
+    <p style="color:var(--sub);" data-lang="zh-CN">欢迎交流技术、网络安全、Cloudflare 相关问题~</p>
+    <p style="color:var(--sub);" data-lang="zh-TW">歡迎交流技術、網路安全、Cloudflare 相關問題~</p>
+    <p style="color:var(--sub);" data-lang="en">Feel free to discuss tech, security, Cloudflare ~</p>
     <p style="margin-top:8px;">GitHub：<a style="color:var(--theme)" href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></p>
   </div>
 
-  <div class="footer">
-    &copy; 2026 ASIACOMKHK · All Rights Reserved
-  </div>
+  <div class="footer" data-lang="zh-CN">&copy; 2026 ASIACOMKHK · 保留所有权利</div>
+  <div class="footer" data-lang="zh-TW">&copy; 2026 ASIACOMKHK · 保留所有權利</div>
+  <div class="footer" data-lang="en">&copy; 2026 ASIACOMKHK · All Rights Reserved</div>
 </div>
 
 <script>
-  const texts = ["热爱技术 & 网络安全", "Cloudflare 爱好者", "开源项目开发者", "持续学习中..."];
+  const i18n = {
+    "zh-CN": ["热爱技术 & 网络安全", "Cloudflare 爱好者", "开源项目开发者", "持续学习中..."],
+    "zh-TW": ["熱愛技術 & 網路安全", "Cloudflare 愛好者", "開源項目開發者", "持續學習中..."],
+    "en": ["Tech & Security Enthusiast", "Cloudflare Lover", "Open Source Developer", "Always Learning"]
+  };
+  let currentLang = localStorage.getItem("lang") || navigator.language || "zh-CN";
+  if(!["zh-CN","zh-TW","en"].includes(currentLang)) currentLang = "zh-CN";
+
+  function setLang(lang){
+    localStorage.setItem("lang", lang);
+    document.querySelectorAll("[data-lang]").forEach(el=>el.classList.remove("show"));
+    document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el=>el.classList.add("show"));
+    document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add("active");
+    startTyping(lang);
+  }
+
+  document.querySelectorAll(".lang-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>setLang(btn.dataset.lang));
+  });
+  setLang(currentLang);
+
+  let texts = i18n[currentLang];
   let index = 0, charIndex = 0, current = "";
   const el = document.getElementById("text");
+  let typingTimer;
+  function startTyping(lang){
+    clearTimeout(typingTimer);
+    texts = i18n[lang];
+    index = 0; charIndex = 0; current = "";
+    el.textContent = "";
+    type();
+  }
   function type() {
     if (charIndex < texts[index].length) {
       current += texts[index][charIndex++];
       el.textContent = current;
-      setTimeout(type, 100);
+      typingTimer = setTimeout(type, 100);
     } else {
-      setTimeout(() => {
+      typingTimer = setTimeout(() => {
         current = ""; charIndex = 0;
         index = (index + 1) % texts.length;
         type();
       }, 2000);
     }
   }
-  type();
 </script>
 </body>
 </html>
