@@ -42,22 +42,29 @@
     }
     .lang-switch {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
     }
     .lang-btn {
       background: var(--card);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 6px;
-      margin: 0 4px;
       cursor: pointer;
       font-size: 14px;
+      transition: all 0.2s ease;
     }
     .lang-btn.active {
       background: var(--theme);
       color: #fff;
       border-color: var(--theme);
+    }
+    .lang-btn:hover {
+      background: var(--light);
     }
     .hero {
       text-align: center;
@@ -85,15 +92,6 @@
       color: var(--sub);
       height: 1.6rem;
       margin-bottom: 1rem;
-    }
-    .social a {
-      color: var(--theme);
-      margin: 0 8px;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .social a:hover {
-      text-decoration: underline;
     }
     .card {
       background: var(--card);
@@ -189,26 +187,28 @@
     [data-lang].show {
       display: block !important;
     }
+    .contact-item {
+      margin-top: 6px;
+    }
+    .contact-item a {
+      color: var(--theme);
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="lang-switch">
-    <button class="lang-btn" data-lang="zh-CN">简体</button>
-    <button class="lang-btn" data-lang="zh-TW">繁體</button>
+    <button class="lang-btn" data-lang="zh-CN">简体中文</button>
+    <button class="lang-btn" data-lang="zh-TW">繁體中文</button>
     <button class="lang-btn" data-lang="en">English</button>
   </div>
 
   <div class="hero">
-    <img class="avatar" src="https://i.pinimg.com/736x/53/a9/5c/53a95c6e9b31f8af06f0cc692f96ac2d.jpg" alt="">
+    <img class="avatar" src="https://avatars.githubusercontent.com/u/172365411?v=4" alt="">
     <h1 class="title">ASIACOMKHK</h1>
     <div class="typing" id="text"></div>
-    <div class="social">
-      <a href="https://github.com/ASIACOMKHK" target="_blank" data-lang="zh-CN">GitHub</a>
-      <a href="https://github.com/ASIACOMKHK" target="_blank" data-lang="zh-TW">GitHub</a>
-      <a href="https://github.com/ASIACOMKHK" target="_blank" data-lang="en">GitHub</a>
-    </div>
   </div>
 
   <div class="stats">
@@ -257,13 +257,21 @@
     <h2 data-lang="zh-TW">🚀 開源項目</h2>
     <h2 data-lang="en">🚀 Projects</h2>
     <div class="project">
-      <h3><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="zh-CN">IP 信息查询工具</a><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/ target="_blank" data-lang="zh-TW">IP 資訊查詢工具</a><a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="en">IP Lookup Tool</a></h3>
+      <h3>
+        <a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="zh-CN">IP 信息查询工具</a>
+        <a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="zh-TW">IP 資訊查詢工具</a>
+        <a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="en">IP Lookup Tool</a>
+      </h3>
       <p data-lang="zh-CN">基于 Cloudflare Workers 构建，实时查询 IP 地址、地理位置、运营商信息。</p>
       <p data-lang="zh-TW">基於 Cloudflare Workers 構建，即時查詢 IP 位址、地理位置、營運商資訊。</p>
       <p data-lang="en">Built with Cloudflare Workers, query IP, location, ISP in real-time.</p>
     </div>
     <div class="project">
-      <h3><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-CN">网络威胁地图</a><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-TW">網路威脅地圖</a><a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="en">Network Threat Map</a></h3>
+      <h3>
+        <a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-CN">网络威胁地图</a>
+        <a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-TW">網路威脅地圖</a>
+        <a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="en">Network Threat Map</a>
+      </h3>
       <p data-lang="zh-CN">轻量级可视化威胁监控页面，简洁高效，无第三方依赖。</p>
       <p data-lang="zh-TW">輕量級視覺化威脅監控頁面，簡潔高效，無第三方依賴。</p>
       <p data-lang="en">Lightweight threat monitor, clean & fast, no dependencies.</p>
@@ -274,10 +282,38 @@
     <h2 data-lang="zh-CN">📫 联系我</h2>
     <h2 data-lang="zh-TW">📫 聯繫我</h2>
     <h2 data-lang="en">📫 Contact</h2>
-    <p style="color:var(--sub);" data-lang="zh-CN">欢迎交流技术、网络安全、Cloudflare 相关问题~</p>
-    <p style="color:var(--sub);" data-lang="zh-TW">歡迎交流技術、網路安全、Cloudflare 相關問題~</p>
-    <p style="color:var(--sub);" data-lang="en">Feel free to discuss tech, security, Cloudflare ~</p>
-    <p style="margin-top:8px;">GitHub：<a style="color:var(--theme)" href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></p>
+
+    <div class="contact-item" data-lang="zh-CN">📧 邮箱：<a href="mailto:asiacomk@gmail.com">acomk@gmail.com</a></div>
+    <div class="contact-item" data-lang="zh-TW">📧 電郵：<a href="mailto:acomk@gmail.com">acomk@gmail.com</a></div>
+    <div class="contact-item" data-lang="en">📧 Email：<a href="mailto:acomk@gmail.com">acomk@gmail.com</a></div>
+
+    <div class="contact-item" data-lang="zh-CN">💬 微信：OrionBinn</div>
+    <div class="contact-item" data-lang="zh-TW">💬 WeChat：OrionBinn</div>
+    <div class="contact-item" data-lang="en">💬 WeChat：OrionBinn</div>
+
+    <div class="contact-item" data-lang="zh-CN">🐧 QQ：2838436886</div>
+    <div class="contact-item" data-lang="zh-TW">🐧 QQ：2838436886</div>
+    <div class="contact-item" data-lang="en">🐧 QQ：2838436886</div>
+
+    <div class="contact-item" data-lang="zh-CN">📱 Telegram：<a href="https://t.me/asiacomkhk" target="_blank">@asiacomk</a></div>
+    <div class="contact-item" data-lang="zh-TW">📱 Telegram：<a href="https://t.me/asiacomkhk" target="_blank">@asiacomk</a></div>
+    <div class="contact-item" data-lang="en">📱 Telegram：<a href="https://t.me/asiacomkhk" target="_blank">@asiacomk</a></div>
+
+    <div class="contact-item" data-lang="zh-CN">📷 Instagram：<a href="https://instagram.com/asiacomkhk" target="_blank">asiacomk</a></div>
+    <div class="contact-item" data-lang="zh-TW">📷 Instagram：<a href="https://instagram.com/asiacomkhk" target="_blank">asiacomk</a></div>
+    <div class="contact-item" data-lang="en">📷 Instagram：<a href="https://instagram.com/asiacomkhk" target="_blank">asiacomk</a></div>
+
+    <div class="contact-item" data-lang="zh-CN">🎮 Discord：asiacomkhk#1234</div>
+    <div class="contact-item" data-lang="zh-TW">🎮 Discord：asiacomkhk#1234</div>
+    <div class="contact-item" data-lang="en">🎮 Discord：asiacomkhk#1234</div>
+
+    <div class="contact-item" data-lang="zh-CN">🌍 网站：<a href="https://asiacomkhk.github.io/ASIACOMKHK/" target="_blank">asiacomkhk.github.io</a></div>
+    <div class="contact-item" data-lang="zh-TW">🌍 網站：<a href="https://asiacomkhk.github.io/ASIACOMKHK/" target="_blank">asiacomkhk.github.io</a></div>
+    <div class="contact-item" data-lang="en">🌍 Website：<a href="https://asiacomkhk.github.io/ASIACOMKHK/" target="_blank">asiacomkhk.github.io</a></div>
+
+    <div class="contact-item" data-lang="zh-CN">🐙 GitHub：<a href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></div>
+    <div class="contact-item" data-lang="zh-TW">🐙 GitHub：<a href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></div>
+    <div class="contact-item" data-lang="en">🐙 GitHub：<a href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></div>
   </div>
 
   <div class="footer" data-lang="zh-CN">&copy; 2026 ASIACOMKHK · 保留所有权利</div>
@@ -291,8 +327,9 @@
     "zh-TW": ["熱愛技術 & 網路安全", "Cloudflare 愛好者", "開源項目開發者", "持續學習中..."],
     "en": ["Tech & Security Enthusiast", "Cloudflare Lover", "Open Source Developer", "Always Learning"]
   };
+
   let currentLang = localStorage.getItem("lang") || navigator.language || "zh-CN";
-  if(!["zh-CN","zh-TW","en"].includes(currentLang)) currentLang = "zh-CN";
+  if (!["zh-CN","zh-TW","en"].includes(currentLang)) currentLang = "zh-CN";
 
   function setLang(lang){
     localStorage.setItem("lang", lang);
@@ -306,12 +343,12 @@
   document.querySelectorAll(".lang-btn").forEach(btn=>{
     btn.addEventListener("click", ()=>setLang(btn.dataset.lang));
   });
-  setLang(currentLang);
 
   let texts = i18n[currentLang];
   let index = 0, charIndex = 0, current = "";
   const el = document.getElementById("text");
   let typingTimer;
+
   function startTyping(lang){
     clearTimeout(typingTimer);
     texts = i18n[lang];
@@ -319,6 +356,7 @@
     el.textContent = "";
     type();
   }
+
   function type() {
     if (charIndex < texts[index].length) {
       current += texts[index][charIndex++];
@@ -332,6 +370,8 @@
       }, 2000);
     }
   }
+
+  setLang(currentLang);
 </script>
 </body>
 </html>
