@@ -19,10 +19,9 @@
 
 ## 📌 我的项目
 
-https://github.com/ASIACOMKHK/CF-workers-Cyber-Theat-Map
+https://asiacomkhk.github.io/CF-workers-ipcheck/
 
-https://github.com/ASIACOMKHK/CF-workers-ipcheck
-
+https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/
 ---
 
 ## ❤️ 支持一下
