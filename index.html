@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASIACOMKHK - 个人主页</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f6f8fa;
+      color: #24292e;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    .profile {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e1e4e8;
+      margin-bottom: 1rem;
+    }
+    .name {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .bio {
+      font-size: 1.1rem;
+      color: #586069;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #e1e4e8;
+      padding-bottom: 0.5rem;
+    }
+    .project {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed #e1e4e8;
+    }
+    .project:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .project h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.3rem;
+    }
+    .project p {
+      color: #586069;
+      font-size: 0.95rem;
+    }
+    .tags {
+      margin-top: 0.5rem;
+    }
+    .tag {
+      display: inline-block;
+      background: #f1f8ff;
+      color: #0366d6;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-right: 0.4rem;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #6a737d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="profile">
+    <img src="https://avatars.githubusercontent.com/u/ASIACOMKHK" alt="Avatar" class="avatar">
+    <h1 class="name">ASIACOMKHK</h1>
+    <p class="bio">热爱技术、乐于解决问题的开发者，开源项目源于日常小需求，欢迎使用与交流。</p>
+  </div>
+
+  <div class="card">
+    <h2>技术栈</h2>
+    <div class="tags">
+      <span class="tag">HTML</span>
+      <span class="tag">CSS</span>
+      <span class="tag">JavaScript</span>
+      <span class="tag">Cloudflare Workers</span>
+      <span class="tag">GitHub Actions</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>开源项目</h2>
+
+    <div class="project">
+      <h3>IP 检测工具</h3>
+      <p>基于 Cloudflare Workers 搭建，快速查询访问者 IP、位置、运营商信息。</p>
+      <div class="tags">
+        <span class="tag">Workers</span>
+        <span class="tag">IP</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <h3>网络威胁地图页面</h3>
+      <p>实时网络威胁数据展示，简洁可视化界面，轻量无依赖。</p>
+      <div class="tags">
+        <span class="tag">可视化</span>
+        <span class="tag">网络安全</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2026 ASIACOMKHK · Built with HTML & CSS
+  </div>
+</div>
+
+</body>
+</html>
