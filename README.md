@@ -20,8 +20,6 @@
 ## 📌 我的项目
 
 https://asiacomkhk.github.io/CF-workers-ipcheck/
-
-https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/
 ---
 
 ## ❤️ 支持一下
