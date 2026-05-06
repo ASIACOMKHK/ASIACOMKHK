@@ -21,7 +21,7 @@
 
 https://asiacomkhk.github.io/CF-workers-ipcheck/
 
-https://asiacomkhk.github.io/CF-Woker-M3U8Play/
+https://asiacomkhk.github.io/CF-Woker-M3U8Player/
 ---
 
 ## ❤️ 支持一下
