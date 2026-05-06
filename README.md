@@ -20,6 +20,8 @@
 ## 📌 我的项目
 
 https://asiacomkhk.github.io/CF-workers-ipcheck/
+
+https://asiacomkhk.github.io/CF-Woker-M3U8Play/
 ---
 
 ## ❤️ 支持一下
