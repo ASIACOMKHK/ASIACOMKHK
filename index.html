@@ -9,9 +9,7 @@
     <meta name="description" content="专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。">
     <meta name="theme-color" content="#18171d">
     <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
-    <!-- 字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -60,12 +58,10 @@
             transition: background 0.3s, color 0.2s;
         }
 
-        /* 平滑滚动 */
         html {
             scroll-behavior: smooth;
         }
 
-        /* 阅读进度条 */
         .progress-container {
             position: fixed;
             top: 0;
@@ -103,12 +99,10 @@
             padding: 0 28px;
         }
 
-        /* 各个区块的锚点样式（用于滚动定位） */
         .section-anchor {
             scroll-margin-top: 80px;
         }
 
-        /* 头部导航 */
         header {
             position: sticky;
             top: 0;
@@ -163,7 +157,6 @@
             color: var(--accent);
         }
 
-        /* 随机逛逛按钮 */
         .random-btn {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
@@ -198,7 +191,6 @@
             color: var(--accent);
         }
 
-        /* 主布局 */
         .grid-main {
             display: grid;
             grid-template-columns: 1fr 340px;
@@ -206,7 +198,6 @@
             margin: 40px 0 64px;
         }
 
-        /* 项目展示区 */
         .projects-showcase {
             margin-bottom: 48px;
         }
@@ -323,7 +314,6 @@
             border: 1px solid var(--accent);
         }
 
-        /* GitHub 星标徽章 */
         .github-badge {
             display: flex;
             flex-wrap: wrap;
@@ -335,12 +325,10 @@
             border-radius: 6px;
         }
 
-        /* 文章卡片区域锚点 */
-        #blog-area, #projects-area, #service-area, #about-area {
+        #blog-area, #projects-area, #about-area {
             scroll-margin-top: 80px;
         }
 
-        /* 文章卡片 */
         .blog-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -395,35 +383,6 @@
             gap: 10px;
         }
 
-        /* 公益服务区域（模拟内容） */
-        .service-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 20px;
-        }
-        .service-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 18px;
-            flex: 1;
-            min-width: 180px;
-            transition: 0.2s;
-        }
-        .service-card:hover {
-            border-color: var(--accent);
-        }
-        .service-card i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 12px;
-        }
-        .service-card h4 {
-            margin-bottom: 8px;
-        }
-
-        /* 关于区域 */
         .about-content {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -431,7 +390,6 @@
             padding: 28px;
         }
 
-        /* 侧边栏 */
         .sidebar {
             position: sticky;
             top: 80px;
@@ -466,15 +424,6 @@
             color: var(--text-secondary);
             line-height: 1.5;
             margin-bottom: 16px;
-        }
-        .github-stats {
-            background: var(--code-bg);
-            border-radius: 14px;
-            padding: 10px;
-            margin: 14px 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            text-align: center;
         }
         .social-links {
             display: flex;
@@ -568,9 +517,6 @@
             .blog-content {
                 padding: 18px;
             }
-            .service-list {
-                flex-direction: column;
-            }
         }
 
         .status-badge {
@@ -594,7 +540,6 @@
 </head>
 <body>
 
-<!-- 阅读进度条 -->
 <div class="progress-container">
     <div class="progress-bar" id="readingProgressBar"></div>
 </div>
@@ -606,9 +551,8 @@
         </div>
         <ul class="nav-links">
             <li><a href="#" class="nav-item active-link" data-target="home">首页</a></li>
-            <li><a href="#" class="nav-item" data-target="blog">博客</a></li>
             <li><a href="#" class="nav-item" data-target="projects">项目</a></li>
-            <li><a href="#" class="nav-item" data-target="service">公益服务</a></li>
+            <li><a href="#" class="nav-item" data-target="blog">博客</a></li>
             <li><a href="#" class="nav-item" data-target="about">关于</a></li>
             <li><button class="random-btn" id="randomPostBtn"><i class="fas fa-dice-d6"></i> 随机逛逛</button><span id="randomHint"></span></li>
             <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> 暗色</button></li>
@@ -617,9 +561,8 @@
 </header>
 
 <main class="container grid-main">
-    <!-- 左侧：项目 + 文章 + 服务 + 关于 -->
     <div>
-        <!-- ========== 项目展示区 ========== -->
+        <!-- 项目展示区 -->
         <div id="projects-area" class="section-anchor">
             <div class="projects-showcase">
                 <div class="section-title">
@@ -627,7 +570,6 @@
                     <span>亲手构建 · Cloudflare Workers 项目集</span>
                 </div>
                 <div class="project-grid">
-                    <!-- 项目 1: CF-workers-netdiag -->
                     <div class="project-card">
                         <div class="project-header">
                             <div class="project-icon"><i class="fas fa-network-wired"></i></div>
@@ -646,7 +588,7 @@
                                 <span>Hono</span>
                                 <span>IPv6 Ready</span>
                             </div>
-                            <div class="github-badge" id="ghBadge1">
+                            <div class="github-badge">
                                 <img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
                                 <img src="https://img.shields.io/github/forks/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
                                 <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
@@ -658,7 +600,6 @@
                         </div>
                     </div>
 
-                    <!-- 项目 2: CF-Woker-M3U8Player -->
                     <div class="project-card">
                         <div class="project-header">
                             <div class="project-icon"><i class="fas fa-video"></i></div>
@@ -677,7 +618,7 @@
                                 <span>Cloudflare Workers</span>
                                 <span>Stream Proxy</span>
                             </div>
-                            <div class="github-badge" id="ghBadge2">
+                            <div class="github-badge">
                                 <img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
                                 <img src="https://img.shields.io/github/forks/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
                                 <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
@@ -692,14 +633,14 @@
             </div>
         </div>
 
-        <!-- ========== 博客文章列表 ========== -->
+        <!-- 博客文章列表 -->
         <div id="blog-area" class="section-anchor">
             <div class="section-title" style="margin-top: 8px;">
                 <i class="fas fa-pen-nib"></i>
                 <span>最新技术笔记</span>
             </div>
 
-            <article class="blog-card" data-post-id="1">
+            <article class="blog-card">
                 <div class="blog-content">
                     <div class="post-meta">
                         <span><i class="far fa-calendar-alt"></i> 2025-04-10</span>
@@ -714,7 +655,7 @@
                 </div>
             </article>
 
-            <article class="blog-card" data-post-id="2">
+            <article class="blog-card">
                 <div class="blog-content">
                     <div class="post-meta">
                         <span><i class="far fa-calendar-alt"></i> 2025-04-02</span>
@@ -729,7 +670,7 @@
                 </div>
             </article>
 
-            <article class="blog-card" data-post-id="3">
+            <article class="blog-card">
                 <div class="blog-content">
                     <div class="post-meta">
                         <span><i class="far fa-calendar-alt"></i> 2025-03-22</span>
@@ -745,41 +686,7 @@
             </article>
         </div>
 
-        <!-- ========== 公益服务区 ========== -->
-        <div id="service-area" class="section-anchor" style="margin-top: 48px;">
-            <div class="section-title">
-                <i class="fas fa-hand-holding-heart"></i>
-                <span>公益服务 · 免费资源</span>
-            </div>
-            <div class="service-list">
-                <div class="service-card">
-                    <i class="fab fa-docker"></i>
-                    <h4>DockerHub 镜像</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">加速拉取 Docker 镜像</p>
-                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
-                </div>
-                <div class="service-card">
-                    <i class="fab fa-github"></i>
-                    <h4>GitHub 镜像</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">加速访问 GitHub 资源</p>
-                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h4>DoH 服务</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">加密 DNS 查询</p>
-                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-exchange-alt"></i>
-                    <h4>订阅转换</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">机场订阅格式转换</p>
-                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== 关于我 ========== -->
+        <!-- 关于我 -->
         <div id="about-area" class="section-anchor" style="margin-top: 48px; margin-bottom: 48px;">
             <div class="section-title">
                 <i class="fas fa-user-astronaut"></i>
@@ -802,7 +709,7 @@
         </div>
     </div>
 
-    <!-- 右侧：侧边栏（保持不变） -->
+    <!-- 右侧边栏 -->
     <aside class="sidebar">
         <div class="widget">
             <div class="widget-title"><i class="fas fa-user-astronaut"></i> ASIACOMKHK</div>
@@ -898,21 +805,17 @@
 </footer>
 
 <script>
-    // ========== 1. 导航栏锚点跳转 ==========
+    // 导航锚点跳转
     function scrollToElement(elementId) {
         const targetElement = document.getElementById(elementId);
         if (targetElement) {
-            const offset = 80; // 头部高度偏移
+            const offset = 80;
             const elementPosition = targetElement.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - offset;
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         }
     }
 
-    // 更新导航栏激活状态
     function updateActiveNav(targetId) {
         document.querySelectorAll('.nav-item').forEach(item => {
             if (item.getAttribute('data-target') === targetId) {
@@ -923,7 +826,6 @@
         });
     }
 
-    // 绑定导航点击事件
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
@@ -937,9 +839,6 @@
             } else if (target === 'blog') {
                 scrollToElement('blog-area');
                 updateActiveNav('blog');
-            } else if (target === 'service') {
-                scrollToElement('service-area');
-                updateActiveNav('service');
             } else if (target === 'about') {
                 scrollToElement('about-area');
                 updateActiveNav('about');
@@ -947,7 +846,6 @@
         });
     });
 
-    // Logo 点击回到顶部
     const logoHomeLink = document.getElementById('logoHomeLink');
     if (logoHomeLink) {
         logoHomeLink.addEventListener('click', (e) => {
@@ -957,18 +855,16 @@
         });
     }
 
-    // 滚动时自动高亮当前区域
     function highlightCurrentSection() {
-        const sections = ['home', 'projects-area', 'blog-area', 'service-area', 'about-area'];
+        const sections = ['projects-area', 'blog-area', 'about-area'];
         const scrollPos = window.scrollY + 100;
         
-        // 检查是否在顶部
         if (scrollPos < 200) {
             updateActiveNav('home');
             return;
         }
         
-        for (const sectionId of sections.slice(1)) { // 跳过 home，因为 home 是顶部
+        for (const sectionId of sections) {
             const element = document.getElementById(sectionId);
             if (element) {
                 const offsetTop = element.offsetTop;
@@ -977,7 +873,6 @@
                     let targetName = '';
                     if (sectionId === 'projects-area') targetName = 'projects';
                     else if (sectionId === 'blog-area') targetName = 'blog';
-                    else if (sectionId === 'service-area') targetName = 'service';
                     else if (sectionId === 'about-area') targetName = 'about';
                     updateActiveNav(targetName);
                     break;
@@ -988,46 +883,21 @@
     window.addEventListener('scroll', highlightCurrentSection);
     highlightCurrentSection();
 
-    // ========== 2. 阅读进度条 ==========
+    // 阅读进度条
     function updateReadingProgress() {
         const winScroll = document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrolled = (winScroll / height) * 100;
         const progressBar = document.getElementById('readingProgressBar');
-        if (progressBar) {
-            progressBar.style.width = scrolled + '%';
-        }
+        if (progressBar) progressBar.style.width = scrolled + '%';
     }
     window.addEventListener('scroll', updateReadingProgress);
     window.addEventListener('resize', updateReadingProgress);
     updateReadingProgress();
 
-    // ========== 3. 随机逛逛功能 ==========
+    // 随机逛逛
     const randomBtn = document.getElementById('randomPostBtn');
     const randomHint = document.getElementById('randomHint');
-    
-    const postsList = [
-        { title: '我为什么用 Cloudflare Workers 写网络诊断和视频代理工具', url: '#' },
-        { title: '深入浅出：如何自建一个轻量级网络诊断服务', url: '#' },
-        { title: 'M3U8 播放器 + Worker 代理：跨域问题终极解决方案', url: '#' }
-    ];
-    
-    function getRandomPost() {
-        const randomIndex = Math.floor(Math.random() * postsList.length);
-        return postsList[randomIndex];
-    }
-    
-    function showRandomHint(message, isError = false) {
-        if (randomHint) {
-            randomHint.textContent = message;
-            randomHint.style.color = isError ? '#ff6b6b' : 'var(--accent)';
-            setTimeout(() => {
-                if (randomHint.textContent === message) {
-                    randomHint.textContent = '';
-                }
-            }, 2000);
-        }
-    }
     
     function goToRandomPost() {
         const articles = document.querySelectorAll('.blog-card');
@@ -1039,17 +909,16 @@
             setTimeout(() => {
                 randomArticle.style.boxShadow = '';
             }, 1000);
-            showRandomHint(`🎲 跳转至：「${randomArticle.querySelector('.post-title')?.innerText?.substring(0, 30) || '文章'}」`);
-        } else {
-            showRandomHint('📭 暂无更多文章', true);
+            if (randomHint) {
+                randomHint.textContent = `🎲 跳转至：「${randomArticle.querySelector('.post-title')?.innerText?.substring(0, 30) || '文章'}」`;
+                randomHint.style.color = 'var(--accent)';
+                setTimeout(() => { randomHint.textContent = ''; }, 2000);
+            }
         }
     }
-    
-    if (randomBtn) {
-        randomBtn.addEventListener('click', goToRandomPost);
-    }
+    if (randomBtn) randomBtn.addEventListener('click', goToRandomPost);
 
-    // ========== 4. 主题切换 ==========
+    // 主题切换
     const themeToggle = document.getElementById('themeToggle');
     const html = document.documentElement;
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -1069,7 +938,7 @@
         });
     }
 
-    // ========== 5. 订阅按钮交互 ==========
+    // 订阅按钮
     const subBtn = document.getElementById('subBtn');
     const subEmail = document.getElementById('subEmail');
     if (subBtn && subEmail) {
@@ -1084,8 +953,7 @@
         });
     }
 
-    // ========== 6. 控制台彩蛋 ==========
-    console.log("%c⚡ ASIACOMKHK 的技术博客 | CF Workers 双项目已上线\n%c欢迎 Star / Fork 我的项目: https://github.com/asiacomkhk\n✨ 功能：阅读进度条 | GitHub 星标 | 随机逛逛 | 导航锚点跳转", "color: #2dc9ff; font-size: 14px;", "color: #6c86a3");
+    console.log("%c⚡ ASIACOMKHK 的技术博客 | CF Workers 双项目已上线\n%c欢迎 Star / Fork 我的项目: https://github.com/asiacomkhk", "color: #2dc9ff; font-size: 14px;", "color: #6c86a3");
 </script>
 </body>
 </html>
