@@ -60,6 +60,11 @@
             transition: background 0.3s, color 0.2s;
         }
 
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* 阅读进度条 */
         .progress-container {
             position: fixed;
@@ -96,6 +101,11 @@
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 28px;
+        }
+
+        /* 各个区块的锚点样式（用于滚动定位） */
+        .section-anchor {
+            scroll-margin-top: 80px;
         }
 
         /* 头部导航 */
@@ -147,8 +157,9 @@
             color: var(--text-secondary);
             transition: 0.2s;
             font-size: 0.9rem;
+            cursor: pointer;
         }
-        .nav-links a:hover, .nav-links a.active {
+        .nav-links a:hover, .nav-links a.active-link {
             color: var(--accent);
         }
 
@@ -324,6 +335,11 @@
             border-radius: 6px;
         }
 
+        /* 文章卡片区域锚点 */
+        #blog-area, #projects-area, #service-area, #about-area {
+            scroll-margin-top: 80px;
+        }
+
         /* 文章卡片 */
         .blog-card {
             background: var(--bg-card);
@@ -377,6 +393,42 @@
         }
         .read-more:hover {
             gap: 10px;
+        }
+
+        /* 公益服务区域（模拟内容） */
+        .service-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
+            flex: 1;
+            min-width: 180px;
+            transition: 0.2s;
+        }
+        .service-card:hover {
+            border-color: var(--accent);
+        }
+        .service-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .service-card h4 {
+            margin-bottom: 8px;
+        }
+
+        /* 关于区域 */
+        .about-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 28px;
         }
 
         /* 侧边栏 */
@@ -482,13 +534,6 @@
             color: var(--accent);
         }
 
-        /* 打字机效果提示 */
-        #randomHint {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-left: 8px;
-        }
-
         footer {
             border-top: 1px solid var(--border-color);
             padding: 28px 0;
@@ -523,6 +568,9 @@
             .blog-content {
                 padding: 18px;
             }
+            .service-list {
+                flex-direction: column;
+            }
         }
 
         .status-badge {
@@ -554,14 +602,14 @@
 <header>
     <div class="container header-flex">
         <div class="logo">
-            <a href="#">&lt;ASIACOMKHK/&gt; <span>CF Workers · 开源创造</span></a>
+            <a href="#" id="logoHomeLink">&lt;ASIACOMKHK/&gt; <span>CF Workers · 开源创造</span></a>
         </div>
         <ul class="nav-links">
-            <li><a href="#" class="active">首页</a></li>
-            <li><a href="#">博客</a></li>
-            <li><a href="#">项目</a></li>
-            <li><a href="#">公益服务</a></li>
-            <li><a href="#">关于</a></li>
+            <li><a href="#" class="nav-item active-link" data-target="home">首页</a></li>
+            <li><a href="#" class="nav-item" data-target="blog">博客</a></li>
+            <li><a href="#" class="nav-item" data-target="projects">项目</a></li>
+            <li><a href="#" class="nav-item" data-target="service">公益服务</a></li>
+            <li><a href="#" class="nav-item" data-target="about">关于</a></li>
             <li><button class="random-btn" id="randomPostBtn"><i class="fas fa-dice-d6"></i> 随机逛逛</button><span id="randomHint"></span></li>
             <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> 暗色</button></li>
         </ul>
@@ -569,133 +617,192 @@
 </header>
 
 <main class="container grid-main">
+    <!-- 左侧：项目 + 文章 + 服务 + 关于 -->
     <div>
-        <!-- 项目展示区 -->
-        <div class="projects-showcase">
+        <!-- ========== 项目展示区 ========== -->
+        <div id="projects-area" class="section-anchor">
+            <div class="projects-showcase">
+                <div class="section-title">
+                    <i class="fas fa-code-branch"></i>
+                    <span>亲手构建 · Cloudflare Workers 项目集</span>
+                </div>
+                <div class="project-grid">
+                    <!-- 项目 1: CF-workers-netdiag -->
+                    <div class="project-card">
+                        <div class="project-header">
+                            <div class="project-icon"><i class="fas fa-network-wired"></i></div>
+                            <div>
+                                <div class="project-title">CF Workers NetDiag</div>
+                                <div class="project-badge"># 网络诊断工具</div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-desc">
+                                基于 Cloudflare Workers 构建的轻量级网络诊断工具。支持 HTTP/TCP Ping、路由追踪、DNS 解析等实用功能，无需服务器即可完成全球边缘节点的网络质量检测。
+                            </div>
+                            <div class="tech-stack">
+                                <span>TypeScript</span>
+                                <span>Workers Runtime</span>
+                                <span>Hono</span>
+                                <span>IPv6 Ready</span>
+                            </div>
+                            <div class="github-badge" id="ghBadge1">
+                                <img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
+                                <img src="https://img.shields.io/github/forks/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
+                                <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
+                            </div>
+                            <div class="project-links">
+                                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a>
+                                <a href="https://github.com/asiacomkhk/CF-workers-netdiag" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 项目 2: CF-Woker-M3U8Player -->
+                    <div class="project-card">
+                        <div class="project-header">
+                            <div class="project-icon"><i class="fas fa-video"></i></div>
+                            <div>
+                                <div class="project-title">M3U8 Player on Worker</div>
+                                <div class="project-badge"># 流媒体代理</div>
+                            </div>
+                        </div>
+                        <div class="project-body">
+                            <div class="project-desc">
+                                基于 Cloudflare Worker 的 M3U8 流媒体播放器与代理。支持跨域资源获取、自动转码嗅探、自定义回源规则，帮助构建轻量级视频聚合服务。
+                            </div>
+                            <div class="tech-stack">
+                                <span>JavaScript</span>
+                                <span>HLS.js</span>
+                                <span>Cloudflare Workers</span>
+                                <span>Stream Proxy</span>
+                            </div>
+                            <div class="github-badge" id="ghBadge2">
+                                <img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
+                                <img src="https://img.shields.io/github/forks/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
+                                <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
+                            </div>
+                            <div class="project-links">
+                                <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a>
+                                <a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 博客文章列表 ========== -->
+        <div id="blog-area" class="section-anchor">
+            <div class="section-title" style="margin-top: 8px;">
+                <i class="fas fa-pen-nib"></i>
+                <span>最新技术笔记</span>
+            </div>
+
+            <article class="blog-card" data-post-id="1">
+                <div class="blog-content">
+                    <div class="post-meta">
+                        <span><i class="far fa-calendar-alt"></i> 2025-04-10</span>
+                        <span><i class="fas fa-tag"></i> Cloudflare Workers</span>
+                        <span><i class="fas fa-eye"></i> 阅读 342次</span>
+                    </div>
+                    <h2 class="post-title"><a href="#">我为什么用 Cloudflare Workers 写网络诊断和视频代理工具</a></h2>
+                    <p class="post-excerpt">
+                        从 NetDiag 到 M3U8 Player，分享我在 Workers 生态中的开发心得。边缘计算如何降低运维成本？跨域限制怎么优雅绕过？以及两个项目中用到的实用代码片段……
+                    </p>
+                    <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-post-id="2">
+                <div class="blog-content">
+                    <div class="post-meta">
+                        <span><i class="far fa-calendar-alt"></i> 2025-04-02</span>
+                        <span><i class="fas fa-tag"></i> 网络 · 可观测性</span>
+                        <span><i class="fas fa-eye"></i> 阅读 187次</span>
+                    </div>
+                    <h2 class="post-title"><a href="#">深入浅出：如何自建一个轻量级网络诊断服务</a></h2>
+                    <p class="post-excerpt">
+                        基于 CF Workers 实现 HTTP Ping、Traceroute 的替代方案，探讨边缘节点网络探测的最佳实践。附完整代码解读与部署指南……
+                    </p>
+                    <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+
+            <article class="blog-card" data-post-id="3">
+                <div class="blog-content">
+                    <div class="post-meta">
+                        <span><i class="far fa-calendar-alt"></i> 2025-03-22</span>
+                        <span><i class="fas fa-tag"></i> 流媒体 · HLS</span>
+                        <span><i class="fas fa-eye"></i> 阅读 256次</span>
+                    </div>
+                    <h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理：跨域问题终极解决方案</a></h2>
+                    <p class="post-excerpt">
+                        手把手搭建一个自托管的 HLS 流媒体代理，解决跨域和防盗链限制。结合 HLS.js 实现 Web 端流畅播放，带你了解背后的原理与实现……
+                    </p>
+                    <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+
+        <!-- ========== 公益服务区 ========== -->
+        <div id="service-area" class="section-anchor" style="margin-top: 48px;">
             <div class="section-title">
-                <i class="fas fa-code-branch"></i>
-                <span>亲手构建 · Cloudflare Workers 项目集</span>
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>公益服务 · 免费资源</span>
             </div>
-            <div class="project-grid">
-                <!-- 项目 1: CF-workers-netdiag -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon"><i class="fas fa-network-wired"></i></div>
-                        <div>
-                            <div class="project-title">CF Workers NetDiag</div>
-                            <div class="project-badge"># 网络诊断工具</div>
-                        </div>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-desc">
-                            基于 Cloudflare Workers 构建的轻量级网络诊断工具。支持 HTTP/TCP Ping、路由追踪、DNS 解析等实用功能，无需服务器即可完成全球边缘节点的网络质量检测。
-                        </div>
-                        <div class="tech-stack">
-                            <span>TypeScript</span>
-                            <span>Workers Runtime</span>
-                            <span>Hono</span>
-                            <span>IPv6 Ready</span>
-                        </div>
-                        <!-- GitHub 星标徽章 -->
-                        <div class="github-badge" id="ghBadge1">
-                            <img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
-                            <img src="https://img.shields.io/github/forks/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
-                            <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
-                        </div>
-                        <div class="project-links">
-                            <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a>
-                            <a href="https://github.com/asiacomkhk/CF-workers-netdiag" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
-                        </div>
-                    </div>
+            <div class="service-list">
+                <div class="service-card">
+                    <i class="fab fa-docker"></i>
+                    <h4>DockerHub 镜像</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">加速拉取 Docker 镜像</p>
+                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
                 </div>
-
-                <!-- 项目 2: CF-Woker-M3U8Player -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon"><i class="fas fa-video"></i></div>
-                        <div>
-                            <div class="project-title">M3U8 Player on Worker</div>
-                            <div class="project-badge"># 流媒体代理</div>
-                        </div>
-                    </div>
-                    <div class="project-body">
-                        <div class="project-desc">
-                            基于 Cloudflare Worker 的 M3U8 流媒体播放器与代理。支持跨域资源获取、自动转码嗅探、自定义回源规则，帮助构建轻量级视频聚合服务。
-                        </div>
-                        <div class="tech-stack">
-                            <span>JavaScript</span>
-                            <span>HLS.js</span>
-                            <span>Cloudflare Workers</span>
-                            <span>Stream Proxy</span>
-                        </div>
-                        <!-- GitHub 星标徽章 -->
-                        <div class="github-badge" id="ghBadge2">
-                            <img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
-                            <img src="https://img.shields.io/github/forks/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
-                            <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
-                        </div>
-                        <div class="project-links">
-                            <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a>
-                            <a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
-                        </div>
-                    </div>
+                <div class="service-card">
+                    <i class="fab fa-github"></i>
+                    <h4>GitHub 镜像</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">加速访问 GitHub 资源</p>
+                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>DoH 服务</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">加密 DNS 查询</p>
+                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h4>订阅转换</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">机场订阅格式转换</p>
+                    <a href="#" style="color: var(--accent); font-size: 0.8rem;">使用 →</a>
                 </div>
             </div>
         </div>
 
-        <!-- 技术文章列表 -->
-        <div class="section-title" style="margin-top: 8px;">
-            <i class="fas fa-pen-nib"></i>
-            <span>最新技术笔记</span>
+        <!-- ========== 关于我 ========== -->
+        <div id="about-area" class="section-anchor" style="margin-top: 48px; margin-bottom: 48px;">
+            <div class="section-title">
+                <i class="fas fa-user-astronaut"></i>
+                <span>关于 ASIACOMKHK</span>
+            </div>
+            <div class="about-content">
+                <p style="margin-bottom: 16px; line-height: 1.7;">
+                    独立开发者，专注于 <strong>Cloudflare Workers 生态</strong> 与 <strong>边缘计算</strong>。
+                </p>
+                <p style="margin-bottom: 16px; line-height: 1.7;">
+                    相信「写即所得」，用代码解决实际网络问题。两个开源项目均源于日常折腾与实用需求。
+                </p>
+                <p style="margin-bottom: 16px; line-height: 1.7;">
+                    📌 主要领域：Cloudflare Workers / TypeScript / 网络协议 / 边缘计算
+                </p>
+                <p style="line-height: 1.7;">
+                    📧 联系我：<a href="mailto:asiacomk@gmail.com" style="color: var(--accent);">asiacomk@gmail.com</a>
+                </p>
+            </div>
         </div>
-
-        <article class="blog-card" data-post-id="1">
-            <div class="blog-content">
-                <div class="post-meta">
-                    <span><i class="far fa-calendar-alt"></i> 2025-04-10</span>
-                    <span><i class="fas fa-tag"></i> Cloudflare Workers</span>
-                    <span><i class="fas fa-eye"></i> 阅读 342次</span>
-                </div>
-                <h2 class="post-title"><a href="#">我为什么用 Cloudflare Workers 写网络诊断和视频代理工具</a></h2>
-                <p class="post-excerpt">
-                    从 NetDiag 到 M3U8 Player，分享我在 Workers 生态中的开发心得。边缘计算如何降低运维成本？跨域限制怎么优雅绕过？以及两个项目中用到的实用代码片段……
-                </p>
-                <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </article>
-
-        <article class="blog-card" data-post-id="2">
-            <div class="blog-content">
-                <div class="post-meta">
-                    <span><i class="far fa-calendar-alt"></i> 2025-04-02</span>
-                    <span><i class="fas fa-tag"></i> 网络 · 可观测性</span>
-                    <span><i class="fas fa-eye"></i> 阅读 187次</span>
-                </div>
-                <h2 class="post-title"><a href="#">深入浅出：如何自建一个轻量级网络诊断服务</a></h2>
-                <p class="post-excerpt">
-                    基于 CF Workers 实现 HTTP Ping、Traceroute 的替代方案，探讨边缘节点网络探测的最佳实践。附完整代码解读与部署指南……
-                </p>
-                <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </article>
-
-        <article class="blog-card" data-post-id="3">
-            <div class="blog-content">
-                <div class="post-meta">
-                    <span><i class="far fa-calendar-alt"></i> 2025-03-22</span>
-                    <span><i class="fas fa-tag"></i> 流媒体 · HLS</span>
-                    <span><i class="fas fa-eye"></i> 阅读 256次</span>
-                </div>
-                <h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理：跨域问题终极解决方案</a></h2>
-                <p class="post-excerpt">
-                    手把手搭建一个自托管的 HLS 流媒体代理，解决跨域和防盗链限制。结合 HLS.js 实现 Web 端流畅播放，带你了解背后的原理与实现……
-                </p>
-                <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </article>
     </div>
 
-    <!-- 右侧：侧边栏 -->
+    <!-- 右侧：侧边栏（保持不变） -->
     <aside class="sidebar">
         <div class="widget">
             <div class="widget-title"><i class="fas fa-user-astronaut"></i> ASIACOMKHK</div>
@@ -791,7 +898,97 @@
 </footer>
 
 <script>
-    // ========== 1. 阅读进度条 ==========
+    // ========== 1. 导航栏锚点跳转 ==========
+    function scrollToElement(elementId) {
+        const targetElement = document.getElementById(elementId);
+        if (targetElement) {
+            const offset = 80; // 头部高度偏移
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // 更新导航栏激活状态
+    function updateActiveNav(targetId) {
+        document.querySelectorAll('.nav-item').forEach(item => {
+            if (item.getAttribute('data-target') === targetId) {
+                item.classList.add('active-link');
+            } else {
+                item.classList.remove('active-link');
+            }
+        });
+    }
+
+    // 绑定导航点击事件
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = item.getAttribute('data-target');
+            if (target === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                updateActiveNav('home');
+            } else if (target === 'projects') {
+                scrollToElement('projects-area');
+                updateActiveNav('projects');
+            } else if (target === 'blog') {
+                scrollToElement('blog-area');
+                updateActiveNav('blog');
+            } else if (target === 'service') {
+                scrollToElement('service-area');
+                updateActiveNav('service');
+            } else if (target === 'about') {
+                scrollToElement('about-area');
+                updateActiveNav('about');
+            }
+        });
+    });
+
+    // Logo 点击回到顶部
+    const logoHomeLink = document.getElementById('logoHomeLink');
+    if (logoHomeLink) {
+        logoHomeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateActiveNav('home');
+        });
+    }
+
+    // 滚动时自动高亮当前区域
+    function highlightCurrentSection() {
+        const sections = ['home', 'projects-area', 'blog-area', 'service-area', 'about-area'];
+        const scrollPos = window.scrollY + 100;
+        
+        // 检查是否在顶部
+        if (scrollPos < 200) {
+            updateActiveNav('home');
+            return;
+        }
+        
+        for (const sectionId of sections.slice(1)) { // 跳过 home，因为 home 是顶部
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const offsetTop = element.offsetTop;
+                const offsetBottom = offsetTop + element.offsetHeight;
+                if (scrollPos >= offsetTop - 80 && scrollPos < offsetBottom - 80) {
+                    let targetName = '';
+                    if (sectionId === 'projects-area') targetName = 'projects';
+                    else if (sectionId === 'blog-area') targetName = 'blog';
+                    else if (sectionId === 'service-area') targetName = 'service';
+                    else if (sectionId === 'about-area') targetName = 'about';
+                    updateActiveNav(targetName);
+                    break;
+                }
+            }
+        }
+    }
+    window.addEventListener('scroll', highlightCurrentSection);
+    highlightCurrentSection();
+
+    // ========== 2. 阅读进度条 ==========
     function updateReadingProgress() {
         const winScroll = document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -805,11 +1002,10 @@
     window.addEventListener('resize', updateReadingProgress);
     updateReadingProgress();
 
-    // ========== 2. 随机逛逛功能 ==========
+    // ========== 3. 随机逛逛功能 ==========
     const randomBtn = document.getElementById('randomPostBtn');
     const randomHint = document.getElementById('randomHint');
     
-    // 文章列表（可扩展）
     const postsList = [
         { title: '我为什么用 Cloudflare Workers 写网络诊断和视频代理工具', url: '#' },
         { title: '深入浅出：如何自建一个轻量级网络诊断服务', url: '#' },
@@ -834,24 +1030,18 @@
     }
     
     function goToRandomPost() {
-        const post = getRandomPost();
-        if (post && post.url && post.url !== '#') {
-            window.location.href = post.url;
+        const articles = document.querySelectorAll('.blog-card');
+        if (articles.length > 0) {
+            const randomArticle = articles[Math.floor(Math.random() * articles.length)];
+            randomArticle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            randomArticle.style.transition = 'box-shadow 0.2s';
+            randomArticle.style.boxShadow = '0 0 0 2px var(--accent)';
+            setTimeout(() => {
+                randomArticle.style.boxShadow = '';
+            }, 1000);
+            showRandomHint(`🎲 跳转至：「${randomArticle.querySelector('.post-title')?.innerText?.substring(0, 30) || '文章'}」`);
         } else {
-            // 演示模式：显示提示并滚动到随机文章
-            const articles = document.querySelectorAll('.blog-card');
-            if (articles.length > 0) {
-                const randomArticle = articles[Math.floor(Math.random() * articles.length)];
-                randomArticle.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                randomArticle.style.transition = 'box-shadow 0.2s';
-                randomArticle.style.boxShadow = '0 0 0 2px var(--accent)';
-                setTimeout(() => {
-                    randomArticle.style.boxShadow = '';
-                }, 1000);
-                showRandomHint(`🎲 跳转至：「${randomArticle.querySelector('.post-title')?.innerText?.substring(0, 30) || '文章'}」`);
-            } else {
-                showRandomHint('📭 暂无更多文章', true);
-            }
+            showRandomHint('📭 暂无更多文章', true);
         }
     }
     
@@ -859,7 +1049,7 @@
         randomBtn.addEventListener('click', goToRandomPost);
     }
 
-    // ========== 3. 主题切换 ==========
+    // ========== 4. 主题切换 ==========
     const themeToggle = document.getElementById('themeToggle');
     const html = document.documentElement;
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -879,7 +1069,7 @@
         });
     }
 
-    // ========== 4. 订阅按钮交互 ==========
+    // ========== 5. 订阅按钮交互 ==========
     const subBtn = document.getElementById('subBtn');
     const subEmail = document.getElementById('subEmail');
     if (subBtn && subEmail) {
@@ -894,9 +1084,8 @@
         });
     }
 
-    // ========== 5. 控制台彩蛋 ==========
-    console.log("%c⚡ ASIACOMKHK 的技术博客 | CF Workers 双项目已上线\n%c欢迎 Star / Fork 我的项目: https://github.com/asiacomkhk\n✨ 新增功能：阅读进度条 | GitHub 星标卡片 | 随机逛逛", "color: #2dc9ff; font-size: 14px;", "color: #6c86a3");
+    // ========== 6. 控制台彩蛋 ==========
+    console.log("%c⚡ ASIACOMKHK 的技术博客 | CF Workers 双项目已上线\n%c欢迎 Star / Fork 我的项目: https://github.com/asiacomkhk\n✨ 功能：阅读进度条 | GitHub 星标 | 随机逛逛 | 导航锚点跳转", "color: #2dc9ff; font-size: 14px;", "color: #6c86a3");
 </script>
 </body>
 </html>
-```
