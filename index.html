@@ -1,3 +1,5 @@
+以下是整合了 **GitHub 星标卡片**、**阅读进度条** 和 **随机逛逛** 三个功能的完整博客代码。您可以直接复制使用。
+```html
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
 <head>
@@ -33,6 +35,7 @@
             --code-bg: #0b0e16;
             --hover-border: #2dc9ff;
             --header-bg: rgba(10, 12, 18, 0.85);
+            --progress-bar: #2dc9ff;
         }
 
         [data-theme="light"] {
@@ -48,6 +51,7 @@
             --code-bg: #f7fafc;
             --hover-border: #0d9488;
             --header-bg: rgba(244, 246, 250, 0.9);
+            --progress-bar: #0d9488;
         }
 
         body {
@@ -56,6 +60,24 @@
             color: var(--text-primary);
             line-height: 1.5;
             transition: background 0.3s, color 0.2s;
+        }
+
+        /* 阅读进度条 */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 1000;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--progress-bar);
+            box-shadow: 0 0 8px var(--accent);
+            transition: width 0.15s ease;
         }
 
         body::before {
@@ -78,7 +100,7 @@
             padding: 0 28px;
         }
 
-        /* ========== 头部导航 ========== */
+        /* 头部导航 */
         header {
             position: sticky;
             top: 0;
@@ -132,6 +154,26 @@
             color: var(--accent);
         }
 
+        /* 随机逛逛按钮 */
+        .random-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            padding: 6px 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .random-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
         .theme-toggle {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
@@ -147,7 +189,7 @@
             color: var(--accent);
         }
 
-        /* ========== 主布局 ========== */
+        /* 主布局 */
         .grid-main {
             display: grid;
             grid-template-columns: 1fr 340px;
@@ -155,7 +197,7 @@
             margin: 40px 0 64px;
         }
 
-        /* ========== 项目展示区 ========== */
+        /* 项目展示区 */
         .projects-showcase {
             margin-bottom: 48px;
         }
@@ -272,7 +314,19 @@
             border: 1px solid var(--accent);
         }
 
-        /* ========== 文章卡片 ========== */
+        /* GitHub 星标徽章 */
+        .github-badge {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .github-badge img {
+            height: 20px;
+            border-radius: 6px;
+        }
+
+        /* 文章卡片 */
         .blog-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -327,7 +381,7 @@
             gap: 10px;
         }
 
-        /* ========== 侧边栏 ========== */
+        /* 侧边栏 */
         .sidebar {
             position: sticky;
             top: 80px;
@@ -376,6 +430,7 @@
             display: flex;
             gap: 16px;
             margin-top: 14px;
+            flex-wrap: wrap;
         }
         .social-links a {
             color: var(--text-muted);
@@ -429,7 +484,13 @@
             color: var(--accent);
         }
 
-        /* ========== 底部 ========== */
+        /* 打字机效果提示 */
+        #randomHint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 8px;
+        }
+
         footer {
             border-top: 1px solid var(--border-color);
             padding: 28px 0;
@@ -438,7 +499,6 @@
             color: var(--text-muted);
         }
 
-        /* ========== 响应式 ========== */
         @media (max-width: 880px) {
             .grid-main {
                 grid-template-columns: 1fr;
@@ -467,7 +527,6 @@
             }
         }
 
-        /* 工具类 */
         .status-badge {
             display: inline-block;
             width: 8px;
@@ -489,6 +548,11 @@
 </head>
 <body>
 
+<!-- 阅读进度条 -->
+<div class="progress-container">
+    <div class="progress-bar" id="readingProgressBar"></div>
+</div>
+
 <header>
     <div class="container header-flex">
         <div class="logo">
@@ -500,13 +564,13 @@
             <li><a href="#">项目</a></li>
             <li><a href="#">公益服务</a></li>
             <li><a href="#">关于</a></li>
+            <li><button class="random-btn" id="randomPostBtn"><i class="fas fa-dice-d6"></i> 随机逛逛</button><span id="randomHint"></span></li>
             <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> 暗色</button></li>
         </ul>
     </div>
 </header>
 
 <main class="container grid-main">
-    <!-- 左侧：项目 + 文章 -->
     <div>
         <!-- 项目展示区 -->
         <div class="projects-showcase">
@@ -534,6 +598,12 @@
                             <span>Hono</span>
                             <span>IPv6 Ready</span>
                         </div>
+                        <!-- GitHub 星标徽章 -->
+                        <div class="github-badge" id="ghBadge1">
+                            <img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
+                            <img src="https://img.shields.io/github/forks/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
+                            <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
+                        </div>
                         <div class="project-links">
                             <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a>
                             <a href="https://github.com/asiacomkhk/CF-workers-netdiag" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
@@ -560,6 +630,12 @@
                             <span>Cloudflare Workers</span>
                             <span>Stream Proxy</span>
                         </div>
+                        <!-- GitHub 星标徽章 -->
+                        <div class="github-badge" id="ghBadge2">
+                            <img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Stars" alt="stars">
+                            <img src="https://img.shields.io/github/forks/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=Forks" alt="forks">
+                            <img src="https://img.shields.io/github/last-commit/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff&label=更新" alt="last commit">
+                        </div>
                         <div class="project-links">
                             <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a>
                             <a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
@@ -575,7 +651,7 @@
             <span>最新技术笔记</span>
         </div>
 
-        <article class="blog-card">
+        <article class="blog-card" data-post-id="1">
             <div class="blog-content">
                 <div class="post-meta">
                     <span><i class="far fa-calendar-alt"></i> 2025-04-10</span>
@@ -590,7 +666,7 @@
             </div>
         </article>
 
-        <article class="blog-card">
+        <article class="blog-card" data-post-id="2">
             <div class="blog-content">
                 <div class="post-meta">
                     <span><i class="far fa-calendar-alt"></i> 2025-04-02</span>
@@ -605,7 +681,7 @@
             </div>
         </article>
 
-        <article class="blog-card">
+        <article class="blog-card" data-post-id="3">
             <div class="blog-content">
                 <div class="post-meta">
                     <span><i class="far fa-calendar-alt"></i> 2025-03-22</span>
@@ -631,27 +707,15 @@
             </div>
             <p class="bio-text">
                 独立开发者，专注于 Cloudflare Workers 生态与边缘计算。<br>
-                相信「写即所得」，用代码解决实际网络问题。<br>
+                相信「写即所得」，用代码解决实际问题。<br>
                 两个开源项目均源于日常折腾与实用需求。
             </p>
-            <div class="github-stats">
-                <i class="fab fa-github"></i> CF Workers 深度实践 &nbsp;|&nbsp; 开源共建
-            </div>
             <div class="social-links">
-    <!-- GitHub -->
-    <a href="https://github.com/asiacomkhk" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-    
-    <!-- 邮箱 -->
-    <a href="mailto:asiacomk@gmail.com" target="_blank" title="发送邮件"><i class="fas fa-envelope"></i></a>
-    
-    <!-- Telegram -->
-    <a href="https://t.me/asiacomk" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
-    
-    <!-- Twitter/X -->
-    <a href="https://twitter.com/asiacomk" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-
-    <!-- YouTube -->
-    <a href="https://youtube.com/@BlueDriftHK" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://github.com/asiacomkhk" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="mailto:asiacomk@gmail.com" target="_blank" title="发送邮件"><i class="fas fa-envelope"></i></a>
+                <a href="https://t.me/asiacomk" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://twitter.com/asiacomk" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://youtube.com/@BlueDriftHK" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
 
@@ -729,25 +793,95 @@
 </footer>
 
 <script>
-    // 主题切换
+    // ========== 1. 阅读进度条 ==========
+    function updateReadingProgress() {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        const progressBar = document.getElementById('readingProgressBar');
+        if (progressBar) {
+            progressBar.style.width = scrolled + '%';
+        }
+    }
+    window.addEventListener('scroll', updateReadingProgress);
+    window.addEventListener('resize', updateReadingProgress);
+    updateReadingProgress();
+
+    // ========== 2. 随机逛逛功能 ==========
+    const randomBtn = document.getElementById('randomPostBtn');
+    const randomHint = document.getElementById('randomHint');
+    
+    // 文章列表（可扩展）
+    const postsList = [
+        { title: '我为什么用 Cloudflare Workers 写网络诊断和视频代理工具', url: '#' },
+        { title: '深入浅出：如何自建一个轻量级网络诊断服务', url: '#' },
+        { title: 'M3U8 播放器 + Worker 代理：跨域问题终极解决方案', url: '#' }
+    ];
+    
+    function getRandomPost() {
+        const randomIndex = Math.floor(Math.random() * postsList.length);
+        return postsList[randomIndex];
+    }
+    
+    function showRandomHint(message, isError = false) {
+        if (randomHint) {
+            randomHint.textContent = message;
+            randomHint.style.color = isError ? '#ff6b6b' : 'var(--accent)';
+            setTimeout(() => {
+                if (randomHint.textContent === message) {
+                    randomHint.textContent = '';
+                }
+            }, 2000);
+        }
+    }
+    
+    function goToRandomPost() {
+        const post = getRandomPost();
+        if (post && post.url && post.url !== '#') {
+            window.location.href = post.url;
+        } else {
+            // 演示模式：显示提示并滚动到随机文章
+            const articles = document.querySelectorAll('.blog-card');
+            if (articles.length > 0) {
+                const randomArticle = articles[Math.floor(Math.random() * articles.length)];
+                randomArticle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                randomArticle.style.transition = 'box-shadow 0.2s';
+                randomArticle.style.boxShadow = '0 0 0 2px var(--accent)';
+                setTimeout(() => {
+                    randomArticle.style.boxShadow = '';
+                }, 1000);
+                showRandomHint(`🎲 跳转至：「${randomArticle.querySelector('.post-title')?.innerText?.substring(0, 30) || '文章'}」`);
+            } else {
+                showRandomHint('📭 暂无更多文章', true);
+            }
+        }
+    }
+    
+    if (randomBtn) {
+        randomBtn.addEventListener('click', goToRandomPost);
+    }
+
+    // ========== 3. 主题切换 ==========
     const themeToggle = document.getElementById('themeToggle');
     const html = document.documentElement;
     const savedTheme = localStorage.getItem('theme') || 'dark';
     if (savedTheme === 'light') html.setAttribute('data-theme', 'light');
-    themeToggle.addEventListener('click', () => {
-        const isDark = html.getAttribute('data-theme') !== 'light';
-        if (isDark) {
-            html.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i> 亮色';
-        } else {
-            html.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'dark');
-            themeToggle.innerHTML = '<i class="fas fa-moon"></i> 暗色';
-        }
-    });
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isDark = html.getAttribute('data-theme') !== 'light';
+            if (isDark) {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> 亮色';
+            } else {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> 暗色';
+            }
+        });
+    }
 
-    // 订阅按钮交互
+    // ========== 4. 订阅按钮交互 ==========
     const subBtn = document.getElementById('subBtn');
     const subEmail = document.getElementById('subEmail');
     if (subBtn && subEmail) {
@@ -762,8 +896,9 @@
         });
     }
 
-    // 控制台彩蛋
-    console.log("%c⚡ ASIACOMKHK 的技术博客 | CF Workers 双项目已上线\n%c欢迎 Star / Fork 我的项目: https://github.com/asiacomkhk", "color: #2dc9ff; font-size: 14px;", "color: #6c86a3");
+    // ========== 5. 控制台彩蛋 ==========
+    console.log("%c⚡ ASIACOMKHK 的技术博客 | CF Workers 双项目已上线\n%c欢迎 Star / Fork 我的项目: https://github.com/asiacomkhk\n✨ 新增功能：阅读进度条 | GitHub 星标卡片 | 随机逛逛", "color: #2dc9ff; font-size: 14px;", "color: #6c86a3");
 </script>
 </body>
 </html>
+```
