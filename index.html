@@ -1,369 +1,547 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ASIACOMKHK | Personal Homepage</title>
-  <style>
-    :root {
-      --bg: #f6f8fa;
-      --card: #fff;
-      --text: #24292e;
-      --sub: #586069;
-      --border: #e1e4e8;
-      --theme: #0969da;
-      --light: #f1f8ff;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0d1117;
-        --card: #161b22;
-        --text: #c9d1d9;
-        --sub: #8b949e;
-        --border: #30363d;
-        --theme: #58a6ff;
-        --light: #1f2937;
-      }
-    }
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding-bottom: 4rem;
-    }
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-    .lang-switch {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-    }
-    .lang-btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-    .lang-btn.active {
-      background: var(--theme);
-      color: #fff;
-      border-color: var(--theme);
-    }
-    .lang-btn:hover {
-      background: var(--light);
-    }
-    .hero {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-    .avatar {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--border);
-      margin-bottom: 1rem;
-      transition: .3s;
-    }
-    .avatar:hover {
-      transform: scale(1.05);
-    }
-    .title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .typing {
-      font-size: 1.1rem;
-      color: var(--sub);
-      height: 1.6rem;
-      margin-bottom: 1rem;
-    }
-    .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border);
-      box-shadow: 0 1px 3px rgba(0,0,0,.05);
-      transition: .2s;
-    }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
-    }
-    .card h2 {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .tag {
-      display: inline-block;
-      background: var(--light);
-      color: var(--theme);
-      padding: 4px 10px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      margin: 0 4px 6px 0;
-    }
-    .project {
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px dashed var(--border);
-    }
-    .project:last-child {
-      border: none; margin-bottom: 0; padding-bottom: 0;
-    }
-    .project h3 {
-      font-size: 1.1rem;
-      margin-bottom: 4px;
-    }
-    .project a {
-      color: var(--text);
-      text-decoration: none;
-    }
-    .project a:hover {
-      color: var(--theme);
-    }
-    .project p {
-      color: var(--sub);
-      font-size: 0.95rem;
-    }
-    .skill {
-      margin-bottom: 12px;
-    }
-    .skill-name {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-    }
-    .bar {
-      height: 8px;
-      background: var(--light);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .bar-in {
-      height: 100%;
-      background: var(--theme);
-      border-radius: 4px;
-    }
-    .stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin: 1.5rem 0;
-    }
-    .stats img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .footer {
-      text-align: center;
-      color: var(--sub);
-      font-size: 0.9rem;
-      margin-top: 2rem;
-    }
-    [data-lang] {
-      display: none;
-    }
-    [data-lang].show {
-      display: block !important;
-    }
-    .contact-item {
-      margin-top: 6px;
-    }
-    .contact-item a {
-      color: var(--theme);
-      text-decoration: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>墨言·拾光 | 个人博客</title>
+    <!-- 使用简洁的 Google Fonts 提升阅读体验 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #faf9f8;
+            font-family: 'Inter', sans-serif;
+            color: #1e1e2a;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+
+        /* 容器与布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* 头部导航 */
+        header {
+            background-color: #ffffffdd;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e9e8e6;
+            padding: 16px 0;
+        }
+
+        .header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo a {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+            background: linear-gradient(135deg, #3b2b1f, #7c5e3a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .logo span {
+            font-size: 0.9rem;
+            font-weight: normal;
+            background: none;
+            color: #8a7a6a;
+            display: inline-block;
+            margin-left: 6px;
+            letter-spacing: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #3c3c44;
+            transition: color 0.2s;
+            font-size: 1rem;
+        }
+
+        .nav-links a:hover {
+            color: #b45f2b;
+        }
+
+        /* 主布局网格 文章区+侧边栏 */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 48px;
+            margin: 48px 0 64px;
+        }
+
+        /* 博客文章样式 */
+        .blog-post {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            margin-bottom: 48px;
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+
+        .blog-post:hover {
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .post-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            background-color: #eae5de;
+            display: block;
+        }
+
+        .post-content {
+            padding: 28px 32px 36px;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: #9b8e7e;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .post-meta i {
+            margin-right: 6px;
+            width: 16px;
+        }
+
+        .post-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            line-height: 1.2;
+            margin: 8px 0 16px 0;
+            letter-spacing: -0.2px;
+        }
+
+        .post-title a {
+            text-decoration: none;
+            color: #2b241c;
+            transition: color 0.2s;
+        }
+
+        .post-title a:hover {
+            color: #b45f2b;
+        }
+
+        .post-excerpt {
+            color: #4a4a54;
+            margin: 16px 0 24px;
+            font-size: 1rem;
+            line-height: 1.55;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #b45f2b;
+            text-decoration: none;
+            border-bottom: 1.5px solid #f0e0cf;
+            transition: gap 0.2s, border-color 0.2s;
+        }
+
+        .read-more i {
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+        }
+
+        .read-more:hover {
+            gap: 12px;
+            border-bottom-color: #b45f2b;
+        }
+
+        /* 侧边栏模块 */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            align-self: start;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f0ede8;
+        }
+
+        .sidebar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border-left: 4px solid #b45f2b;
+            padding-left: 14px;
+            margin-bottom: 20px;
+        }
+
+        .about-text {
+            font-size: 0.95rem;
+            color: #4f4e5a;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #8b7b6b;
+            font-size: 1.3rem;
+            transition: color 0.2s, transform 0.1s;
+        }
+
+        .social-links a:hover {
+            color: #b45f2b;
+            transform: translateY(-2px);
+        }
+
+        .recent-list {
+            list-style: none;
+        }
+
+        .recent-list li {
+            margin-bottom: 16px;
+            border-bottom: 1px dashed #edeae4;
+            padding-bottom: 12px;
+        }
+
+        .recent-list a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #2c2c34;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .recent-list a i {
+            font-size: 0.7rem;
+            color: #c0aa8a;
+            margin-top: 6px;
+        }
+
+        .recent-list a:hover {
+            color: #b45f2b;
+        }
+
+        .recent-date {
+            font-size: 0.7rem;
+            color: #a79e92;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background: #f5f2ef;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #5c4e3e;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .tag:hover {
+            background: #e4dbce;
+            color: #3e2a1b;
+            transform: translateY(-1px);
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 40px 0 60px;
+        }
+
+        .page-btn {
+            background: white;
+            border: 1px solid #e2dbd2;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #4f453a;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-btn.active {
+            background: #b45f2b;
+            border-color: #b45f2b;
+            color: white;
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #f1ede8;
+            border-color: #c9b79f;
+        }
+
+        /* footer */
+        footer {
+            border-top: 1px solid #e5dfd8;
+            padding: 36px 0 32px;
+            text-align: center;
+            color: #8f8579;
+            font-size: 0.85rem;
+            background-color: #fefcf9;
+        }
+
+        /* 响应式 */
+        @media (max-width: 880px) {
+            .grid-main {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .sidebar {
+                position: static;
+            }
+            .post-content {
+                padding: 24px;
+            }
+            .post-title {
+                font-size: 1.6rem;
+            }
+            .header-flex {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                padding: 0 18px;
+            }
+            .nav-links {
+                gap: 18px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="lang-switch">
-    <button class="lang-btn" data-lang="zh-CN">简体中文</button>
-    <button class="lang-btn" data-lang="zh-TW">繁體中文</button>
-    <button class="lang-btn" data-lang="en">English</button>
-  </div>
-
-  <div class="hero">
-    <img class="avatar" src="https://i.pinimg.com/736x/53/a9/5c/53a95c6e9b31f8af06f0cc692f96ac2d.jpg" alt="">
-    <h1 class="title">ASIACOMKHK</h1>
-    <div class="typing" id="text"></div>
-  </div>
-
-  <div class="stats">
-    <img src="https://github-readme-stats.vercel.app/api?username=ASIACOMKHK&show_icons=true&theme=transparent&hide_border=true" alt="stats">
-    <img src="https://github-readme-streak-stats.herokuapp.com/?user=ASIACOMKHK&theme=transparent&hide_border=true" alt="streak">
-  </div>
-
-  <div class="card">
-    <h2 data-lang="zh-CN">📊 技能掌握</h2>
-    <h2 data-lang="zh-TW">📊 技能掌握</h2>
-    <h2 data-lang="en">📊 Skills</h2>
-    <div class="skill">
-      <div class="skill-name"><span data-lang="zh-CN">HTML / CSS</span><span data-lang="zh-TW">HTML / CSS</span><span data-lang="en">HTML / CSS</span><span>90%</span></div>
-      <div class="bar"><div class="bar-in" style="width:90%"></div></div>
+<header>
+    <div class="container header-flex">
+        <div class="logo">
+            <a href="#">墨言·拾光 <span>| 行间偶得</span></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">文章</a></li>
+            <li><a href="#">关于</a></li>
+            <li><a href="#">书单</a></li>
+        </ul>
     </div>
-    <div class="skill">
-      <div class="skill-name"><span data-lang="zh-CN">JavaScript</span><span data-lang="zh-TW">JavaScript</span><span data-lang="en">JavaScript</span><span>75%</span></div>
-      <div class="bar"><div class="bar-in" style="width:75%"></div></div>
+</header>
+
+<main class="container grid-main">
+    <!-- 博客文章列表区域 -->
+    <div class="posts-list">
+        <!-- 文章 1 -->
+        <article class="blog-post">
+            <img class="post-img" src="https://picsum.photos/id/104/800/400" alt="秋日林间漫步" loading="lazy">
+            <div class="post-content">
+                <div class="post-meta">
+                    <span><i class="far fa-calendar-alt"></i> 2025年4月12日</span>
+                    <span><i class="far fa-clock"></i> 阅读 6分钟</span>
+                    <span><i class="fas fa-tag"></i> 随笔·生活</span>
+                </div>
+                <h2 class="post-title"><a href="#">深秋的黄昏，与一本旧书相遇</a></h2>
+                <p class="post-excerpt">
+                    在街角那家即将搬迁的旧书店，意外翻到一本1986年出版的《瓦尔登湖》注释本。扉页上留着陌生人的铅笔字：“愿你于此得到片刻安宁”。黄昏的光透过百叶窗落在泛黄纸页上，忽然理解了梭罗所说的‘不必给我爱，不必给我钱，不必给我名誉，给我真理吧。’ 分享这次惊喜的淘书记忆……
+                </p>
+                <a href="#" class="read-more">继续阅读 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </article>
+
+        <!-- 文章 2 -->
+        <article class="blog-post">
+            <img class="post-img" src="https://picsum.photos/id/20/800/400" alt="书桌与咖啡" loading="lazy">
+            <div class="post-content">
+                <div class="post-meta">
+                    <span><i class="far fa-calendar-alt"></i> 2025年3月28日</span>
+                    <span><i class="far fa-clock"></i> 阅读 4分钟</span>
+                    <span><i class="fas fa-tag"></i> 创作手记</span>
+                </div>
+                <h2 class="post-title"><a href="#">如何搭建一个让自己心动的写作角落</a></h2>
+                <p class="post-excerpt">
+                    一张胡桃木长桌，一盏暖光台灯，一把坐了七年的藤椅。过去两年在这个小小角落里完成了几十万字的草稿。整理出5个低成本提升专注力的小技巧，以及保持桌面灵感流动的秘诀。环境是无声的协作者，希望今天的分享给你带来新的布置灵感……
+                </p>
+                <a href="#" class="read-more">继续阅读 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </article>
+
+        <!-- 文章 3 -->
+        <article class="blog-post">
+            <img class="post-img" src="https://picsum.photos/id/26/800/400" alt="城市夜景" loading="lazy">
+            <div class="post-content">
+                <div class="post-meta">
+                    <span><i class="far fa-calendar-alt"></i> 2025年3月10日</span>
+                    <span><i class="far fa-clock"></i> 阅读 8分钟</span>
+                    <span><i class="fas fa-tag"></i> 城市漫游</span>
+                </div>
+                <h2 class="post-title"><a href="#">夜行苏州河：桥梁、灯火与叙事褶皱</a></h2>
+                <p class="post-excerpt">
+                    从外白渡桥出发向西，沿着苏州河骑行12公里。河水倒映着新旧交替的光影，路过四行仓库、面粉厂遗迹，还有躲在树影里的咖啡馆。夜晚的城市会讲另一种故事——关于迁徙、沉默与重生。附上一条独家的夜骑路线地图，和一些随行摄影……
+                </p>
+                <a href="#" class="read-more">继续阅读 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </article>
+
+        <!-- 文章 4 更多内容 -->
+        <article class="blog-post">
+            <img class="post-img" src="https://picsum.photos/id/169/800/400" alt="阳光与书堆" loading="lazy">
+            <div class="post-content">
+                <div class="post-meta">
+                    <span><i class="far fa-calendar-alt"></i> 2025年2月18日</span>
+                    <span><i class="far fa-clock"></i> 阅读 5分钟</span>
+                    <span><i class="fas fa-tag"></i> 读书笔记</span>
+                </div>
+                <h2 class="post-title"><a href="#">重读《百年孤独》: 命运早已写在羊皮卷上</a></h2>
+                <p class="post-excerpt">
+                    十几年后再次翻开马尔克斯，发现自己不再执着于记住冗长的人名，反而读懂了丽贝卡吃泥土的孤寂，以及奥雷里亚诺上校制作小金鱼的轮回感。每一代人都重复着相同的命运但又有细微差异，或许这正是孤独的隐喻。分享新的读后感与片段摘录……
+                </p>
+                <a href="#" class="read-more">继续阅读 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </article>
+
+        <!-- 简易分页 -->
+        <div class="pagination">
+            <a href="#" class="page-btn active">1</a>
+            <a href="#" class="page-btn">2</a>
+            <a href="#" class="page-btn">3</a>
+            <a href="#" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+        </div>
     </div>
-    <div class="skill">
-      <div class="skill-name"><span data-lang="zh-CN">Cloudflare Workers</span><span data-lang="zh-TW">Cloudflare Workers</span><span data-lang="en">Cloudflare Workers</span><span>85%</span></div>
-      <div class="bar"><div class="bar-in" style="width:85%"></div></div>
+
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-card">
+            <div class="sidebar-title">关于我</div>
+            <img src="https://picsum.photos/id/238/100/100" alt="avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 14px;">
+            <p class="about-text">独立创作者、自由撰稿人。喜欢翻阅旧书，收集晨光和黄昏。坚信文字是跨越时空的对话，在这里记录阅读、行旅与稍纵即逝的灵感。 </p>
+            <div class="social-links">
+                <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" aria-label="微博"><i class="fab fa-weibo"></i></a>
+                <a href="#" aria-label="豆瓣"><i class="fab fa-douban"></i></a>
+                <a href="#" aria-label="小红书"><i class="fab fa-xiaohongshu"></i></a>
+            </div>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="sidebar-title">近期文章</div>
+            <ul class="recent-list">
+                <li><a href="#"><i class="fas fa-pen-fancy"></i> 江南雨季的三种听法</a><div class="recent-date">2025.04.01</div></li>
+                <li><a href="#"><i class="fas fa-pen-fancy"></i> 在美术馆里发呆两小时</a><div class="recent-date">2025.03.20</div></li>
+                <li><a href="#"><i class="fas fa-pen-fancy"></i> 春日野餐与诗歌便签</a><div class="recent-date">2025.03.05</div></li>
+                <li><a href="#"><i class="fas fa-pen-fancy"></i> Notion 写作系统分享</a><div class="recent-date">2025.02.22</div></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="sidebar-title">标签云</div>
+            <div class="tag-cloud">
+                <a href="#" class="tag">#随笔</a>
+                <a href="#" class="tag">#读书</a>
+                <a href="#" class="tag">#摄影日志</a>
+                <a href="#" class="tag">#旅行手记</a>
+                <a href="#" class="tag">#灵感收集</a>
+                <a href="#" class="tag">#影评</a>
+                <a href="#" class="tag">#生活美学</a>
+                <a href="#" class="tag">#诗歌</a>
+            </div>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="sidebar-title">搜索</div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" placeholder="搜文章..." style="flex:1; padding: 10px 12px; border: 1px solid #e2dbd2; border-radius: 48px; background: white; font-size: 0.9rem;">
+                <button style="background: #b45f2b; border: none; border-radius: 48px; width: 42px; color: white; cursor: pointer;"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© 2025 墨言·拾光 | 保持好奇心，思想漫游. 所有原创内容 CC BY-NC 4.0</p>
+        <p style="margin-top: 12px; font-size: 0.75rem;"><i class="fas fa-feather-alt"></i> 以文会友 · 步履不停</p>
     </div>
-    <div class="skill">
-      <div class="skill-name"><span data-lang="zh-CN">GitHub Actions</span><span data-lang="zh-TW">GitHub Actions</span><span data-lang="en">GitHub Actions</span><span>80%</span></div>
-      <div class="bar"><div class="bar-in" style="width:80%"></div></div>
-    </div>
-  </div>
+</footer>
 
-  <div class="card">
-    <h2 data-lang="zh-CN">🛠️ 技术栈</h2>
-    <h2 data-lang="zh-TW">🛠️ 技術棧</h2>
-    <h2 data-lang="en">🛠️ Tech Stack</h2>
-    <span class="tag">HTML</span>
-    <span class="tag">CSS</span>
-    <span class="tag">JavaScript</span>
-    <span class="tag">Cloudflare Workers</span>
-    <span class="tag">GitHub Pages</span>
-    <span class="tag">Actions</span>
-    <span class="tag">Network</span>
-    <span class="tag">IP Tool</span>
-  </div>
-
-  <div class="card">
-    <h2 data-lang="zh-CN">🚀 开源项目</h2>
-    <h2 data-lang="zh-TW">🚀 開源項目</h2>
-    <h2 data-lang="en">🚀 Projects</h2>
-    <div class="project">
-      <h3>
-        <a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="zh-CN">IP 信息查询工具</a>
-        <a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="zh-TW">IP 資訊查詢工具</a>
-        <a href="https://asiacomkhk.github.io/CF-workers-ipcheck/" target="_blank" data-lang="en">IP Lookup Tool</a>
-      </h3>
-      <p data-lang="zh-CN">基于 Cloudflare Workers 构建，实时查询 IP 地址、地理位置、运营商信息。</p>
-      <p data-lang="zh-TW">基於 Cloudflare Workers 構建，即時查詢 IP 位址、地理位置、營運商資訊。</p>
-      <p data-lang="en">Built with Cloudflare Workers, query IP, location, ISP in real-time.</p>
-    </div>
-    <div class="project">
-      <h3>
-        <a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-CN">网络威胁地图</a>
-        <a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="zh-TW">網路威脅地圖</a>
-        <a href="https://asiacomkhk.github.io/CF-workers-Cyber-Theat-Map/" target="_blank" data-lang="en">Network Threat Map</a>
-      </h3>
-      <p data-lang="zh-CN">轻量级可视化威胁监控页面，简洁高效，无第三方依赖。</p>
-      <p data-lang="zh-TW">輕量級視覺化威脅監控頁面，簡潔高效，無第三方依賴。</p>
-      <p data-lang="en">Lightweight threat monitor, clean & fast, no dependencies.</p>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 data-lang="zh-CN">📫 联系我</h2>
-    <h2 data-lang="zh-TW">📫 聯繫我</h2>
-    <h2 data-lang="en">📫 Contact</h2>
-
-    <div class="contact-item" data-lang="zh-CN">📧 邮箱：<a href="mailto:asiacomk@gmail.com">asiacomk@gmail.com</a></div>
-    <div class="contact-item" data-lang="zh-TW">📧 電郵：<a href="mailto:asiacomk@gmail.com">asiacomk@gmail.com</a></div>
-    <div class="contact-item" data-lang="en">📧 Email：<a href="mailto:asiacomk@gmail.com">asiacomk@gmail.com</a></div>
-     
-    <div class="contact-item" data-lang="zh-CN">📱 Telegram：<a href="https://t.me/asiacomk" target="_blank">@asiacomk</a></div>
-    <div class="contact-item" data-lang="zh-TW">📱 Telegram：<a href="https://t.me/asiacomk" target="_blank">@asiacomk</a></div>
-    <div class="contact-item" data-lang="en">📱 Telegram：<a href="https://t.me/asiacomk" target="_blank">@asiacomk</a></div>
-
-    <div class="contact-item" data-lang="zh-CN">📷 Instagram：<a href="https://instagram.com/asiacomk" target="_blank">asiacomk</a></div>
-    <div class="contact-item" data-lang="zh-TW">📷 Instagram：<a href="https://instagram.com/asiacomk" target="_blank">asiacomk</a></div>
-    <div class="contact-item" data-lang="en">📷 Instagram：<a href="https://instagram.com/asiacomk" target="_blank">asiacomk</a></div>
-
-    
-    <div class="contact-item" data-lang="zh-CN">🌍 网站：<a href="https://asiacomkhk.github.io/ASIACOMKHK/" target="_blank">asiacomkhk.github.io</a></div>
-    <div class="contact-item" data-lang="zh-TW">🌍 網站：<a href="https://asiacomkhk.github.io/ASIACOMKHK/" target="_blank">asiacomkhk.github.io</a></div>
-    <div class="contact-item" data-lang="en">🌍 Website：<a href="https://asiacomkhk.github.io/ASIACOMKHK/" target="_blank">asiacomkhk.github.io</a></div>
-
-    <div class="contact-item" data-lang="zh-CN">🐙 GitHub：<a href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></div>
-    <div class="contact-item" data-lang="zh-TW">🐙 GitHub：<a href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></div>
-    <div class="contact-item" data-lang="en">🐙 GitHub：<a href="https://github.com/ASIACOMKHK" target="_blank">@ASIACOMKHK</a></div>
-  </div>
-
-  <div class="footer" data-lang="zh-CN">&copy; 2026 ASIACOMKHK · 保留所有权利</div>
-  <div class="footer" data-lang="zh-TW">&copy; 2026 ASIACOMKHK · 保留所有權利</div>
-  <div class="footer" data-lang="en">&copy; 2026 ASIACOMKHK · All Rights Reserved</div>
-</div>
-
+<!-- 简单添加一点动态占位效果 (仅供演示 hover 相关，可选) -->
 <script>
-  const i18n = {
-    "zh-CN": ["热爱技术 & 网络安全", "Cloudflare 爱好者", "开源项目开发者", "持续学习中..."],
-    "zh-TW": ["熱愛技術 & 網路安全", "Cloudflare 愛好者", "開源項目開發者", "持續學習中..."],
-    "en": ["Tech & Security Enthusiast", "Cloudflare Lover", "Open Source Developer", "Always Learning"]
-  };
-
-  let currentLang = localStorage.getItem("lang") || navigator.language || "zh-CN";
-  if (!["zh-CN","zh-TW","en"].includes(currentLang)) currentLang = "zh-CN";
-
-  function setLang(lang){
-    localStorage.setItem("lang", lang);
-    document.querySelectorAll("[data-lang]").forEach(el=>el.classList.remove("show"));
-    document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el=>el.classList.add("show"));
-    document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
-    document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add("active");
-    startTyping(lang);
-  }
-
-  document.querySelectorAll(".lang-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=>setLang(btn.dataset.lang));
-  });
-
-  let texts = i18n[currentLang];
-  let index = 0, charIndex = 0, current = "";
-  const el = document.getElementById("text");
-  let typingTimer;
-
-  function startTyping(lang){
-    clearTimeout(typingTimer);
-    texts = i18n[lang];
-    index = 0; charIndex = 0; current = "";
-    el.textContent = "";
-    type();
-  }
-
-  function type() {
-    if (charIndex < texts[index].length) {
-      current += texts[index][charIndex++];
-      el.textContent = current;
-      typingTimer = setTimeout(type, 100);
-    } else {
-      typingTimer = setTimeout(() => {
-        current = ""; charIndex = 0;
-        index = (index + 1) % texts.length;
-        type();
-      }, 2000);
+    // 只是用来让“搜索”按钮有个极简的提醒，以及保留一些控制台友好信息，无侵入
+    const searchBtn = document.querySelector('.sidebar-card button');
+    const searchInput = document.querySelector('.sidebar-card input');
+    if(searchBtn && searchInput) {
+        searchBtn.addEventListener('click', function(e) {
+            const keyword = searchInput.value.trim();
+            if(keyword === "") {
+                alert("📖 输入你想探索的话题吧 ~");
+            } else {
+                alert(`🔍 正在寻找“${keyword}”相关内容…… (博客示例演示)`);
+            }
+        });
+        // 按回车也可以触发
+        searchInput.addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                searchBtn.click();
+            }
+        });
     }
-  }
-
-  setLang(currentLang);
+    // 控制台输出一句暖心的提示
+    console.log("%c✨ 博客“墨言·拾光”已点亮 — 愿有一字一句与你共鸣", "color: #b45f2b; font-size: 14px; font-family: monospace;");
 </script>
 </body>
 </html>
-   
-
-    
