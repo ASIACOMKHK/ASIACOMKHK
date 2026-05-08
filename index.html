@@ -3,587 +3,662 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ASIACOMKHK · 技术博客 | CF Workers 项目集</title>
+    <title>ASIACOMKHK · 技术博客 | 访客时光机</title>
     <meta name="author" content="ASIACOMKHK">
-    <meta name="copyright" content="ASIACOMKHK">
-    <meta name="description" content="专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。">
-    <meta name="theme-color" content="#18171d">
-    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Cloudflare Workers 生态与边缘计算">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
-        /* ========== 原有样式保持不变 ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg-primary: #0a0c12; --bg-secondary: #10131c; --bg-card: #10131c;
-            --border-color: #1e2a3a; --text-primary: #eef4ff; --text-secondary: #b9c7dd;
-            --text-muted: #6c86a3; --accent: #2dc9ff; --accent-glow: rgba(45,201,255,0.2);
-            --code-bg: #0b0e16; --hover-border: #2dc9ff; --header-bg: rgba(10,12,18,0.85);
-            --progress-bar: #2dc9ff;
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg-primary:#0a0c12;--bg-secondary:#10131c;--bg-card:#10131c;
+            --border-color:#1e2a3a;--text-primary:#eef4ff;--text-secondary:#b9c7dd;
+            --text-muted:#6c86a3;--accent:#2dc9ff;--accent-glow:rgba(45,201,255,0.2);
+            --code-bg:#0b0e16;--header-bg:rgba(10,12,18,0.85);
         }
-        [data-theme="light"] {
-            --bg-primary: #f4f6fa; --bg-secondary: #ffffff; --bg-card: #ffffff;
-            --border-color: #e2e8f0; --text-primary: #1a202c; --text-secondary: #4a5568;
-            --text-muted: #718096; --accent: #0d9488; --accent-glow: rgba(13,148,136,0.15);
-            --code-bg: #f7fafc; --hover-border: #0d9488; --header-bg: rgba(244,246,250,0.9);
-            --progress-bar: #0d9488;
+        [data-theme="light"]{
+            --bg-primary:#f4f6fa;--bg-secondary:#ffffff;--bg-card:#ffffff;
+            --border-color:#e2e8f0;--text-primary:#1a202c;--text-secondary:#4a5568;
+            --text-muted:#718096;--accent:#0d9488;--accent-glow:rgba(13,148,136,0.15);
+            --code-bg:#f7fafc;--header-bg:rgba(244,246,250,0.9);
         }
-        body { background: var(--bg-primary); font-family: 'Inter', sans-serif; color: var(--text-primary); line-height: 1.5; transition: background 0.3s, color 0.2s; }
-        html { scroll-behavior: smooth; }
-        .progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: transparent; z-index: 1000; }
-        .progress-bar { width: 0%; height: 100%; background: var(--progress-bar); box-shadow: 0 0 8px var(--accent); transition: width 0.15s ease; }
-        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(45,201,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(45,201,255,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: -1; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
-        .section-anchor { scroll-margin-top: 80px; }
-        header { position: sticky; top: 0; z-index: 100; background: var(--header-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 14px 0; }
-        .header-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
-        .logo a { font-size: 1.4rem; font-weight: 700; text-decoration: none; background: linear-gradient(135deg, var(--text-primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: 'JetBrains Mono', monospace; }
-        .logo span { font-size: 0.7rem; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
-        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; flex-wrap: wrap; }
-        .nav-links a { text-decoration: none; font-weight: 500; color: var(--text-secondary); transition: 0.2s; font-size: 0.9rem; cursor: pointer; }
-        .nav-links a:hover, .nav-links a.active-link { color: var(--accent); }
-        .random-btn { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 40px; padding: 6px 14px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-        .random-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
-        .theme-toggle { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 40px; padding: 6px 14px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; transition: 0.2s; }
-        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
-        .grid-main { display: grid; grid-template-columns: 1fr 340px; gap: 48px; margin: 40px 0 64px; }
-        .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--accent); padding-left: 18px; flex-wrap: wrap; }
-        .section-title i { color: var(--accent); font-size: 1.3rem; }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px; }
-        .project-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; transition: all 0.25s ease; }
-        .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 28px -16px var(--accent-glow); }
-        .project-header { background: var(--bg-secondary); padding: 18px 22px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
-        .project-icon { background: var(--code-bg); width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); }
-        .project-title { font-size: 1.25rem; font-weight: 700; }
-        .project-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; background: var(--border-color); padding: 4px 10px; border-radius: 40px; margin-left: 10px; color: var(--accent); }
-        .project-body { padding: 22px; }
-        .project-desc { color: var(--text-secondary); margin-bottom: 18px; font-size: 0.85rem; line-height: 1.5; }
-        .tech-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .tech-stack span { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; background: var(--code-bg); padding: 4px 12px; border-radius: 24px; color: var(--accent); }
-        .project-links { display: flex; gap: 18px; border-top: 1px solid var(--border-color); padding-top: 18px; }
-        .project-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 500; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-        .project-links a:hover { color: var(--accent); gap: 10px; }
-        .demo-btn { background: var(--accent-glow); padding: 5px 12px; border-radius: 40px; border: 1px solid var(--accent); }
-        .github-badge { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-        .github-badge img { height: 20px; border-radius: 6px; }
-        #blog-area, #projects-area, #about-area, #visitor-time-machine { scroll-margin-top: 80px; }
-        .blog-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; margin-bottom: 28px; overflow: hidden; transition: 0.2s; }
-        .blog-card:hover { border-color: var(--accent); }
-        .blog-content { padding: 22px 26px; }
-        .post-meta { display: flex; gap: 16px; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; }
-        .post-title { font-size: 1.3rem; font-weight: 700; margin: 6px 0 12px; }
-        .post-title a { text-decoration: none; color: var(--text-primary); transition: color 0.2s; }
-        .post-title a:hover { color: var(--accent); }
-        .post-excerpt { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 10px 0 18px; }
-        .read-more { color: var(--accent); text-decoration: none; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
-        .read-more:hover { gap: 10px; }
-        .about-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; }
-        .sidebar { position: sticky; top: 80px; align-self: start; }
-        .widget { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 22px; margin-bottom: 26px; }
-        .widget-title { font-size: 1.1rem; font-weight: 600; border-left: 3px solid var(--accent); padding-left: 12px; margin-bottom: 18px; }
-        .dev-avatar { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
-        .dev-avatar img { border-radius: 50%; border: 2px solid var(--accent); }
-        .bio-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; }
-        .social-links { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
-        .social-links a { color: var(--text-muted); font-size: 1.2rem; transition: 0.2s; }
-        .social-links a:hover { color: var(--accent); transform: translateY(-2px); }
-        .tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
-        .tag { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; background: var(--code-bg); padding: 5px 12px; border-radius: 30px; color: var(--text-secondary); text-decoration: none; transition: 0.2s; }
-        .tag:hover { background: var(--accent); color: #0a0c12; }
-        .recent-list { list-style: none; }
-        .recent-list li { margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; }
-        .recent-list a { text-decoration: none; color: var(--text-secondary); display: flex; gap: 8px; align-items: baseline; font-size: 0.85rem; }
-        .recent-list a i { color: var(--accent); font-size: 0.65rem; }
-        .recent-list a:hover { color: var(--accent); }
-        footer { border-top: 1px solid var(--border-color); padding: 28px 0; text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+        body{background:var(--bg-primary);font-family:'Inter',sans-serif;color:var(--text-primary);line-height:1.5;transition:background 0.3s,color 0.2s}
+        html{scroll-behavior:smooth}
+        .container{max-width:1280px;margin:0 auto;padding:0 28px}
+        header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);padding:14px 0}
+        .header-flex{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+        .logo a{font-size:1.4rem;font-weight:700;text-decoration:none;background:linear-gradient(135deg,var(--text-primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;font-family:'JetBrains Mono',monospace}
+        .nav-links{display:flex;gap:24px;list-style:none;align-items:center;flex-wrap:wrap}
+        .nav-links a,.nav-links button{text-decoration:none;font-weight:500;color:var(--text-secondary);transition:0.2s;font-size:0.9rem;cursor:pointer;background:none;border:none}
+        .nav-links a:hover,.nav-links button:hover{color:var(--accent)}
+        .theme-toggle,.lang-toggle{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:40px;padding:6px 14px}
+        .section-anchor{scroll-margin-top:80px}
+        .section-title{font-size:1.5rem;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:12px;border-left:4px solid var(--accent);padding-left:18px}
+        .section-title i{color:var(--accent)}
+        .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px}
+        .project-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;overflow:hidden;transition:0.25s}
+        .project-card:hover{transform:translateY(-4px);box-shadow:0 20px 28px -16px var(--accent-glow)}
+        .blog-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;margin-bottom:28px;padding:22px 26px;transition:0.2s}
+        .blog-card:hover{border-color:var(--accent)}
+        footer{border-top:1px solid var(--border-color);padding:28px 0;text-align:center;font-size:0.75rem;color:var(--text-muted)}
 
-        /* ========== 时光机及新增模块样式 ========== */
-        .time-machine-section { margin-top: 48px; }
-        .tm-placeholder { height: 400px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-color); }
-        .tm-container { display: none; flex-direction: column; gap: 20px; animation: fadeIn 0.5s ease; }
-        .tm-container.visible { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .tm-stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
-        .tm-stat { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 18px; text-align: center; }
-        .tm-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-        .tm-stat-label { font-size: 0.8rem; color: var(--text-muted); }
-        .time-machine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 24px; }
-        .map-container { width: 100%; height: 400px; border-radius: 16px; overflow: hidden; }
-        .persona-card-optimized { display: flex; flex-direction: column; align-items: center; padding: 24px; background: linear-gradient(135deg, var(--accent-glow), rgba(109,255,109,0.05)); border-radius: 16px; border: 1px solid var(--border-color); position: relative; }
-        .persona-animal { font-size: 4.5rem; margin-bottom: 8px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
-        .persona-name { font-size: 1.4rem; font-weight: 700; margin: 8px 0; }
-        .persona-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; }
-        .persona-greeting { font-style: italic; color: var(--text-secondary); margin: 8px 0; font-size: 0.9rem; }
-        .persona-meta { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
-        .persona-meta span { background: var(--code-bg); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--text-secondary); }
-        .export-btn { margin-top: 16px; background: var(--accent); border: none; color: #0a0c12; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-        .export-btn:hover { opacity: 0.9; }
-        .timeline { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
-        .timeline-item { padding: 6px 16px; border-radius: 20px; background: var(--bg-secondary); border: 1px solid var(--border-color); font-size: 0.8rem; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .timeline-item.active { background: var(--accent); color: #0a0c12; }
-        .recent-visitors { margin-top: 24px; }
-        .visitor-list { display: flex; flex-wrap: wrap; gap: 12px; }
-        .visitor-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: border-color 0.2s; }
-        .visitor-item:hover { border-color: var(--accent); }
-
-        /* 趋势图 & 留言板 */
-        .trend-chart-container { width: 100%; height: 200px; margin-top: 20px; }
-        .message-board { margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
-        .message-board h3 { margin-bottom: 12px; }
-        .message-list { max-height: 200px; overflow-y: auto; margin-bottom: 12px; }
-        .message-item { border-bottom: 1px solid var(--border-color); padding: 8px 0; font-size: 0.85rem; }
-        .message-item .author { font-weight: 600; color: var(--accent); }
-        .message-item .text { margin-left: 8px; color: var(--text-secondary); }
-        .message-input { display: flex; gap: 8px; }
-        .message-input input { flex: 1; background: var(--code-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 16px; color: var(--text-primary); }
-        .message-input button { background: var(--accent); border: none; border-radius: 20px; padding: 8px 18px; cursor: pointer; font-weight: 600; }
-
-        .notification-dot {
-            position: fixed; top: 20px; right: 20px; background: var(--accent); color: white; padding: 8px 16px;
-            border-radius: 20px; font-size: 0.9rem; z-index: 1001; display: none; animation: bounce 0.5s;
-        }
-        @keyframes bounce { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-5px); } }
-
-        @media (max-width: 880px) {
-            .grid-main { grid-template-columns: 1fr; }
-            .sidebar { position: static; }
-            .time-machine-grid { grid-template-columns: 1fr; }
-            .map-container { height: 300px; }
-        }
+        /* 时光机样式 */
+        .time-machine-section{margin-top:48px}
+        .tm-placeholder{height:300px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);background:var(--bg-card);border-radius:24px;border:1px solid var(--border-color)}
+        .tm-container{display:none;flex-direction:column;gap:20px;animation:fadeIn 0.5s}
+        .tm-container.visible{display:flex}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .stats-bar{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+        .stat-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:12px 20px;text-align:center;transition:0.2s}
+        .stat-card:hover{transform:scale(1.05)}
+        .stat-value{font-size:1.8rem;font-weight:700;color:var(--accent)}
+        .stat-label{font-size:0.8rem;color:var(--text-muted)}
+        .content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .map-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;padding:20px;position:relative}
+        .persona-card{background:linear-gradient(135deg,var(--accent-glow),rgba(109,255,109,0.05));border:1px solid var(--border-color);border-radius:24px;padding:30px;text-align:center;transition:0.3s}
+        .persona-card:hover{transform:scale(1.02);box-shadow:0 10px 25px rgba(0,0,0,0.3)}
+        .avatar-img{border-radius:50%;border:3px solid var(--accent);margin-bottom:16px;width:100px;height:100px}
+        .persona-name{font-size:1.6rem;font-weight:700;margin:8px 0}
+        .persona-details{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+        .detail-tag{background:var(--code-bg);padding:4px 12px;border-radius:20px;font-size:0.8rem;color:var(--text-secondary)}
+        .export-btn{background:var(--accent);border:none;color:#111;padding:8px 20px;border-radius:20px;font-weight:600;cursor:pointer;margin-top:12px}
+        .timeline{display:flex;gap:8px;overflow-x:auto;padding:10px 0}
+        .timeline-btn{padding:6px 14px;border-radius:20px;background:var(--bg-secondary);border:1px solid var(--border-color);font-size:0.8rem;white-space:nowrap;cursor:pointer}
+        .timeline-btn.active{background:var(--accent);color:#0a0c12}
+        .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .chart-box{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:16px}
+        .visitor-list{display:flex;flex-wrap:wrap;gap:10px}
+        .visitor-item{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:8px 14px;font-size:0.85rem;display:flex;align-items:center;gap:8px;transition:0.2s}
+        .visitor-item:hover{border-color:var(--accent);transform:translateY(-2px)}
+        .message-board{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:20px}
+        .message-list{max-height:200px;overflow-y:auto;margin-bottom:12px}
+        .message-item{border-bottom:1px solid var(--border-color);padding:6px 0}
+        .message-input{display:flex;gap:8px}
+        .message-input input{flex:1;background:var(--code-bg);border:1px solid var(--border-color);border-radius:20px;padding:8px 14px;color:var(--text-primary)}
+        .message-input button{background:var(--accent);border:none;border-radius:20px;padding:8px 18px;cursor:pointer;font-weight:600}
+        .notification{position:fixed;top:20px;right:20px;background:var(--accent);color:#fff;padding:10px 20px;border-radius:30px;z-index:999;display:none;box-shadow:0 5px 15px rgba(0,0,0,0.3);animation:slideDown 0.5s}
+        @keyframes slideDown{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @media(max-width:880px){.content-grid,.charts-row{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
-<div class="progress-container"><div class="progress-bar" id="readingProgressBar"></div></div>
-<div id="notification" class="notification-dot"></div>
-
 <header>
     <div class="container header-flex">
-        <div class="logo">
-            <a href="#" id="logoHomeLink">&lt;ASIACOMKHK/&gt; <span>CF Workers · 开源创造</span></a>
+        <div class="logo"><a href="#">&lt;ASIACOMKHK/&gt;</a></div>
+        <div class="nav-links">
+            <a href="#projects-area">项目</a>
+            <a href="#blog-area">博客</a>
+            <a href="#about-area">关于</a>
+            <a href="#visitor-time-machine">时光机</a>
+            <button class="lang-toggle" id="langToggle">🌐 EN</button>
+            <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
         </div>
-        <ul class="nav-links">
-            <li><a href="#" class="nav-item active-link" data-target="home">首页</a></li>
-            <li><a href="#" class="nav-item" data-target="projects">项目</a></li>
-            <li><a href="#" class="nav-item" data-target="blog">博客</a></li>
-            <li><a href="#" class="nav-item" data-target="about">关于</a></li>
-            <li><a href="#" class="nav-item" data-target="visitor">时光机</a></li>
-            <li><button class="random-btn" id="randomPostBtn"><i class="fas fa-dice-d6"></i> 随机逛逛</button></li>
-            <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> 暗色</button></li>
-        </ul>
     </div>
 </header>
 
-<main class="container grid-main">
-    <div>
-        <div id="projects-area" class="section-anchor">
-            <div class="projects-showcase">
-                <div class="section-title"><i class="fas fa-code-branch"></i><span>亲手构建 · Cloudflare Workers 项目集</span></div>
-                <div class="project-grid">
-                    <div class="project-card">
-                        <div class="project-header"><div class="project-icon"><i class="fas fa-network-wired"></i></div><div><div class="project-title">CF Workers NetDiag</div><div class="project-badge"># 网络诊断工具</div></div></div>
-                        <div class="project-body"><div class="project-desc">基于 Cloudflare Workers 构建的轻量级网络诊断工具。</div><div class="tech-stack"><span>TypeScript</span></div><div class="project-links"><a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 体验</a></div></div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-header"><div class="project-icon"><i class="fas fa-video"></i></div><div><div class="project-title">M3U8 Player on Worker</div><div class="project-badge"># 流媒体代理</div></div></div>
-                        <div class="project-body"><div class="project-desc">基于 Cloudflare Worker 的 M3U8 流媒体播放器。</div><div class="tech-stack"><span>JavaScript</span></div><div class="project-links"><a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 演示</a></div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="blog-area" class="section-anchor">
-            <div class="section-title"><i class="fas fa-pen-nib"></i><span>最新技术笔记</span></div>
-            <article class="blog-card"><div class="blog-content"><div class="post-meta"><span>2025-04-10</span><span>Cloudflare Workers</span></div><h2 class="post-title"><a href="#">我为什么用 Cloudflare Workers 写网络诊断和视频代理工具</a></h2><p class="post-excerpt">从 NetDiag 到 M3U8 Player，分享心得……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
-            <article class="blog-card"><div class="blog-content"><div class="post-meta"><span>2025-04-02</span><span>网络 · 可观测性</span></div><h2 class="post-title"><a href="#">深入浅出：如何自建一个轻量级网络诊断服务</a></h2><p class="post-excerpt">附完整代码解读……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
-            <article class="blog-card"><div class="blog-content"><div class="post-meta"><span>2025-03-22</span><span>流媒体 · HLS</span></div><h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理</a></h2><p class="post-excerpt">解决跨域和防盗链限制……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
-        </div>
-
-        <div id="visitor-time-machine" class="section-anchor time-machine-section">
-            <div class="section-title">
-                <i class="fas fa-clock"></i>
-                <span id="tm-section-title-text">访客时光机 · IP人设卡</span>
-                <span id="tm-country-count" style="font-size:0.9rem; color:var(--accent); margin-left:12px;"></span>
-            </div>
-            <div id="tm-placeholder" class="tm-placeholder">
-                <i class="fas fa-spinner fa-pulse"></i>&nbsp; 时光机待命...
-            </div>
-            <div id="tm-container" class="tm-container"></div>
-        </div>
-
-        <div id="about-area" class="section-anchor" style="margin-top:48px;">
-            <div class="section-title"><i class="fas fa-user-astronaut"></i><span>关于 ASIACOMKHK</span></div>
-            <div class="about-content">
-                <p>独立开发者，专注于 Cloudflare Workers 生态。</p>
-                <p>📧 asiacomk@gmail.com</p>
-            </div>
+<main class="container">
+    <div id="projects-area" class="section-anchor">
+        <div class="section-title"><i class="fas fa-code-branch"></i>开源项目</div>
+        <div class="project-grid">
+            <div class="project-card" style="padding:24px"><h3>CF Workers NetDiag</h3><p>网络诊断工具</p></div>
+            <div class="project-card" style="padding:24px"><h3>M3U8 Player</h3><p>流媒体代理</p></div>
         </div>
     </div>
 
-    <aside class="sidebar">
-        <div class="widget"><div class="widget-title"><i class="fas fa-user-astronaut"></i> ASIACOMKHK</div><div class="dev-avatar"><img src="20200313143248_4TNKi.jpeg" style="width:56px;height:56px;border-radius:50%;object-fit:cover;"><div><strong>@asiacomkhk</strong><br><span style="font-size:0.7rem;">开发者</span></div></div><div class="social-links"><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a></div></div>
-        <div class="widget"><div class="widget-title"><i class="fas fa-heartbeat"></i> 项目状态</div><div><span class="status-badge"></span> 正常</div></div>
-    </aside>
+    <div id="blog-area" class="section-anchor">
+        <div class="section-title"><i class="fas fa-pen-nib"></i>技术笔记</div>
+        <article class="blog-card"><h3>Workers 网络诊断实战</h3><p>分享开发心得...</p></article>
+        <article class="blog-card"><h3>M3U8 跨域解决方案</h3><p>手把手搭建...</p></article>
+    </div>
+
+    <!-- 时光机模块 -->
+    <div id="visitor-time-machine" class="time-machine-section">
+        <div class="section-title"><i class="fas fa-clock"></i><span id="tmTitle">访客时光机 · IP人设卡</span></div>
+        <div id="tmPlaceholder" class="tm-placeholder"><i class="fas fa-spinner fa-pulse"></i> <span id="tmLoadingText">时光机待命...</span></div>
+        <div id="tmContainer" class="tm-container"></div>
+    </div>
+
+    <div id="about-area" class="section-anchor" style="margin-top:48px">
+        <div class="section-title"><i class="fas fa-user-astronaut"></i>关于</div>
+        <p style="max-width:600px">独立开发者，专注于 Cloudflare Workers 生态与边缘计算。📧 asiacomk@gmail.com</p>
+    </div>
 </main>
 
-<footer>
-    <div class="container">© 2026 ASIACOMKHK</div>
-</footer>
+<footer><div class="container">© 2026 ASIACOMKHK · 保持好奇，探索边缘</div></footer>
+<div id="notify" class="notification"></div>
 
 <script>
-    // 通用交互（保留简版）
-    function scrollToElement(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' }); }
-    function updateActiveNav(target) { document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active-link', i.dataset.target === target)); }
-    document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', e => { e.preventDefault(); const t = item.dataset.target; if (t === 'home') window.scrollTo({ top: 0, behavior: 'smooth' }); else if (t === 'projects') scrollToElement('projects-area'); else if (t === 'blog') scrollToElement('blog-area'); else if (t === 'about') scrollToElement('about-area'); else if (t === 'visitor') scrollToElement('visitor-time-machine'); updateActiveNav(t); }); });
-    document.getElementById('logoHomeLink').addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); updateActiveNav('home'); });
-    window.addEventListener('scroll', () => { const pos = window.scrollY + 100; if (pos < 200) updateActiveNav('home'); else ['projects-area','blog-area','about-area','visitor-time-machine'].forEach(id => { const el = document.getElementById(id); if (el && pos >= el.offsetTop - 80 && pos < el.offsetTop + el.offsetHeight - 80) updateActiveNav(id === 'visitor-time-machine' ? 'visitor' : id.split('-')[0]); }); });
-    window.addEventListener('scroll', () => { const h = document.documentElement.scrollHeight - document.documentElement.clientHeight; document.getElementById('readingProgressBar').style.width = (window.scrollY / h * 100) + '%'; });
-    document.getElementById('randomPostBtn').addEventListener('click', () => { const articles = document.querySelectorAll('.blog-card'); if (articles.length) { const rand = articles[Math.floor(Math.random() * articles.length)]; rand.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
-    const themeToggle = document.getElementById('themeToggle');
-    if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme','light');
-    themeToggle.addEventListener('click', () => { const isDark = document.documentElement.getAttribute('data-theme') !== 'light'; if (isDark) { document.documentElement.setAttribute('data-theme','light'); localStorage.setItem('theme','light'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> 亮色'; } else { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('theme','dark'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> 暗色'; } });
+// ==================== 全局状态 ====================
+const DB_NAME = 'VisitorTimeMachineDB';
+const DB_VERSION = 2;
+let db = null;
+let chartInst = null, trendChart = null, pieChart = null;
+let currentLang = navigator.language.startsWith('zh') ? 'zh' : 'en';
+let currentPersona = null;
 
-    // ========== 时光机引擎（增强版） ==========
-    const STORAGE_KEY = 'visitor_time_machine_v4';
-    const MSG_KEY = 'visitor_messages';
-    const MAX_HISTORY = 100;
-
-    // 扩展的地区库 (50+ 国家，含本地化问候)
-    const REGION_MAP = {
-        CN: { vibe:'古风', animal:'🐼', headwear:'竹簪', hello:'你好！' },
-        JP: { vibe:'和风', animal:'🐱', headwear:'樱花发饰', hello:'こんにちは！' },
-        US: { vibe:'自由牛仔', animal:'🦅', headwear:'牛仔帽', hello:'Howdy!' },
-        FR: { vibe:'浪漫', animal:'🐓', headwear:'贝雷帽', hello:'Bonjour!' },
-        DE: { vibe:'严谨', animal:'🦅', headwear:'啤酒帽', hello:'Guten Tag!' },
-        UK: { vibe:'绅士', animal:'🦁', headwear:'礼帽', hello:'Hello!' },
-        KR: { vibe:'K-pop', animal:'🐯', headwear:'发带', hello:'안녕하세요!' },
-        IN: { vibe:'神秘', animal:'🐅', headwear:'珠饰', hello:'नमस्ते!' },
-        RU: { vibe:'豪迈', animal:'🐻', headwear:'哥萨克帽', hello:'Здравствуйте!' },
-        BR: { vibe:'桑巴', animal:'🦜', headwear:'羽毛头饰', hello:'Olá!' },
-        IT: { vibe:'艺术', animal:'🐺', headwear:'橄榄枝环', hello:'Ciao!' },
-        ES: { vibe:'热情', animal:'🐂', headwear:'弗拉明戈花', hello:'¡Hola!' },
-        MX: { vibe:'玛雅', animal:'🦅', headwear:'宽边草帽', hello:'¡Hola!' },
-        EG: { vibe:'法老', animal:'🐈', headwear:'圣甲虫冠', hello:'مرحبا!' },
-        TH: { vibe:'微笑', animal:'🐘', headwear:'莲花金簪', hello:'สวัสดี!' },
-        VN: { vibe:'水乡', animal:'🐃', headwear:'斗笠', hello:'Xin chào!' },
-        TR: { vibe:'奥斯曼', animal:'🦅', headwear:'土耳其帽', hello:'Merhaba!' },
-        GR: { vibe:'神话', animal:'🦉', headwear:'月桂叶冠', hello:'Γεια σου!' },
-        SE: { vibe:'北欧', animal:'🦌', headwear:'水晶头饰', hello:'Hej!' },
-        CA: { vibe:'极地', animal:'🦌', headwear:'保暖耳罩', hello:'Hello!' },
-        AU: { vibe:'阳光', animal:'🐨', headwear:'软木帽', hello:'G\'day!' },
-        PL: { vibe:'坚韧', animal:'🦅', headwear:'花环', hello:'Cześć!' },
-        NL: { vibe:'田园', animal:'🐄', headwear:'郁金香花环', hello:'Hallo!' },
-        PT: { vibe:'航海', animal:'🐓', headwear:'软呢帽', hello:'Olá!' },
-        AR: { vibe:'探戈', animal:'🦅', headwear:'探戈帽', hello:'¡Hola!' },
-        CL: { vibe:'安第斯', animal:'🦅', headwear:'驼羊毛帽', hello:'¡Hola!' },
-        CO: { vibe:'魔幻', animal:'🦜', headwear:'鲜花头冠', hello:'¡Hola!' },
-        SA: { vibe:'沙漠', animal:'🐎', headwear:'金丝头巾', hello:'مرحبا!' },
-        AE: { vibe:'奢华', animal:'🦅', headwear:'白纱头巾', hello:'مرحبا!' },
-        NG: { vibe:'活力', animal:'🐘', headwear:'珠串头饰', hello:'Hello!' },
-        ZA: { vibe:'彩虹', animal:'🦌', headwear:'珠串头饰', hello:'Hello!' },
-        KE: { vibe:'野性', animal:'🦁', headwear:'马赛珠饰', hello:'Jambo!' },
-        PH: { vibe:'群岛', animal:'🦅', headwear:'珍珠贝饰', hello:'Kumusta!' },
-        ID: { vibe:'千岛', animal:'🦎', headwear:'鸡蛋花串', hello:'Halo!' },
-        MY: { vibe:'多元', animal:'🐘', headwear:'宋谷帽', hello:'Hello!' },
-        SG: { vibe:'未来', animal:'🦁', headwear:'滨海湾花环', hello:'Hello!' },
-        NZ: { vibe:'中土', animal:'🥝', headwear:'银蕨叶冠', hello:'Kia ora!' },
-    };
-
-    function getRegion(code) {
-        return REGION_MAP[code] || { vibe:'赛博流浪者', animal:'🐱', headwear:'电子光环', hello:'你好！' };
+// ==================== 国际化 ====================
+const i18n = {
+    zh: {
+        title: '访客时光机 · IP人设卡',
+        loading: '时光机待命...',
+        totalVisitors: '总访客',
+        countries: '国家',
+        today: '今天',
+        all: '全部',
+        export: '📸 生成纪念卡',
+        placeholder: '留言...',
+        send: '发送',
+        newVisitor: '🎉 新访客抵达！',
+        greetings: ['午夜星光伴你','晨光中踏露而来','正午的勇者','慵懒午后','黄昏魔术','夜色神秘']
+    },
+    en: {
+        title: 'Visitor Time Machine',
+        loading: 'Time Machine standing by...',
+        totalVisitors: 'Visitors',
+        countries: 'Countries',
+        today: 'Today',
+        all: 'All',
+        export: '📸 Export Card',
+        placeholder: 'Message...',
+        send: 'Send',
+        newVisitor: '🎉 New visitor!',
+        greetings: ['Midnight stars','Dawn explorer','Noon warrior','Afternoon vibes','Sunset magic','Night secrets']
     }
+};
+function t(key, params) {
+    let str = i18n[currentLang][key] || key;
+    if (params) Object.entries(params).forEach(([k,v]) => str = str.replace(`{${k}}`, v));
+    return str;
+}
 
-    function getTimeVibe(hour) {
-        if (hour < 6) return { phase:'深夜来访', greeting:'午夜星光伴你' };
-        if (hour < 10) return { phase:'清晨问候', greeting:'晨光中踏露而来' };
-        if (hour < 14) return { phase:'正午漫步', greeting:'正午的勇者' };
-        if (hour < 18) return { phase:'午后探险', greeting:'慵懒午后难掩好奇心' };
-        if (hour < 22) return { phase:'黄昏魔术', greeting:'最美的黄昏时刻' };
-        return { phase:'深夜密话', greeting:'夜色为你披上神秘斗篷' };
-    }
-
-    function buildPersona(ipData) {
-        const t = getTimeVibe(new Date().getHours());
-        const r = getRegion(ipData.country_code);
-        const osIcon = navigator.userAgent.includes('Windows') ? '🪟' : navigator.userAgent.includes('Mac') ? '🍎' : '💻';
-        return {
-            name: `${r.vibe} · ${ipData.city || '未知'}`,
-            title: `${ipData.org || '未知运营商'} | ${osIcon}`,
-            greeting: t.greeting,
-            animal: r.animal,
-            headwear: r.headwear,
-            localHello: r.hello,
-            country: ipData.country_name || '未知',
-            countryCode: ipData.country_code || 'XX',
-            lat: ipData.latitude,
-            lng: ipData.longitude,
-            raw: {
-                ip: ipData.ip,
-                city: ipData.city,
-                isp: ipData.org,
-                time: new Date().toLocaleString('zh-CN'),
-            },
-            phase: t.phase,
-            timestamp: Date.now(),
+// ==================== IndexedDB 操作 ====================
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('visits')) db.createObjectStore('visits', { keyPath: 'id' });
+            if (!db.objectStoreNames.contains('messages')) db.createObjectStore('messages', { keyPath: 'id' });
+            if (!db.objectStoreNames.contains('geojson')) db.createObjectStore('geojson', { keyPath: 'key' });
         };
+        request.onsuccess = (e) => { db = e.target.result; resolve(db); };
+        request.onerror = (e) => reject(e.target.error);
+    });
+}
+
+async function getVisits() {
+    return new Promise((resolve) => {
+        const tx = db.transaction('visits', 'readonly');
+        const store = tx.objectStore('visits');
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result.sort((a,b) => b.timestamp - a.timestamp));
+    });
+}
+
+async function saveVisit(visit) {
+    visit.id = Date.now() + Math.random();
+    const tx = db.transaction('visits', 'readwrite');
+    const store = tx.objectStore('visits');
+    store.put(visit);
+    return new Promise((resolve) => { tx.oncomplete = () => resolve(); });
+}
+
+async function getMessages() {
+    const tx = db.transaction('messages', 'readonly');
+    const store = tx.objectStore('messages');
+    return new Promise((resolve) => {
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result.sort((a,b) => b.time - a.time));
+    });
+}
+
+async function saveMessage(author, text) {
+    const tx = db.transaction('messages', 'readwrite');
+    const store = tx.objectStore('messages');
+    store.put({ id: Date.now(), author, text, time: Date.now() });
+    return new Promise((resolve) => { tx.oncomplete = () => resolve(); });
+}
+
+// GeoJSON 缓存
+async function getCachedGeoJSON() {
+    const tx = db.transaction('geojson', 'readonly');
+    const store = tx.objectStore('geojson');
+    return new Promise((resolve) => {
+        const req = store.get('world');
+        req.onsuccess = () => resolve(req.result ? req.result.data : null);
+    });
+}
+
+async function cacheGeoJSON(data) {
+    const tx = db.transaction('geojson', 'readwrite');
+    const store = tx.objectStore('geojson');
+    store.put({ key: 'world', data });
+    return new Promise((resolve) => { tx.oncomplete = () => resolve(); });
+}
+
+// ==================== IP 查询 (带重试) ====================
+async function fetchIPInfo(retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const resp = await fetch('https://ipapi.co/json/');
+            if (resp.ok) return await resp.json();
+        } catch (e) {}
+        await new Promise(r => setTimeout(r, 1000));
     }
+    return null;
+}
 
-    async function fetchIPInfo() {
-        try { const resp = await fetch('https://ipapi.co/json/'); if (resp.ok) return await resp.json(); } catch {}
-        try { const resp = await fetch('https://api.ipify.org?format=json'); const { ip } = await resp.json(); return { ip }; } catch {}
-        return null;
+// ==================== 头像生成 ====================
+function generateAvatar(ip) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 100; canvas.height = 100;
+    const ctx = canvas.getContext('2d');
+    let hash = 0;
+    for (let i = 0; i < ip.length; i++) {
+        hash = ip.charCodeAt(i) + ((hash << 5) - hash);
     }
+    const hue = Math.abs(hash % 360);
+    ctx.fillStyle = `hsl(${hue}, 70%, 65%)`;
+    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillStyle = `hsl(${hue}, 70%, 30%)`;
+    ctx.font = 'bold 50px Inter';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ip.charAt(0).toUpperCase(), 50, 50);
+    return canvas.toDataURL();
+}
 
-    function loadHistory() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
-    function saveHistory(h) { localStorage.setItem(STORAGE_KEY, JSON.stringify(h)); }
+// ==================== 地区映射 ====================
+const regionMap = {
+    CN:{vibe:'古风',animal:'🐼',headwear:'竹簪',hello:'你好'},
+    JP:{vibe:'和风',animal:'🐱',headwear:'樱花',hello:'こんにちは'},
+    US:{vibe:'牛仔',animal:'🦅',headwear:'牛仔帽',hello:'Howdy'},
+    FR:{vibe:'浪漫',animal:'🐓',headwear:'贝雷帽',hello:'Bonjour'},
+    DE:{vibe:'严谨',animal:'🦅',headwear:'啤酒帽',hello:'Guten Tag'},
+    UK:{vibe:'绅士',animal:'🦁',headwear:'礼帽',hello:'Hello'},
+    KR:{vibe:'K-pop',animal:'🐯',headwear:'发带',hello:'안녕하세요'},
+    IT:{vibe:'艺术',animal:'🐺',headwear:'橄榄枝',hello:'Ciao'},
+    ES:{vibe:'热情',animal:'🐂',headwear:'弗拉明戈花',hello:'¡Hola'},
+    BR:{vibe:'桑巴',animal:'🦜',headwear:'羽毛头饰',hello:'Olá'},
+    RU:{vibe:'豪迈',animal:'🐻',headwear:'哥萨克帽',hello:'Здравствуйте'},
+    IN:{vibe:'神秘',animal:'🐅',headwear:'珠饰',hello:'नमस्ते'},
+    AU:{vibe:'阳光',animal:'🐨',headwear:'软木帽',hello:'G\'day'},
+    CA:{vibe:'极地',animal:'🦌',headwear:'保暖耳罩',hello:'Hello'},
+    // 可继续扩展...
+};
+function getRegion(code) {
+    return regionMap[code] || {vibe:'赛博',animal:'🐱',headwear:'光环',hello:'你好'};
+}
 
-    function addVisit(persona) {
-        let history = loadHistory();
-        if (history.length && history[0].raw.ip === persona.raw.ip && Date.now() - history[0].timestamp < 3600000) {
-            history[0] = persona; saveHistory(history); return history;
-        }
-        history.unshift(persona);
-        if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
-        saveHistory(history);
-        return history;
+function getGreeting(hour) {
+    const list = i18n[currentLang].greetings;
+    if (hour < 6) return list[0];
+    if (hour < 10) return list[1];
+    if (hour < 14) return list[2];
+    if (hour < 18) return list[3];
+    if (hour < 22) return list[4];
+    return list[5];
+}
+
+function buildPersona(ipData) {
+    const region = getRegion(ipData.country_code);
+    const hour = new Date().getHours();
+    const avatar = generateAvatar(ipData.ip);
+    return {
+        name: `${region.vibe} · ${ipData.city || '未知'}`,
+        animal: region.animal,
+        headwear: region.headwear,
+        localHello: region.hello,
+        avatar,
+        country: ipData.country_name || '未知',
+        countryCode: ipData.country_code || 'XX',
+        lat: ipData.latitude,
+        lng: ipData.longitude,
+        isp: ipData.org || '未知运营商',
+        greeting: getGreeting(hour),
+        raw: {
+            ip: ipData.ip,
+            city: ipData.city,
+            time: new Date().toLocaleString('zh-CN'),
+        },
+        timestamp: Date.now(),
+    };
+}
+
+// ==================== 渲染逻辑 ====================
+async function loadGeoJSON() {
+    let cached = await getCachedGeoJSON();
+    if (cached) return cached;
+    const urls = [
+        'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
+        'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+    ];
+    for (const url of urls) {
+        try {
+            const resp = await fetch(url);
+            if (!resp.ok) continue;
+            if (url.includes('world-atlas')) {
+                const topo = await resp.json();
+                const features = topo.objects.countries.geometries.map(g => ({
+                    type: 'Feature',
+                    properties: g.properties || {},
+                    geometry: g.type === 'Polygon' 
+                        ? { type: 'Polygon', coordinates: g.arcs.map(a => a.map(i => topo.arcs[i])) }
+                        : { type: 'MultiPolygon', coordinates: g.arcs.map(p => p.map(a => a.map(i => topo.arcs[i]))) }
+                }));
+                const geoJSON = { type: 'FeatureCollection', features };
+                await cacheGeoJSON(geoJSON);
+                return geoJSON;
+            } else {
+                const geoJSON = await resp.json();
+                await cacheGeoJSON(geoJSON);
+                return geoJSON;
+            }
+        } catch (e) {}
     }
+    return null;
+}
 
-    // 留言板
-    function loadMessages() { try { return JSON.parse(localStorage.getItem(MSG_KEY)) || []; } catch { return []; } }
-    function saveMessages(msgs) { localStorage.setItem(MSG_KEY, JSON.stringify(msgs)); }
-    function addMessage(author, text) {
-        const msgs = loadMessages();
-        msgs.push({ author, text, time: Date.now() });
-        if (msgs.length > 50) msgs.shift();
-        saveMessages(msgs);
-        return msgs;
-    }
-
-    // 趋势数据（最近7天）
-    function getTrendData(history) {
-        const dates = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            dates.push(d.toLocaleDateString());
-        }
-        const counts = dates.map(date => history.filter(v => new Date(v.timestamp).toLocaleDateString() === date).length);
-        return { dates, counts };
-    }
-
-    // 渲染 UI
-    function renderUI(persona, history, filterDate = null) {
-        const container = document.getElementById('tm-container');
-        const filtered = filterDate ? history.filter(v => new Date(v.timestamp).toLocaleDateString() === filterDate) : history;
-        const trendData = getTrendData(history);
-        const messages = loadMessages();
-
-        container.innerHTML = `
-            <div class="tm-stats">
-                <div class="tm-stat"><div class="tm-stat-value">${history.length}</div><div class="tm-stat-label">总访客</div></div>
-                <div class="tm-stat"><div class="tm-stat-value" id="tm-country-num">0</div><div class="tm-stat-label">国家</div></div>
-            </div>
-            <div class="time-machine-grid">
-                <div class="map-container" id="worldMap"></div>
-                <div class="persona-card-optimized" id="personaCard">
-                    <div class="persona-animal">${persona.animal}</div>
-                    <div class="persona-name">${persona.name}</div>
-                    <div class="persona-title">${persona.title}</div>
-                    <p class="persona-greeting">${persona.greeting} · ${persona.localHello || ''}</p>
-                    <div class="persona-meta">
-                        <span>🎩 ${persona.headwear}</span>
-                        <span>📡 ${persona.raw.isp}</span>
-                    </div>
-                    <div class="persona-time">🕒 ${persona.phase} · ${persona.raw.time}</div>
-                    <button id="exportCardBtn" class="export-btn">📸 生成纪念卡</button>
-                </div>
-            </div>
-            <div class="timeline" id="timelineBar">
-                <button class="timeline-item active" data-date="all">全部</button>
-                ${Object.keys(getGroupedDates(history)).sort().reverse().map(d => `<button class="timeline-item" data-date="${d}">${d}</button>`).join('')}
-            </div>
-            <div class="trend-chart-container" id="trendChart"></div>
-            <div class="recent-visitors">
-                <h3>最近访客</h3>
-                <div class="visitor-list">${filtered.map(v => `<div class="visitor-item">${v.animal} ${v.name}</div>`).join('')}</div>
-            </div>
-            <div class="message-board">
-                <h3>📝 访客留言板</h3>
-                <div class="message-list">${messages.map(m => `<div class="message-item"><span class="author">${m.author}</span><span class="text">${m.text}</span></div>`).join('')}</div>
-                <div class="message-input">
-                    <input type="text" id="msgAuthor" placeholder="昵称">
-                    <input type="text" id="msgText" placeholder="留言...">
-                    <button id="sendMsgBtn">发送</button>
-                </div>
-            </div>
-        `;
-
-        updateCountryCount(history);
-        initMap(filtered, persona);
-        initTrendChart(trendData);
-        bindEvents();
-    }
-
-    function getGroupedDates(history) {
-        const grp = {};
-        history.forEach(v => { const d = new Date(v.timestamp).toLocaleDateString(); if (!grp[d]) grp[d] = []; grp[d].push(v); });
-        return grp;
-    }
-
-    function updateCountryCount(history) {
-        const countries = new Set(history.map(v => v.countryCode).filter(c => c !== 'XX'));
-        const el = document.getElementById('tm-country-num');
-        if (el) el.textContent = countries.size;
-        document.getElementById('tm-country-count').textContent = `已点亮 ${countries.size} 个国家`;
-    }
-
-    let chartInst = null;
-    async function initMap(visitors, current) {
-        const dom = document.getElementById('worldMap');
-        if (!dom) return;
-        if (chartInst) chartInst.dispose();
-        chartInst = echarts.init(dom, 'dark');
-        const geoJSON = await loadGeoJSON();
+function initMap(visitors, current) {
+    const dom = document.getElementById('worldMap');
+    if (!dom) return;
+    if (chartInst) chartInst.dispose();
+    chartInst = echarts.init(dom, 'dark');
+    
+    loadGeoJSON().then(geoJSON => {
         if (!geoJSON) { dom.innerHTML = '地图加载失败'; return; }
         echarts.registerMap('world', geoJSON);
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
         const points = visitors.map(v => ({
             name: v.raw.city,
-            value: [v.lng || 0, v.lat || 0, v.name, v.raw.isp, v.raw.time],
+            value: [v.lng || 0, v.lat || 0, v.name, v.isp, v.raw.time],
             raw: v
         }));
         const option = {
             backgroundColor: 'transparent',
-            geo: { map: 'world', roam: true, itemStyle: { areaColor: '#1a1a3a', borderColor: 'rgba(100,150,255,0.4)' } },
+            geo: {
+                map: 'world',
+                roam: true,
+                itemStyle: {
+                    areaColor: isLight ? '#f5f5f5' : '#1a1a3a',
+                    borderColor: isLight ? '#ccc' : 'rgba(100,150,255,0.4)'
+                }
+            },
             series: [
-                { type: 'scatter', coordinateSystem: 'geo', data: points, symbolSize: 10, itemStyle: { color: '#ff6b9d' } },
-                { type: 'effectScatter', coordinateSystem: 'geo',
-                  data: current ? [{ name: current.raw.city, value: [current.lng || 0, current.lat || 0, current.name, current.raw.isp, current.raw.time] }] : [],
-                  symbolSize: 16, rippleEffect: { scale: 4 }, itemStyle: { color: '#f9d71c' } }
+                {
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    data: points,
+                    symbolSize: 10,
+                    itemStyle: { color: '#ff6b9d' }
+                },
+                {
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    data: current ? [{
+                        name: current.raw.city,
+                        value: [current.lng || 0, current.lat || 0, current.name, current.isp, current.raw.time]
+                    }] : [],
+                    symbolSize: 16,
+                    rippleEffect: { scale: 4, period: 4 },
+                    itemStyle: { color: '#f9d71c' }
+                }
             ],
-            tooltip: { trigger: 'item', formatter: params => `${params.name}<br/>${params.value[2] || ''}<br/>${params.value[3] || ''}<br/>${params.value[4] || ''}` }
+            tooltip: {
+                trigger: 'item',
+                formatter: p => `${p.name}<br/>${p.value[2] || ''}<br/>${p.value[3] || ''}<br/>${p.value[4] || ''}`
+            }
         };
         chartInst.setOption(option);
-        chartInst.on('click', params => {
-            if (params.seriesType === 'scatter' && params.data.raw) {
+        chartInst.on('click', (params) => {
+            if (params.data.raw) {
                 const v = params.data.raw;
-                const tip = `🌍 ${v.country} · ${v.raw.city}\n📡 ${v.raw.isp}\n🕒 ${v.raw.time}\n👋 ${v.localHello || ''}`;
-                alert(tip);
+                alert(`${v.country} · ${v.raw.city}\n📡 ${v.isp}\n🕒 ${v.raw.time}\n👋 ${v.localHello}`);
             }
         });
-    }
+    });
+}
 
-    async function loadGeoJSON() {
-        const urls = [
-            'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
-            'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
-        ];
-        for (const url of urls) {
-            try {
-                const resp = await fetch(url);
-                if (!resp.ok) continue;
-                if (url.includes('world-atlas')) {
-                    const topo = await resp.json();
-                    return { type: 'FeatureCollection', features: topo.objects.countries.geometries.map(g => ({
-                        type: 'Feature',
-                        properties: g.properties || {},
-                        geometry: g.type === 'Polygon' ? { type: 'Polygon', coordinates: g.arcs.map(a => a.map(i => topo.arcs[i])) } : { type: 'MultiPolygon', coordinates: g.arcs.map(p => p.map(a => a.map(i => topo.arcs[i]))) }
-                    }))};
-                }
-                return await resp.json();
-            } catch {}
+function initTrendChart(visits) {
+    const dom = document.getElementById('trendChart');
+    if (!dom) return;
+    if (trendChart) trendChart.dispose();
+    trendChart = echarts.init(dom, 'dark');
+    const dates = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toLocaleDateString());
+    }
+    const counts = dates.map(date => visits.filter(v => new Date(v.timestamp).toLocaleDateString() === date).length);
+    trendChart.setOption({
+        backgroundColor: 'transparent',
+        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+        xAxis: { type: 'category', data: dates, axisLabel: { color: '#ccc' } },
+        yAxis: { type: 'value', axisLabel: { color: '#ccc' } },
+        series: [{ data: counts, type: 'bar', itemStyle: { color: '#2dc9ff' } }]
+    });
+}
+
+function initPieChart(visits) {
+    const dom = document.getElementById('pieChart');
+    if (!dom) return;
+    if (pieChart) pieChart.dispose();
+    pieChart = echarts.init(dom, 'dark');
+    const countryCounts = {};
+    visits.forEach(v => {
+        if (v.countryCode !== 'XX') {
+            countryCounts[v.country] = (countryCounts[v.country] || 0) + 1;
         }
-        return null;
-    }
+    });
+    const data = Object.entries(countryCounts).map(([name, value]) => ({ name, value }));
+    pieChart.setOption({
+        backgroundColor: 'transparent',
+        series: [{
+            type: 'pie',
+            radius: '70%',
+            data,
+            label: { color: '#ccc' },
+            itemStyle: { borderColor: 'var(--bg-card)' }
+        }]
+    });
+}
 
-    let trendChart = null;
-    function initTrendChart({ dates, counts }) {
-        const dom = document.getElementById('trendChart');
-        if (!dom) return;
-        if (trendChart) trendChart.dispose();
-        trendChart = echarts.init(dom, 'dark');
-        trendChart.setOption({
-            backgroundColor: 'transparent',
-            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-            xAxis: { type: 'category', data: dates, axisLabel: { color: '#ccc' } },
-            yAxis: { type: 'value', axisLabel: { color: '#ccc' } },
-            series: [{ data: counts, type: 'bar', itemStyle: { color: '#2dc9ff' } }]
+function updateUI(visits, current, filterDate = null) {
+    const container = document.getElementById('tmContainer');
+    const filtered = filterDate
+        ? visits.filter(v => new Date(v.timestamp).toLocaleDateString() === filterDate)
+        : visits;
+    
+    const timelineDates = [...new Set(visits.map(v => new Date(v.timestamp).toLocaleDateString()))].sort().reverse();
+    const timelineHTML = `
+        <button class="timeline-btn ${!filterDate ? 'active' : ''}" data-date="">${t('all')}</button>
+        ${timelineDates.map(d => `<button class="timeline-btn ${d === filterDate ? 'active' : ''}" data-date="${d}">${d === new Date().toLocaleDateString() ? t('today') : d}</button>`).join('')}
+    `;
+
+    container.innerHTML = `
+        <div class="stats-bar">
+            <div class="stat-card"><div class="stat-value">${visits.length}</div><div class="stat-label">${t('totalVisitors')}</div></div>
+            <div class="stat-card"><div class="stat-value">${new Set(visits.map(v => v.countryCode).filter(c => c !== 'XX')).size}</div><div class="stat-label">${t('countries')}</div></div>
+        </div>
+        <div class="content-grid">
+            <div class="map-card"><div id="worldMap" style="height:400px"></div></div>
+            <div class="persona-card" id="personaCard">
+                <img src="${current.avatar}" class="avatar-img" alt="avatar">
+                <div class="persona-name">${current.name}</div>
+                <div class="persona-details">
+                    <span class="detail-tag">${current.animal} ${current.headwear}</span>
+                    <span class="detail-tag">📡 ${current.isp}</span>
+                    <span class="detail-tag">👋 ${current.localHello}</span>
+                </div>
+                <p style="font-style:italic;color:var(--text-muted)">${current.greeting}</p>
+                <p style="margin-top:8px;font-size:0.8rem;color:var(--text-muted)">🕒 ${current.raw.time}</p>
+                <button class="export-btn" id="exportBtn">${t('export')}</button>
+            </div>
+        </div>
+        <div class="timeline" id="timelineBar">${timelineHTML}</div>
+        <div class="charts-row">
+            <div class="chart-box"><div id="trendChart" style="height:200px"></div></div>
+            <div class="chart-box"><div id="pieChart" style="height:200px"></div></div>
+        </div>
+        <div class="visitor-list">
+            ${filtered.map(v => `<div class="visitor-item"><span>${v.animal}</span> ${v.name}</div>`).join('')}
+        </div>
+        <div class="message-board">
+            <h3>📝 访客留言板</h3>
+            <div class="message-list" id="messageList"></div>
+            <div class="message-input">
+                <input type="text" id="msgAuthor" placeholder="昵称">
+                <input type="text" id="msgText" placeholder="${t('placeholder')}">
+                <button id="sendMsgBtn">${t('send')}</button>
+            </div>
+        </div>
+    `;
+
+    initMap(filtered, current);
+    initTrendChart(visits);
+    initPieChart(visits);
+    bindEvents(visits, current);
+    loadMessages();
+}
+
+function bindEvents(visits, current) {
+    document.querySelectorAll('.timeline-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const date = btn.dataset.date;
+            updateUI(visits, current, date || null);
         });
-    }
-
-    function bindEvents() {
-        document.querySelectorAll('.timeline-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.timeline-item').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const date = btn.dataset.date;
-                renderFiltered(date);
-            });
-        });
-        document.getElementById('exportCardBtn')?.addEventListener('click', () => exportCard());
-        document.getElementById('sendMsgBtn')?.addEventListener('click', () => {
-            const author = document.getElementById('msgAuthor').value.trim();
-            const text = document.getElementById('msgText').value.trim();
-            if (author && text) {
-                addMessage(author, text);
-                renderFiltered(null);
-            }
-        });
-    }
-
-    let currentPersona = null;
-    function renderFiltered(date) {
-        const history = loadHistory();
-        if (!currentPersona && history.length) currentPersona = history[0];
-        renderUI(currentPersona, history, date === 'all' ? null : date);
-    }
-
-    function exportCard() {
+    });
+    document.getElementById('exportBtn').addEventListener('click', () => {
         if (!window.html2canvas) {
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-            script.onload = () => html2canvas(document.getElementById('personaCard')).then(c => { const a = document.createElement('a'); a.href = c.toDataURL(); a.download = 'card.png'; a.click(); });
+            script.onload = () => html2canvas(document.getElementById('personaCard')).then(c => {
+                const a = document.createElement('a');
+                a.href = c.toDataURL();
+                a.download = 'visitor-card.png';
+                a.click();
+            });
             document.head.appendChild(script);
         } else {
-            html2canvas(document.getElementById('personaCard')).then(c => { const a = document.createElement('a'); a.href = c.toDataURL(); a.download = 'card.png'; a.click(); });
+            html2canvas(document.getElementById('personaCard')).then(c => {
+                const a = document.createElement('a');
+                a.href = c.toDataURL();
+                a.download = 'visitor-card.png';
+                a.click();
+            });
         }
-    }
-
-    // 实时通知
-    let lastVisitorCount = 0;
-    function checkNewVisitors() {
-        const history = loadHistory();
-        if (history.length > lastVisitorCount) {
-            lastVisitorCount = history.length;
-            const notif = document.getElementById('notification');
-            notif.textContent = '🎉 新访客抵达！';
-            notif.style.display = 'block';
-            setTimeout(() => notif.style.display = 'none', 3000);
+    });
+    document.getElementById('sendMsgBtn').addEventListener('click', async () => {
+        const author = document.getElementById('msgAuthor').value.trim();
+        const text = document.getElementById('msgText').value.trim();
+        if (author && text) {
+            await saveMessage(author, text);
+            document.getElementById('msgAuthor').value = '';
+            document.getElementById('msgText').value = '';
+            loadMessages();
         }
-    }
+    });
+}
 
-    // 懒加载初始化
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                observer.unobserve(document.getElementById('tm-placeholder'));
-                initTimeMachine();
-            }
-        });
-    }, { threshold: 0.2 });
-    observer.observe(document.getElementById('tm-placeholder'));
+async function loadMessages() {
+    const list = document.getElementById('messageList');
+    if (!list) return;
+    const msgs = await getMessages();
+    list.innerHTML = msgs.map(m => `
+        <div class="message-item"><strong>${m.author}</strong>: ${m.text}</div>
+    `).join('');
+}
 
-    async function initTimeMachine() {
-        const ipData = await fetchIPInfo();
-        if (!ipData) return;
-        const persona = buildPersona(ipData);
-        currentPersona = persona;
-        const history = addVisit(persona);
-        lastVisitorCount = history.length;
-        document.getElementById('tm-placeholder').style.display = 'none';
-        document.getElementById('tm-container').classList.add('visible');
-        renderUI(persona, history, null);
-        setInterval(checkNewVisitors, 30000);
+// 实时通知
+let lastCount = 0;
+setInterval(async () => {
+    const visits = await getVisits();
+    if (visits.length > lastCount) {
+        lastCount = visits.length;
+        const notif = document.getElementById('notify');
+        notif.textContent = t('newVisitor');
+        notif.style.display = 'block';
+        setTimeout(() => notif.style.display = 'none', 3000);
     }
+}, 15000);
+
+// ==================== 初始化 ====================
+async function initTimeMachine() {
+    const placeholder = document.getElementById('tmPlaceholder');
+    const container = document.getElementById('tmContainer');
+    
+    const ipData = await fetchIPInfo();
+    if (!ipData) {
+        placeholder.innerHTML = '❌ 无法获取 IP 信息，请刷新重试';
+        return;
+    }
+    const persona = buildPersona(ipData);
+    currentPersona = persona;
+    await saveVisit(persona);
+    let visits = await getVisits();
+    lastCount = visits.length;
+    
+    placeholder.style.display = 'none';
+    container.classList.add('visible');
+    updateUI(visits, persona);
+}
+
+// 懒加载
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            observer.unobserve(entry.target);
+            initTimeMachine();
+        }
+    });
+}, { threshold: 0.1 });
+observer.observe(document.getElementById('tmPlaceholder'));
+
+// 主题与语言切换
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+if (localStorage.getItem('theme') === 'light') html.setAttribute('data-theme', 'light');
+themeToggle.addEventListener('click', () => {
+    const isDark = html.getAttribute('data-theme') !== 'light';
+    if (isDark) {
+        html.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+        html.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'dark');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+    // 重绘图表以适配主题
+    if (currentPersona) {
+        getVisits().then(visits => updateUI(visits, currentPersona));
+    }
+});
+
+document.getElementById('langToggle').addEventListener('click', () => {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    document.getElementById('langToggle').textContent = currentLang === 'zh' ? '🌐 EN' : '🌐 中';
+    document.getElementById('tmTitle').textContent = t('title');
+    document.getElementById('tmLoadingText').textContent = t('loading');
+    if (currentPersona) {
+        getVisits().then(visits => updateUI(visits, currentPersona));
+    }
+});
+
+// 平滑滚动导航
+document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+// 初始化 DB
+openDB();
 </script>
 </body>
 </html>
