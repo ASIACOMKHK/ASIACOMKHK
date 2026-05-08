@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ASIACOMKHK · 技术博客 | 访客时光机</title>
-    <meta name="author" content="ASIACOMKHK">
     <meta name="description" content="Cloudflare Workers 生态与边缘计算">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
@@ -25,7 +24,6 @@
             --code-bg:#f7fafc;--header-bg:rgba(244,246,250,0.9);
         }
         body{background:var(--bg-primary);font-family:'Inter',sans-serif;color:var(--text-primary);line-height:1.5;transition:background 0.3s,color 0.2s}
-        html{scroll-behavior:smooth}
         .container{max-width:1280px;margin:0 auto;padding:0 28px}
         header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);padding:14px 0}
         .header-flex{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
@@ -38,7 +36,7 @@
         .section-title{font-size:1.5rem;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:12px;border-left:4px solid var(--accent);padding-left:18px}
         .section-title i{color:var(--accent)}
         .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px}
-        .project-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;overflow:hidden;transition:0.25s}
+        .project-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;overflow:hidden;transition:0.25s;padding:24px}
         .project-card:hover{transform:translateY(-4px);box-shadow:0 20px 28px -16px var(--accent-glow)}
         .blog-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;margin-bottom:28px;padding:22px 26px;transition:0.2s}
         .blog-card:hover{border-color:var(--accent)}
@@ -102,8 +100,8 @@
     <div id="projects-area" class="section-anchor">
         <div class="section-title"><i class="fas fa-code-branch"></i>开源项目</div>
         <div class="project-grid">
-            <div class="project-card" style="padding:24px"><h3>CF Workers NetDiag</h3><p>网络诊断工具</p></div>
-            <div class="project-card" style="padding:24px"><h3>M3U8 Player</h3><p>流媒体代理</p></div>
+            <div class="project-card"><h3>CF Workers NetDiag</h3><p>网络诊断工具</p></div>
+            <div class="project-card"><h3>M3U8 Player</h3><p>流媒体代理</p></div>
         </div>
     </div>
 
@@ -113,7 +111,6 @@
         <article class="blog-card"><h3>M3U8 跨域解决方案</h3><p>手把手搭建...</p></article>
     </div>
 
-    <!-- 时光机模块 -->
     <div id="visitor-time-machine" class="time-machine-section">
         <div class="section-title"><i class="fas fa-clock"></i><span id="tmTitle">访客时光机 · IP人设卡</span></div>
         <div id="tmPlaceholder" class="tm-placeholder"><i class="fas fa-spinner fa-pulse"></i> <span id="tmLoadingText">时光机待命...</span></div>
@@ -122,7 +119,7 @@
 
     <div id="about-area" class="section-anchor" style="margin-top:48px">
         <div class="section-title"><i class="fas fa-user-astronaut"></i>关于</div>
-        <p style="max-width:600px">独立开发者，专注于 Cloudflare Workers 生态与边缘计算。📧 asiacomk@gmail.com</p>
+        <p style="max-width:600px">独立开发者，专注于 Cloudflare Workers 生态。📧 asiacomk@gmail.com</p>
     </div>
 </main>
 
@@ -189,6 +186,7 @@ function openDB() {
 }
 
 async function getVisits() {
+    if (!db) await openDB();
     return new Promise((resolve) => {
         const tx = db.transaction('visits', 'readonly');
         const store = tx.objectStore('visits');
@@ -198,6 +196,7 @@ async function getVisits() {
 }
 
 async function saveVisit(visit) {
+    if (!db) await openDB();
     visit.id = Date.now() + Math.random();
     const tx = db.transaction('visits', 'readwrite');
     const store = tx.objectStore('visits');
@@ -206,6 +205,7 @@ async function saveVisit(visit) {
 }
 
 async function getMessages() {
+    if (!db) await openDB();
     const tx = db.transaction('messages', 'readonly');
     const store = tx.objectStore('messages');
     return new Promise((resolve) => {
@@ -215,6 +215,7 @@ async function getMessages() {
 }
 
 async function saveMessage(author, text) {
+    if (!db) await openDB();
     const tx = db.transaction('messages', 'readwrite');
     const store = tx.objectStore('messages');
     store.put({ id: Date.now(), author, text, time: Date.now() });
@@ -223,6 +224,7 @@ async function saveMessage(author, text) {
 
 // GeoJSON 缓存
 async function getCachedGeoJSON() {
+    if (!db) await openDB();
     const tx = db.transaction('geojson', 'readonly');
     const store = tx.objectStore('geojson');
     return new Promise((resolve) => {
@@ -232,6 +234,7 @@ async function getCachedGeoJSON() {
 }
 
 async function cacheGeoJSON(data) {
+    if (!db) await openDB();
     const tx = db.transaction('geojson', 'readwrite');
     const store = tx.objectStore('geojson');
     store.put({ key: 'world', data });
@@ -286,7 +289,6 @@ const regionMap = {
     IN:{vibe:'神秘',animal:'🐅',headwear:'珠饰',hello:'नमस्ते'},
     AU:{vibe:'阳光',animal:'🐨',headwear:'软木帽',hello:'G\'day'},
     CA:{vibe:'极地',animal:'🦌',headwear:'保暖耳罩',hello:'Hello'},
-    // 可继续扩展...
 };
 function getRegion(code) {
     return regionMap[code] || {vibe:'赛博',animal:'🐱',headwear:'光环',hello:'你好'};
@@ -327,7 +329,7 @@ function buildPersona(ipData) {
     };
 }
 
-// ==================== 渲染逻辑 ====================
+// ==================== GeoJSON 加载 ====================
 async function loadGeoJSON() {
     let cached = await getCachedGeoJSON();
     if (cached) return cached;
@@ -339,6 +341,7 @@ async function loadGeoJSON() {
         try {
             const resp = await fetch(url);
             if (!resp.ok) continue;
+            let geoJSON;
             if (url.includes('world-atlas')) {
                 const topo = await resp.json();
                 const features = topo.objects.countries.geometries.map(g => ({
@@ -348,19 +351,18 @@ async function loadGeoJSON() {
                         ? { type: 'Polygon', coordinates: g.arcs.map(a => a.map(i => topo.arcs[i])) }
                         : { type: 'MultiPolygon', coordinates: g.arcs.map(p => p.map(a => a.map(i => topo.arcs[i]))) }
                 }));
-                const geoJSON = { type: 'FeatureCollection', features };
-                await cacheGeoJSON(geoJSON);
-                return geoJSON;
+                geoJSON = { type: 'FeatureCollection', features };
             } else {
-                const geoJSON = await resp.json();
-                await cacheGeoJSON(geoJSON);
-                return geoJSON;
+                geoJSON = await resp.json();
             }
+            await cacheGeoJSON(geoJSON);
+            return geoJSON;
         } catch (e) {}
     }
     return null;
 }
 
+// ==================== 图表函数 ====================
 function initMap(visitors, current) {
     const dom = document.getElementById('worldMap');
     if (!dom) return;
@@ -387,29 +389,15 @@ function initMap(visitors, current) {
                 }
             },
             series: [
+                { type: 'scatter', coordinateSystem: 'geo', data: points, symbolSize: 10, itemStyle: { color: '#ff6b9d' } },
                 {
-                    type: 'scatter',
-                    coordinateSystem: 'geo',
-                    data: points,
-                    symbolSize: 10,
-                    itemStyle: { color: '#ff6b9d' }
-                },
-                {
-                    type: 'effectScatter',
-                    coordinateSystem: 'geo',
-                    data: current ? [{
-                        name: current.raw.city,
-                        value: [current.lng || 0, current.lat || 0, current.name, current.isp, current.raw.time]
-                    }] : [],
-                    symbolSize: 16,
-                    rippleEffect: { scale: 4, period: 4 },
+                    type: 'effectScatter', coordinateSystem: 'geo',
+                    data: current ? [{ name: current.raw.city, value: [current.lng || 0, current.lat || 0, current.name, current.isp, current.raw.time] }] : [],
+                    symbolSize: 16, rippleEffect: { scale: 4, period: 4 },
                     itemStyle: { color: '#f9d71c' }
                 }
             ],
-            tooltip: {
-                trigger: 'item',
-                formatter: p => `${p.name}<br/>${p.value[2] || ''}<br/>${p.value[3] || ''}<br/>${p.value[4] || ''}`
-            }
+            tooltip: { trigger: 'item', formatter: p => `${p.name}<br/>${p.value[2] || ''}<br/>${p.value[3] || ''}<br/>${p.value[4] || ''}` }
         };
         chartInst.setOption(option);
         chartInst.on('click', (params) => {
@@ -457,15 +445,14 @@ function initPieChart(visits) {
     pieChart.setOption({
         backgroundColor: 'transparent',
         series: [{
-            type: 'pie',
-            radius: '70%',
-            data,
+            type: 'pie', radius: '70%', data,
             label: { color: '#ccc' },
             itemStyle: { borderColor: 'var(--bg-card)' }
         }]
     });
 }
 
+// ==================== 主界面渲染 ====================
 function updateUI(visits, current, filterDate = null) {
     const container = document.getElementById('tmContainer');
     const filtered = filterDate
@@ -567,12 +554,10 @@ async function loadMessages() {
     const list = document.getElementById('messageList');
     if (!list) return;
     const msgs = await getMessages();
-    list.innerHTML = msgs.map(m => `
-        <div class="message-item"><strong>${m.author}</strong>: ${m.text}</div>
-    `).join('');
+    list.innerHTML = msgs.map(m => `<div class="message-item"><strong>${m.author}</strong>: ${m.text}</div>`).join('');
 }
 
-// 实时通知
+// ==================== 实时通知 ====================
 let lastCount = 0;
 setInterval(async () => {
     const visits = await getVisits();
@@ -585,7 +570,7 @@ setInterval(async () => {
     }
 }, 15000);
 
-// ==================== 初始化 ====================
+// ==================== 懒加载初始化 ====================
 async function initTimeMachine() {
     const placeholder = document.getElementById('tmPlaceholder');
     const container = document.getElementById('tmContainer');
@@ -606,18 +591,18 @@ async function initTimeMachine() {
     updateUI(visits, persona);
 }
 
-// 懒加载
+// 懒加载观察器
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             observer.unobserve(entry.target);
-            initTimeMachine();
+            openDB().then(() => initTimeMachine());
         }
     });
 }, { threshold: 0.1 });
 observer.observe(document.getElementById('tmPlaceholder'));
 
-// 主题与语言切换
+// ==================== 主题与语言切换 ====================
 const themeToggle = document.getElementById('themeToggle');
 const html = document.documentElement;
 if (localStorage.getItem('theme') === 'light') html.setAttribute('data-theme', 'light');
@@ -632,7 +617,7 @@ themeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'dark');
         themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
     }
-    // 重绘图表以适配主题
+    // 重绘
     if (currentPersona) {
         getVisits().then(visits => updateUI(visits, currentPersona));
     }
@@ -648,7 +633,7 @@ document.getElementById('langToggle').addEventListener('click', () => {
     }
 });
 
-// 平滑滚动导航
+// 平滑滚动
 document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -656,9 +641,6 @@ document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
         if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
 });
-
-// 初始化 DB
-openDB();
 </script>
 </body>
 </html>
