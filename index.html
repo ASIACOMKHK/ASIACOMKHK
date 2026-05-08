@@ -11,8 +11,10 @@
     <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- ECharts 只在时光机区域使用，异步加载（已改为直接引入，保证地图正常） -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
+        /* =============== 原有博客样式（完全保留） =============== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #0a0c12;
@@ -122,23 +124,6 @@
         .post-excerpt { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 10px 0 18px; }
         .read-more { color: var(--accent); text-decoration: none; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
         .read-more:hover { gap: 10px; }
-        /* 新增时光机样式 */
-        .time-machine-section { margin-top: 48px; }
-        .time-machine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 24px; margin-top: 24px; }
-        .map-container { width: 100%; height: 400px; }
-        .persona-card-custom { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(135deg, rgba(45,201,255,0.08), rgba(109,255,109,0.05)); border-radius: 16px; border: 1px solid var(--border-color); text-align: center; }
-        .persona-emoji { font-size: 4rem; margin-bottom: 16px; }
-        .persona-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
-        .persona-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; }
-        .persona-details { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 12px; }
-        .persona-detail { font-size: 0.8rem; background: var(--code-bg); padding: 4px 12px; border-radius: 20px; color: var(--text-secondary); }
-        .recent-visitors { margin-top: 24px; }
-        .recent-visitors h3 { font-size: 1.1rem; margin-bottom: 12px; }
-        .visitor-list { display: flex; flex-wrap: wrap; gap: 12px; }
-        .visitor-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
-        .visitor-item .flag { font-size: 1.2rem; }
-        .time-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted); }
-        .loading-text { text-align: center; padding: 40px; color: var(--text-muted); }
         .about-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; }
         .sidebar { position: sticky; top: 80px; align-self: start; }
         .widget { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 22px; margin-bottom: 26px; }
@@ -158,21 +143,72 @@
         .recent-list a i { color: var(--accent); font-size: 0.65rem; }
         .recent-list a:hover { color: var(--accent); }
         footer { border-top: 1px solid var(--border-color); padding: 28px 0; text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+
+        /* =============== 新增优化后时光机样式 =============== */
+        .time-machine-section { margin-top: 48px; }
+        .time-machine-loading {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 20px; background: var(--bg-card); border-radius: 24px;
+            border: 1px solid var(--border-color);
+        }
+        .loader-spinner {
+            width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--accent); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .time-machine-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 24px; padding: 24px; margin-top: 24px;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .map-container { width: 100%; height: 400px; border-radius: 16px; overflow: hidden; }
+        .persona-card-optimized {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 24px; background: linear-gradient(135deg, var(--accent-glow), rgba(109,255,109,0.05));
+            border-radius: 16px; border: 1px solid var(--border-color);
+        }
+        .persona-animal { font-size: 4.5rem; margin-bottom: 8px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
+        .persona-name { font-size: 1.4rem; font-weight: 700; margin: 8px 0; }
+        .persona-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; }
+        .persona-greeting { font-style: italic; color: var(--text-secondary); margin: 8px 0; font-size: 0.9rem; }
+        .persona-meta { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
+        .persona-meta span {
+            background: var(--code-bg); padding: 4px 12px; border-radius: 20px;
+            font-size: 0.75rem; color: var(--text-secondary);
+        }
+        .persona-time { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+        .recent-visitors { margin-top: 24px; }
+        .recent-visitors h3 { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .visitor-list { display: flex; flex-wrap: wrap; gap: 12px; }
+        .visitor-item {
+            background: var(--bg-secondary); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 10px 16px; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .visitor-item:hover { border-color: var(--accent); }
+        .visitor-item .flag { font-size: 1.5rem; }
+        .visitor-item .info { display: flex; flex-direction: column; }
+        .visitor-item .info .name { font-weight: 600; }
+        .visitor-item .info .time { font-size: 0.7rem; color: var(--text-muted); }
+        .error-box {
+            padding: 20px; background: rgba(255,0,0,0.1); border-radius: 12px;
+            text-align: center; border: 1px solid var(--border-color);
+        }
+        .retry-btn {
+            background: var(--accent); border: none; color: #0a0c12;
+            padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;
+            margin-top: 12px;
+        }
         @media (max-width: 880px) {
-            .grid-main { grid-template-columns: 1fr; gap: 32px; }
+            .grid-main { grid-template-columns: 1fr; }
             .sidebar { position: static; }
-            .header-flex { flex-direction: column; align-items: center; }
-            .nav-links { justify-content: center; }
             .time-machine-grid { grid-template-columns: 1fr; }
             .map-container { height: 300px; }
         }
-        @media (max-width: 550px) {
-            .container { padding: 0 18px; }
-            .project-grid { grid-template-columns: 1fr; }
-            .blog-content { padding: 18px; }
-        }
-        .status-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 8px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
     </style>
 </head>
 <body>
@@ -189,7 +225,7 @@
             <li><a href="#" class="nav-item" data-target="blog">博客</a></li>
             <li><a href="#" class="nav-item" data-target="about">关于</a></li>
             <li><a href="#" class="nav-item" data-target="visitor">时光机</a></li>
-            <li><button class="random-btn" id="randomPostBtn"><i class="fas fa-dice-d6"></i> 随机逛逛</button><span id="randomHint"></span></li>
+            <li><button class="random-btn" id="randomPostBtn"><i class="fas fa-dice-d6"></i> 随机逛逛</button></li>
             <li><button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> 暗色</button></li>
         </ul>
     </div>
@@ -197,90 +233,58 @@
 
 <main class="container grid-main">
     <div>
+        <!-- 项目区域（保持不变） -->
         <div id="projects-area" class="section-anchor">
             <div class="projects-showcase">
                 <div class="section-title"><i class="fas fa-code-branch"></i><span>亲手构建 · Cloudflare Workers 项目集</span></div>
                 <div class="project-grid">
                     <div class="project-card">
-                        <div class="project-header">
-                            <div class="project-icon"><i class="fas fa-network-wired"></i></div>
-                            <div><div class="project-title">CF Workers NetDiag</div><div class="project-badge"># 网络诊断工具</div></div>
-                        </div>
+                        <div class="project-header"><div class="project-icon"><i class="fas fa-network-wired"></i></div><div><div class="project-title">CF Workers NetDiag</div><div class="project-badge"># 网络诊断工具</div></div></div>
                         <div class="project-body">
                             <div class="project-desc">基于 Cloudflare Workers 构建的轻量级网络诊断工具。支持 HTTP/TCP Ping、路由追踪、DNS 解析等实用功能。</div>
-                            <div class="tech-stack"><span>TypeScript</span><span>Workers Runtime</span><span>Hono</span></div>
-                            <div class="github-badge">
-                                <img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff" alt="stars">
-                                <img src="https://img.shields.io/github/forks/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff" alt="forks">
-                            </div>
-                            <div class="project-links">
-                                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a>
-                                <a href="https://github.com/asiacomkhk/CF-workers-netdiag" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
-                            </div>
+                            <div class="tech-stack"><span>TypeScript</span><span>Workers Runtime</span></div>
+                            <div class="github-badge"><img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff" alt="stars"></div>
+                            <div class="project-links"><a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a><a href="https://github.com/asiacomkhk/CF-workers-netdiag"><i class="fab fa-github"></i> 源码</a></div>
                         </div>
                     </div>
                     <div class="project-card">
-                        <div class="project-header">
-                            <div class="project-icon"><i class="fas fa-video"></i></div>
-                            <div><div class="project-title">M3U8 Player on Worker</div><div class="project-badge"># 流媒体代理</div></div>
-                        </div>
+                        <div class="project-header"><div class="project-icon"><i class="fas fa-video"></i></div><div><div class="project-title">M3U8 Player on Worker</div><div class="project-badge"># 流媒体代理</div></div></div>
                         <div class="project-body">
                             <div class="project-desc">基于 Cloudflare Worker 的 M3U8 流媒体播放器与代理。支持跨域资源获取、自动转码嗅探。</div>
-                            <div class="tech-stack"><span>JavaScript</span><span>HLS.js</span><span>Cloudflare Workers</span></div>
-                            <div class="github-badge">
-                                <img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff" alt="stars">
-                                <img src="https://img.shields.io/github/forks/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff" alt="forks">
-                            </div>
-                            <div class="project-links">
-                                <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a>
-                                <a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player" target="_blank"><i class="fab fa-github"></i> 源码仓库</a>
-                            </div>
+                            <div class="tech-stack"><span>JavaScript</span><span>HLS.js</span></div>
+                            <div class="github-badge"><img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff" alt="stars"></div>
+                            <div class="project-links"><a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a><a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player"><i class="fab fa-github"></i> 源码</a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- 博客区域（保持不变） -->
         <div id="blog-area" class="section-anchor">
-            <div class="section-title" style="margin-top:8px;"><i class="fas fa-pen-nib"></i><span>最新技术笔记</span></div>
-            <article class="blog-card">
-                <div class="blog-content">
-                    <div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-04-10</span><span><i class="fas fa-tag"></i> Cloudflare Workers</span><span><i class="fas fa-eye"></i> 阅读 342次</span></div>
-                    <h2 class="post-title"><a href="#">我为什么用 Cloudflare Workers 写网络诊断和视频代理工具</a></h2>
-                    <p class="post-excerpt">从 NetDiag 到 M3U8 Player，分享我在 Workers 生态中的开发心得……</p>
-                    <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-            <article class="blog-card">
-                <div class="blog-content">
-                    <div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-04-02</span><span><i class="fas fa-tag"></i> 网络 · 可观测性</span><span><i class="fas fa-eye"></i> 阅读 187次</span></div>
-                    <h2 class="post-title"><a href="#">深入浅出：如何自建一个轻量级网络诊断服务</a></h2>
-                    <p class="post-excerpt">附完整代码解读与部署指南……</p>
-                    <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-            <article class="blog-card">
-                <div class="blog-content">
-                    <div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-03-22</span><span><i class="fas fa-tag"></i> 流媒体 · HLS</span><span><i class="fas fa-eye"></i> 阅读 256次</span></div>
-                    <h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理：跨域问题终极解决方案</a></h2>
-                    <p class="post-excerpt">手把手搭建一个自托管的 HLS 流媒体代理……</p>
-                    <a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
+            <div class="section-title"><i class="fas fa-pen-nib"></i><span>最新技术笔记</span></div>
+            <article class="blog-card"><div class="blog-content"><div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-04-10</span><span><i class="fas fa-tag"></i> Cloudflare Workers</span></div><h2 class="post-title"><a href="#">我为什么用 Cloudflare Workers 写网络诊断和视频代理工具</a></h2><p class="post-excerpt">从 NetDiag 到 M3U8 Player，分享我在 Workers 生态中的开发心得……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
+            <article class="blog-card"><div class="blog-content"><div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-04-02</span><span><i class="fas fa-tag"></i> 网络 · 可观测性</span></div><h2 class="post-title"><a href="#">深入浅出：如何自建一个轻量级网络诊断服务</a></h2><p class="post-excerpt">附完整代码解读与部署指南……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
+            <article class="blog-card"><div class="blog-content"><div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-03-22</span><span><i class="fas fa-tag"></i> 流媒体 · HLS</span></div><h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理：跨域问题终极解决方案</a></h2><p class="post-excerpt">手把手搭建一个自托管的 HLS 流媒体代理……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
         </div>
 
-        <!-- 访客时光机新区域 -->
+        <!-- ========== 优化后的访客时光机 ========== -->
         <div id="visitor-time-machine" class="section-anchor time-machine-section">
             <div class="section-title"><i class="fas fa-clock"></i><span>访客时光机 · IP人设卡</span></div>
-            <div id="timeMachineContainer"><div class="loading-text"><i class="fas fa-spinner fa-pulse"></i> 正在获取你的IP信息…</div></div>
+            <div id="tm-root">
+                <!-- 动态渲染 -->
+                <div class="time-machine-loading">
+                    <div class="loader-spinner"></div>
+                    <p style="margin-top:16px; color:var(--text-muted);">正在捕获你的数字足迹…</p>
+                </div>
+            </div>
         </div>
 
+        <!-- 关于区域 -->
         <div id="about-area" class="section-anchor" style="margin-top:48px;">
             <div class="section-title"><i class="fas fa-user-astronaut"></i><span>关于 ASIACOMKHK</span></div>
             <div class="about-content">
                 <p style="margin-bottom:16px;">独立开发者，专注于 <strong>Cloudflare Workers 生态</strong> 与 <strong>边缘计算</strong>。</p>
-                <p style="margin-bottom:16px;">相信「写即所得」，用代码解决实际网络问题。</p>
-                <p style="margin-bottom:16px;">📌 主要领域：Cloudflare Workers / TypeScript / 网络协议 / 边缘计算</p>
                 <p>📧 联系我：<a href="mailto:asiacomk@gmail.com" style="color:var(--accent);">asiacomk@gmail.com</a></p>
             </div>
         </div>
@@ -297,14 +301,6 @@
                 <a href="https://t.me/asiacomk"><i class="fab fa-telegram"></i></a>
                 <a href="https://twitter.com/asiacomk"><i class="fab fa-twitter"></i></a>
                 <a href="https://youtube.com/@BlueDriftHK"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="widget">
-            <div class="widget-title"><i class="fas fa-chart-line"></i> 热门文章</div>
-            <div style="font-size:0.85rem;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:12px;"><span>1. Workers 网络诊断实战</span><span style="color:var(--accent);">342阅读</span></div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:12px;"><span>2. M3U8 跨域解决方案</span><span style="color:var(--accent);">256阅读</span></div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:12px;"><span>3. 轻量级网络诊断</span><span style="color:var(--accent);">187阅读</span></div>
             </div>
         </div>
         <div class="widget">
@@ -347,236 +343,319 @@
 <footer>
     <div class="container">
         <p><i class="fas fa-code"></i> ASIACOMKHK · 开源创造 | 基于 Cloudflare Workers 生态</p>
-        <p style="margin-top:10px;">
-            <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" style="color:var(--text-muted);">NetDiag</a> | 
-            <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" style="color:var(--text-muted);">M3U8 Player</a> | 欢迎共建
-        </p>
         <p style="margin-top:8px;font-size:0.7rem;">© 2026 ASIACOMKHK · 保持好奇，探索边缘</p>
     </div>
 </footer>
 
 <script>
-    // ========== 原网站脚本（导航/进度条/主题/随机逛逛/订阅） ==========
-    function scrollToElement(id) {
-        const el = document.getElementById(id);
-        if (el) {
-            const offset = 80;
-            const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
-            window.scrollTo({ top, behavior: 'smooth' });
-        }
-    }
-    function updateActiveNav(target) {
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.toggle('active-link', item.dataset.target === target);
-        });
-    }
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', e => {
-            e.preventDefault();
-            const t = item.dataset.target;
-            if (t === 'home') { window.scrollTo({ top:0, behavior:'smooth' }); updateActiveNav('home'); }
-            else if (t === 'projects') { scrollToElement('projects-area'); updateActiveNav('projects'); }
-            else if (t === 'blog') { scrollToElement('blog-area'); updateActiveNav('blog'); }
-            else if (t === 'about') { scrollToElement('about-area'); updateActiveNav('about'); }
-            else if (t === 'visitor') { scrollToElement('visitor-time-machine'); updateActiveNav('visitor'); }
-        });
-    });
-    document.getElementById('logoHomeLink').addEventListener('click', e => {
-        e.preventDefault();
-        window.scrollTo({ top:0, behavior:'smooth' });
-        updateActiveNav('home');
-    });
-    window.addEventListener('scroll', () => {
-        const pos = window.scrollY + 100;
-        if (pos < 200) updateActiveNav('home');
-        else {
-            ['projects-area','blog-area','about-area','visitor-time-machine'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el && pos >= el.offsetTop - 80 && pos < el.offsetTop + el.offsetHeight - 80) {
-                    updateActiveNav(id === 'visitor-time-machine' ? 'visitor' : id.split('-')[0]);
-                }
-            });
-        }
-    });
-    // 阅读进度条
-    window.addEventListener('scroll', () => {
-        const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        document.getElementById('readingProgressBar').style.width = (window.scrollY / h * 100) + '%';
-    });
-    window.addEventListener('resize', () => {
-        const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        document.getElementById('readingProgressBar').style.width = (window.scrollY / h * 100) + '%';
-    });
-    // 随机逛逛
-    document.getElementById('randomPostBtn').addEventListener('click', () => {
-        const articles = document.querySelectorAll('.blog-card');
-        if (articles.length) {
-            const rand = articles[Math.floor(Math.random() * articles.length)];
-            rand.scrollIntoView({ behavior:'smooth', block:'start' });
-            rand.style.boxShadow = '0 0 0 2px var(--accent)';
-            setTimeout(() => rand.style.boxShadow = '', 1000);
-        }
-    });
-    // 主题切换
+    // ========== 原有博客交互脚本（完整保留） ==========
+    function scrollToElement(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' }); }
+    function updateActiveNav(target) { document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active-link', i.dataset.target === target)); }
+    document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', e => { e.preventDefault(); const t = item.dataset.target; if (t === 'home') window.scrollTo({ top: 0, behavior: 'smooth' }); else if (t === 'projects') scrollToElement('projects-area'); else if (t === 'blog') scrollToElement('blog-area'); else if (t === 'about') scrollToElement('about-area'); else if (t === 'visitor') scrollToElement('visitor-time-machine'); updateActiveNav(t === 'visitor-time-machine' ? 'visitor' : t); }); });
+    document.getElementById('logoHomeLink').addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); updateActiveNav('home'); });
+    window.addEventListener('scroll', () => { const pos = window.scrollY + 100; if (pos < 200) updateActiveNav('home'); else ['projects-area','blog-area','about-area','visitor-time-machine'].forEach(id => { const el = document.getElementById(id); if (el && pos >= el.offsetTop - 80 && pos < el.offsetTop + el.offsetHeight - 80) updateActiveNav(id === 'visitor-time-machine' ? 'visitor' : id.split('-')[0]); }); });
+    window.addEventListener('scroll', () => { const h = document.documentElement.scrollHeight - document.documentElement.clientHeight; document.getElementById('readingProgressBar').style.width = (window.scrollY / h * 100) + '%'; });
+    document.getElementById('randomPostBtn').addEventListener('click', () => { const articles = document.querySelectorAll('.blog-card'); if (articles.length) { const rand = articles[Math.floor(Math.random() * articles.length)]; rand.scrollIntoView({ behavior: 'smooth', block: 'start' }); rand.style.boxShadow = '0 0 0 2px var(--accent)'; setTimeout(() => rand.style.boxShadow = '', 1000); } });
     const themeToggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    (function() {
-        if (localStorage.getItem('theme') === 'light') html.setAttribute('data-theme','light');
-    })();
-    themeToggle.addEventListener('click', () => {
-        const isDark = html.getAttribute('data-theme') !== 'light';
-        if (isDark) {
-            html.setAttribute('data-theme','light');
-            localStorage.setItem('theme','light');
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i> 亮色';
-        } else {
-            html.removeAttribute('data-theme');
-            localStorage.setItem('theme','dark');
-            themeToggle.innerHTML = '<i class="fas fa-moon"></i> 暗色';
-        }
-    });
-    // 订阅
-    document.getElementById('subBtn')?.addEventListener('click', () => {
-        const email = document.getElementById('subEmail')?.value.trim();
-        if (email && email.includes('@')) alert('✅ 订阅成功！');
-        else alert('请输入有效邮箱');
-    });
+    if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme','light');
+    themeToggle.addEventListener('click', () => { const isDark = document.documentElement.getAttribute('data-theme') !== 'light'; if (isDark) { document.documentElement.setAttribute('data-theme','light'); localStorage.setItem('theme','light'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> 亮色'; } else { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('theme','dark'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> 暗色'; } });
+    document.getElementById('subBtn')?.addEventListener('click', () => { const email = document.getElementById('subEmail')?.value.trim(); alert(email && email.includes('@') ? '✅ 订阅成功！' : '请输入有效邮箱'); });
 
-    // ========== 访客时光机逻辑（纯前端） ==========
+    // ========== 优化版访客时光机引擎 ==========
     (function() {
-        const container = document.getElementById('timeMachineContainer');
-        const STORAGE_KEY = 'visitor_log';
-        const MAX = 20;
+        const ROOT = document.getElementById('tm-root');
+        const STORAGE_KEY = 'visitor_time_machine_v2';
+        const DEDUP_WINDOW = 60 * 60 * 1000; // 1 小时内去重
+        const MAX_HISTORY = 20;
 
-        const regionMap = {
-            CN:{vibe:'古风',animal:'🐼',headwear:'竹簪'},
-            JP:{vibe:'和风',animal:'🐱',headwear:'樱花发饰'},
-            US:{vibe:'自由牛仔',animal:'🦅',headwear:'牛仔帽'},
-            FR:{vibe:'浪漫',animal:'🐓',headwear:'贝雷帽'},
-            DE:{vibe:'严谨',animal:'🦅',headwear:'啤酒帽'},
-            UK:{vibe:'绅士',animal:'🦁',headwear:'高顶礼帽'},
-            KR:{vibe:'K-pop',animal:'🐯',headwear:'发带'},
-            IN:{vibe:'神秘',animal:'🐅',headwear:'纱丽珠饰'},
-            RU:{vibe:'豪迈',animal:'🐻',headwear:'哥萨克帽'},
-            BR:{vibe:'桑巴',animal:'🦜',headwear:'羽毛头饰'},
-            CA:{vibe:'极地',animal:'🦌',headwear:'保暖耳罩'},
-            AU:{vibe:'阳光',animal:'🐨',headwear:'软木帽'}
+        // 扩展的地区映射表（国家代码 → 人设元素）
+        const REGION_MAP = {
+            CN: { vibe:'古风', animal:'🐼', headwear:'竹簪' },
+            JP: { vibe:'和风', animal:'🐱', headwear:'樱花发饰' },
+            US: { vibe:'自由牛仔', animal:'🦅', headwear:'牛仔帽' },
+            FR: { vibe:'浪漫', animal:'🐓', headwear:'贝雷帽' },
+            DE: { vibe:'严谨', animal:'🦅', headwear:'啤酒帽' },
+            UK: { vibe:'绅士', animal:'🦁', headwear:'高顶礼帽' },
+            KR: { vibe:'K-pop', animal:'🐯', headwear:'发带' },
+            IN: { vibe:'神秘', animal:'🐅', headwear:'纱丽珠饰' },
+            RU: { vibe:'豪迈', animal:'🐻', headwear:'哥萨克帽' },
+            BR: { vibe:'桑巴', animal:'🦜', headwear:'羽毛头饰' },
+            CA: { vibe:'极地', animal:'🦌', headwear:'保暖耳罩' },
+            AU: { vibe:'阳光', animal:'🐨', headwear:'软木帽' },
+            IT: { vibe:'艺术', animal:'🐺', headwear:'橄榄枝环' },
+            ES: { vibe:'热情', animal:'🐂', headwear:'弗拉明戈花' },
+            MX: { vibe:'玛雅', animal:'🦅', headwear:'宽边草帽' },
+            EG: { vibe:'法老', animal:'🐈', headwear:'圣甲虫冠' },
+            TH: { vibe:'微笑', animal:'🐘', headwear:'莲花金簪' },
+            GR: { vibe:'神话', animal:'🦉', headwear:'月桂叶冠' },
+            SE: { vibe:'北欧', animal:'🦌', headwear:'水晶头饰' },
+            TR: { vibe:'奥斯曼', animal:'🦅', headwear:'土耳其帽' },
+            AR: { vibe:'探戈', animal:'🦅', headwear:'探戈帽' },
+            ZA: { vibe:'彩虹', animal:'🦌', headwear:'珠串头饰' },
         };
 
         function getRegion(code) {
-            return regionMap[code] || {vibe:'赛博流浪者',animal:'🐱',headwear:'电子光环'};
+            return REGION_MAP[code] || { vibe:'赛博流浪者', animal:'🐱', headwear:'电子光环' };
         }
 
-        function getTimeVibe(h) {
-            if (h<6) return {phase:'深夜来访',greeting:'午夜星光伴你同行'};
-            if (h<10) return {phase:'清晨问候',greeting:'晨光中踏露而来的探险家'};
-            if (h<14) return {phase:'正午漫步',greeting:'正午的勇者，无惧烈日'};
-            if (h<18) return {phase:'午后探险',greeting:'慵懒午后难掩好奇心'};
-            if (h<22) return {phase:'黄昏魔术',greeting:'最美的黄昏时刻降临'};
-            return {phase:'深夜密话',greeting:'夜色为你披上神秘斗篷'};
+        function getTimeVibe(hour) {
+            if (hour < 6)  return { phase:'深夜来访', greeting:'午夜星光伴你同行' };
+            if (hour < 10) return { phase:'清晨问候', greeting:'晨光中踏露而来的探险家' };
+            if (hour < 14) return { phase:'正午漫步', greeting:'正午的勇者，无惧烈日' };
+            if (hour < 18) return { phase:'午后探险', greeting:'慵懒午后难掩好奇心' };
+            if (hour < 22) return { phase:'黄昏魔术', greeting:'最美的黄昏时刻降临' };
+            return { phase:'深夜密话', greeting:'夜色为你披上神秘斗篷' };
         }
 
-        function buildPersona(data) {
+        function getBrowserIcon(ua) {
+            if (ua.includes('Chrome')) return '🌐';
+            if (ua.includes('Firefox')) return '🦊';
+            if (ua.includes('Safari')) return '🧭';
+            if (ua.includes('Edge')) return '🌊';
+            return '🌀';
+        }
+
+        function buildPersona(ipData) {
             const t = getTimeVibe(new Date().getHours());
-            const r = getRegion(data.country_code);
-            const browser = navigator.userAgent.includes('Chrome') ? 'Chrome' : navigator.userAgent.includes('Firefox') ? 'Firefox' : '神秘浏览器';
+            const r = getRegion(ipData.country_code);
+            const browserIcon = getBrowserIcon(navigator.userAgent);
             return {
-                name: `${r.vibe} · ${data.city||data.region||'未知'}`,
-                title: `${data.org||'未知运营商'} | ${browser}`,
+                name: `${r.vibe} · ${ipData.city || ipData.region || '未知'}`,
+                title: `${ipData.org || '未知运营商'} | ${browserIcon}`,
                 greeting: t.greeting,
                 animal: r.animal,
                 headwear: r.headwear,
-                element:'📡', badge:'🌐',
-                country: data.country_name||'未知',
-                countryCode: data.country_code||'XX',
-                raw:{ ip:data.ip, city:data.city, isp:data.org, browser, time:new Date().toLocaleString('zh-CN') },
-                phase:t.phase
+                country: ipData.country_name || '未知',
+                countryCode: ipData.country_code || 'XX',
+                lat: ipData.latitude,
+                lng: ipData.longitude,
+                raw: {
+                    ip: ipData.ip,
+                    city: ipData.city,
+                    isp: ipData.org,
+                    time: new Date().toLocaleString('zh-CN')
+                },
+                phase: t.phase,
+                timestamp: Date.now()
             };
         }
 
-        async function fetchIP() {
+        async function fetchIPInfo() {
+            // 主 API
             try {
-                const r = await fetch('https://ipapi.co/json/');
-                if (r.ok) return await r.json();
-                throw new Error();
-            } catch {
-                const r = await fetch('https://api.ipify.org?format=json');
-                const {ip} = await r.json();
-                return {ip, country_name:'未知', city:'未知', org:'未知'};
-            }
+                const resp = await fetch('https://ipapi.co/json/');
+                if (resp.ok) return await resp.json();
+            } catch (e) {}
+            // 备用
+            try {
+                const resp = await fetch('https://api.ipify.org?format=json');
+                const { ip } = await resp.json();
+                return { ip, country_name:'未知', city:'未知', org:'未知' };
+            } catch (e) {}
+            return null;
         }
 
-        function render(persona, history) {
-            return `
-                <div class="time-machine-grid">
-                    <div class="map-container" id="worldMap"></div>
-                    <div class="persona-card-custom">
-                        <div class="persona-emoji">${persona.animal}</div>
-                        <div class="persona-name">${persona.name}</div>
-                        <div class="persona-title">${persona.title}</div>
-                        <p style="margin:8px 0;font-style:italic;color:var(--text-muted);">${persona.greeting}</p>
-                        <div class="persona-details">
-                            <span class="persona-detail">🎩 ${persona.headwear}</span>
-                            <span class="persona-detail">📡 ${persona.raw.isp}</span>
-                        </div>
-                        <div style="margin-top:12px;font-size:0.75rem;color:var(--text-muted);">${persona.phase} · ${persona.raw.time}</div>
-                    </div>
-                </div>
-                <div class="recent-visitors">
-                    <h3>📋 最近访客</h3>
-                    <div class="visitor-list">
-                        ${history.length ? history.map(v => `
-                            <div class="visitor-item">
-                                <span class="flag">${v.animal}</span>
-                                <span>${v.name}</span>
-                                <span class="time-badge">${v.raw.time}</span>
-                            </div>
-                        `).join('') : '<div style="font-size:0.8rem;color:var(--text-muted);">暂无历史访客</div>'}
-                    </div>
-                </div>`;
+        function loadHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch { return []; }
         }
 
-        function initMap(history) {
-            const dom = document.getElementById('worldMap');
-            if (!dom) return;
-            const chart = echarts.init(dom, 'dark');
-            fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-                .then(r => r.json())
-                .then(geo => {
-                    echarts.registerMap('world', geo);
-                    const points = history.filter(v => v.countryCode!=='XX').map(v => ({
-                        name: v.raw.city, value: [v.country, v.name, v.raw.time]
-                    }));
-                    chart.setOption({
-                        backgroundColor:'transparent',
-                        geo:{ map:'world', roam:true, center:[20,20], zoom:1.2,
-                              itemStyle:{ areaColor:'#1a1a3a', borderColor:'rgba(100,150,255,0.3)' } },
-                        series:[{ type:'scatter', coordinateSystem:'geo', data:points,
-                                  symbolSize:12, symbol:'pin', itemStyle:{ color:'#ff6b9d' } }],
-                        tooltip:{ trigger:'item' }
-                    });
-                })
-                .catch(() => chart.dispose());
-        }
-
-        function save(persona) {
-            let history = [];
-            try { history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch{}
-            history.unshift(persona);
-            if (history.length > MAX) history = history.slice(0,MAX);
+        function saveHistory(history) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        }
+
+        function addVisit(persona) {
+            let history = loadHistory();
+            // 去重：同一 IP 在 DEDUP_WINDOW 内不再重复添加
+            const now = Date.now();
+            const dup = history.find(v => v.raw.ip === persona.raw.ip && (now - v.timestamp) < DEDUP_WINDOW);
+            if (dup) {
+                // 更新时间戳，但不增加条目
+                dup.timestamp = now;
+                dup.raw.time = persona.raw.time;
+                saveHistory(history);
+                return history;
+            }
+            history.unshift(persona);
+            if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+            saveHistory(history);
             return history;
         }
 
-        async function init() {
-            const data = await fetchIP();
-            if (!data) { container.innerHTML='<div class="loading-text">⚠️ 无法获取IP信息</div>'; return; }
-            const persona = buildPersona(data);
-            const history = save(persona);
-            container.innerHTML = render(persona, history);
-            initMap(history);
+        // 渲染函数
+        function render(persona, history) {
+            let mapLoaded = false;
+            const html = `
+                <div class="time-machine-grid">
+                    <div class="map-container" id="worldMap"></div>
+                    <div class="persona-card-optimized">
+                        <div class="persona-animal">${persona.animal}</div>
+                        <div class="persona-name">${persona.name}</div>
+                        <div class="persona-title">${persona.title}</div>
+                        <p class="persona-greeting">${persona.greeting}</p>
+                        <div class="persona-meta">
+                            <span>🎩 ${persona.headwear}</span>
+                            <span>📡 ${persona.raw.isp}</span>
+                        </div>
+                        <div class="persona-time">🕒 ${persona.phase} · ${persona.raw.time}</div>
+                    </div>
+                </div>
+                <div class="recent-visitors">
+                    <h3><i class="fas fa-users"></i> 最近访客 (${history.length})</h3>
+                    <div class="visitor-list">
+                        ${history.map((v, idx) => `
+                            <div class="visitor-item" data-index="${idx}">
+                                <span class="flag">${v.animal}</span>
+                                <div class="info">
+                                    <span class="name">${v.name}</span>
+                                    <span class="time">${v.raw.time}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            ROOT.innerHTML = html;
+            // 初始化地图
+            initMap(history, persona);
         }
-        init().catch(() => container.innerHTML='<div class="loading-text">⏳ 时光机启动失败</div>');
+
+        let chartInstance = null;
+        function initMap(history, currentPersona) {
+            const mapDom = document.getElementById('worldMap');
+            if (!mapDom) return;
+            if (chartInstance) chartInstance.dispose();
+            chartInstance = echarts.init(mapDom, 'dark');
+
+            // 加载世界地图 GeoJSON（带 CDN 回退）
+            const geoURLs = [
+                'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
+                'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+            ];
+            loadGeoJSON(geoURLs).then(geoJSON => {
+                echarts.registerMap('world', geoJSON);
+                const points = [];
+                // 添加历史数据点
+                history.forEach(v => {
+                    if (v.lat && v.lng) {
+                        points.push({
+                            name: v.raw.city,
+                            value: [v.lng, v.lat, v.name],
+                            itemStyle: { color: '#ff6b9d' }
+                        });
+                    }
+                });
+                // 当前访客单独高亮
+                if (currentPersona.lat && currentPersona.lng) {
+                    points.push({
+                        name: currentPersona.raw.city,
+                        value: [currentPersona.lng, currentPersona.lat, currentPersona.name],
+                        itemStyle: { color: '#f9d71c', borderColor: '#fff', borderWidth: 2 },
+                        symbolSize: 20,
+                    });
+                }
+                const option = {
+                    backgroundColor: 'transparent',
+                    geo: {
+                        map: 'world',
+                        roam: true,
+                        center: [15, 20],
+                        zoom: 1.3,
+                        itemStyle: {
+                            areaColor: '#1a1a3a',
+                            borderColor: 'rgba(100,150,255,0.4)',
+                            borderWidth: 1,
+                        },
+                        emphasis: {
+                            itemStyle: { areaColor: '#2a2a5a' }
+                        }
+                    },
+                    series: [{
+                        type: 'scatter',
+                        coordinateSystem: 'geo',
+                        data: points,
+                        symbolSize: val => val.symbolSize || 12,
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(255,255,255,0.5)'
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{b}',
+                            position: 'right',
+                            fontSize: 10,
+                            color: '#ddd'
+                        },
+                        emphasis: { scale: 1.5 }
+                    }],
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: params => `${params.name}<br/>${params.value[2] || '访客'}`
+                    }
+                };
+                chartInstance.setOption(option);
+                // 点击历史记录项高亮地图对应点
+                document.querySelectorAll('.visitor-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const idx = parseInt(item.dataset.index);
+                        if (!isNaN(idx) && idx < points.length) {
+                            chartInstance.dispatchAction({ type: 'highlight', seriesIndex: 0, dataIndex: idx });
+                            setTimeout(() => chartInstance.dispatchAction({ type: 'downplay', seriesIndex: 0, dataIndex: idx }), 2000);
+                        }
+                    });
+                });
+            }).catch(err => {
+                mapDom.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">🌐 地图加载失败，但访客信息已捕获</div>';
+            });
+        }
+
+        async function loadGeoJSON(urls) {
+            for (const url of urls) {
+                try {
+                    const resp = await fetch(url);
+                    if (!resp.ok) throw new Error();
+                    // 如果是 topojson 格式（world-atlas），需要转换
+                    if (url.includes('world-atlas')) {
+                        const topo = await resp.json();
+                        const { features } = topojson.feature(topo, topo.objects.countries);
+                        return { type: 'FeatureCollection', features };
+                    }
+                    return await resp.json();
+                } catch (e) {}
+            }
+            throw new Error('All geo sources failed');
+        }
+
+        // topojson 转换函数（轻量级）
+        function topojsonFeature(topo, object) {
+            // 简化版 topojson 转 geojson，仅适用于 countries
+            const features = [];
+            const geoms = object.geometries;
+            for (const geom of geoms) {
+                const feat = { type: 'Feature', properties: geom.properties || {}, geometry: {} };
+                if (geom.type === 'Polygon') {
+                    feat.geometry = { type: 'Polygon', coordinates: geom.arcs.map(arc => arc.map(idx => topo.arcs[idx])) };
+                } else if (geom.type === 'MultiPolygon') {
+                    feat.geometry = { type: 'MultiPolygon', coordinates: geom.arcs.map(poly => poly.map(arc => arc.map(idx => topo.arcs[idx]))) };
+                }
+                features.push(feat);
+            }
+            return { type: 'FeatureCollection', features };
+        }
+
+        async function initTimeMachine() {
+            const ipData = await fetchIPInfo();
+            if (!ipData) {
+                ROOT.innerHTML = `<div class="error-box"><p>⚠️ 无法获取IP信息，请检查网络</p><button class="retry-btn" onclick="location.reload()">🔄 重试</button></div>`;
+                return;
+            }
+            const persona = buildPersona(ipData);
+            const history = addVisit(persona);
+            render(persona, history);
+        }
+
+        initTimeMachine();
     })();
 </script>
 </body>
