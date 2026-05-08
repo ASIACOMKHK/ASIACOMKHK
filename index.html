@@ -11,87 +11,42 @@
     <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- ECharts 只在时光机区域使用，异步加载（已改为直接引入，保证地图正常） -->
+    <!-- ECharts 全局引入（懒加载仅用于时光机初始化，但库本身已在 head 加载，实际可改为动态加载，为简单保留） -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
-        /* =============== 原有博客样式（完全保留） =============== */
+        /* 原有样式完全保留，此处仅新增/修改时光机相关样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-primary: #0a0c12;
-            --bg-secondary: #10131c;
-            --bg-card: #10131c;
-            --border-color: #1e2a3a;
-            --text-primary: #eef4ff;
-            --text-secondary: #b9c7dd;
-            --text-muted: #6c86a3;
-            --accent: #2dc9ff;
-            --accent-glow: rgba(45, 201, 255, 0.2);
-            --code-bg: #0b0e16;
-            --hover-border: #2dc9ff;
-            --header-bg: rgba(10, 12, 18, 0.85);
+            --bg-primary: #0a0c12; --bg-secondary: #10131c; --bg-card: #10131c;
+            --border-color: #1e2a3a; --text-primary: #eef4ff; --text-secondary: #b9c7dd;
+            --text-muted: #6c86a3; --accent: #2dc9ff; --accent-glow: rgba(45,201,255,0.2);
+            --code-bg: #0b0e16; --hover-border: #2dc9ff; --header-bg: rgba(10,12,18,0.85);
             --progress-bar: #2dc9ff;
         }
         [data-theme="light"] {
-            --bg-primary: #f4f6fa;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --border-color: #e2e8f0;
-            --text-primary: #1a202c;
-            --text-secondary: #4a5568;
-            --text-muted: #718096;
-            --accent: #0d9488;
-            --accent-glow: rgba(13, 148, 136, 0.15);
-            --code-bg: #f7fafc;
-            --hover-border: #0d9488;
-            --header-bg: rgba(244, 246, 250, 0.9);
+            --bg-primary: #f4f6fa; --bg-secondary: #ffffff; --bg-card: #ffffff;
+            --border-color: #e2e8f0; --text-primary: #1a202c; --text-secondary: #4a5568;
+            --text-muted: #718096; --accent: #0d9488; --accent-glow: rgba(13,148,136,0.15);
+            --code-bg: #f7fafc; --hover-border: #0d9488; --header-bg: rgba(244,246,250,0.9);
             --progress-bar: #0d9488;
         }
-        body {
-            background: var(--bg-primary);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-primary);
-            line-height: 1.5;
-            transition: background 0.3s, color 0.2s;
-        }
+        body { background: var(--bg-primary); font-family: 'Inter', sans-serif; color: var(--text-primary); line-height: 1.5; transition: background 0.3s, color 0.2s; }
         html { scroll-behavior: smooth; }
         .progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: transparent; z-index: 1000; }
         .progress-bar { width: 0%; height: 100%; background: var(--progress-bar); box-shadow: 0 0 8px var(--accent); transition: width 0.15s ease; }
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(45,201,255,0.02) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(45,201,255,0.02) 1px, transparent 1px);
-            background-size: 40px 40px; pointer-events: none; z-index: -1;
-        }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(45,201,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(45,201,255,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: -1; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
         .section-anchor { scroll-margin-top: 80px; }
-        header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--header-bg); backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-color); padding: 14px 0;
-        }
+        header { position: sticky; top: 0; z-index: 100; background: var(--header-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 14px 0; }
         .header-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
-        .logo a {
-            font-size: 1.4rem; font-weight: 700; text-decoration: none;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent));
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .logo a { font-size: 1.4rem; font-weight: 700; text-decoration: none; background: linear-gradient(135deg, var(--text-primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: 'JetBrains Mono', monospace; }
         .logo span { font-size: 0.7rem; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
         .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; flex-wrap: wrap; }
         .nav-links a { text-decoration: none; font-weight: 500; color: var(--text-secondary); transition: 0.2s; font-size: 0.9rem; cursor: pointer; }
         .nav-links a:hover, .nav-links a.active-link { color: var(--accent); }
-        .random-btn {
-            background: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 40px; padding: 6px 14px; cursor: pointer;
-            color: var(--text-secondary); font-size: 0.85rem; transition: 0.2s;
-            display: inline-flex; align-items: center; gap: 6px;
-        }
+        .random-btn { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 40px; padding: 6px 14px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
         .random-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
-        .theme-toggle {
-            background: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 40px; padding: 6px 14px; cursor: pointer;
-            color: var(--text-secondary); font-size: 0.85rem; transition: 0.2s;
-        }
+        .theme-toggle { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 40px; padding: 6px 14px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; transition: 0.2s; }
         .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
         .grid-main { display: grid; grid-template-columns: 1fr 340px; gap: 48px; margin: 40px 0 64px; }
         .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; border-left: 4px solid var(--accent); padding-left: 18px; }
@@ -144,65 +99,36 @@
         .recent-list a:hover { color: var(--accent); }
         footer { border-top: 1px solid var(--border-color); padding: 28px 0; text-align: center; font-size: 0.75rem; color: var(--text-muted); }
 
-        /* =============== 新增优化后时光机样式 =============== */
+        /* 时光机进阶样式 */
         .time-machine-section { margin-top: 48px; }
-        .time-machine-loading {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 60px 20px; background: var(--bg-card); border-radius: 24px;
-            border: 1px solid var(--border-color);
-        }
-        .loader-spinner {
-            width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--accent); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .time-machine-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 24px; padding: 24px; margin-top: 24px;
-            animation: fadeIn 0.5s ease;
-        }
+        .tm-placeholder { height: 400px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-color); }
+        .tm-container { display: none; flex-direction: column; gap: 20px; animation: fadeIn 0.5s ease; }
+        .tm-container.visible { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tm-stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 10px; }
+        .tm-stat { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 18px; text-align: center; }
+        .tm-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+        .tm-stat-label { font-size: 0.8rem; color: var(--text-muted); }
+        .time-machine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 24px; }
         .map-container { width: 100%; height: 400px; border-radius: 16px; overflow: hidden; }
-        .persona-card-optimized {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 24px; background: linear-gradient(135deg, var(--accent-glow), rgba(109,255,109,0.05));
-            border-radius: 16px; border: 1px solid var(--border-color);
-        }
+        .persona-card-optimized { display: flex; flex-direction: column; align-items: center; padding: 24px; background: linear-gradient(135deg, var(--accent-glow), rgba(109,255,109,0.05)); border-radius: 16px; border: 1px solid var(--border-color); }
         .persona-animal { font-size: 4.5rem; margin-bottom: 8px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
         .persona-name { font-size: 1.4rem; font-weight: 700; margin: 8px 0; }
         .persona-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; }
         .persona-greeting { font-style: italic; color: var(--text-secondary); margin: 8px 0; font-size: 0.9rem; }
         .persona-meta { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
-        .persona-meta span {
-            background: var(--code-bg); padding: 4px 12px; border-radius: 20px;
-            font-size: 0.75rem; color: var(--text-secondary);
-        }
-        .persona-time { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+        .persona-meta span { background: var(--code-bg); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--text-secondary); }
+        .export-btn { margin-top: 16px; background: var(--accent); border: none; color: #0a0c12; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+        .export-btn:hover { opacity: 0.9; }
+        .timeline { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; }
+        .timeline-item { padding: 6px 16px; border-radius: 20px; background: var(--bg-secondary); border: 1px solid var(--border-color); font-size: 0.8rem; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .timeline-item.active { background: var(--accent); color: #0a0c12; }
         .recent-visitors { margin-top: 24px; }
-        .recent-visitors h3 { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
         .visitor-list { display: flex; flex-wrap: wrap; gap: 12px; }
-        .visitor-item {
-            background: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 10px 16px; font-size: 0.85rem;
-            display: flex; align-items: center; gap: 8px; cursor: pointer;
-            transition: border-color 0.2s;
-        }
+        .visitor-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: border-color 0.2s; }
         .visitor-item:hover { border-color: var(--accent); }
-        .visitor-item .flag { font-size: 1.5rem; }
-        .visitor-item .info { display: flex; flex-direction: column; }
-        .visitor-item .info .name { font-weight: 600; }
-        .visitor-item .info .time { font-size: 0.7rem; color: var(--text-muted); }
-        .error-box {
-            padding: 20px; background: rgba(255,0,0,0.1); border-radius: 12px;
-            text-align: center; border: 1px solid var(--border-color);
-        }
-        .retry-btn {
-            background: var(--accent); border: none; color: #0a0c12;
-            padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;
-            margin-top: 12px;
-        }
+        .error-box { padding: 20px; background: rgba(255,0,0,0.1); border-radius: 12px; text-align: center; border: 1px solid var(--border-color); }
+        .retry-btn { background: var(--accent); border: none; color: #0a0c12; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; }
         @media (max-width: 880px) {
             .grid-main { grid-template-columns: 1fr; }
             .sidebar { position: static; }
@@ -233,34 +159,22 @@
 
 <main class="container grid-main">
     <div>
-        <!-- 项目区域（保持不变） -->
         <div id="projects-area" class="section-anchor">
             <div class="projects-showcase">
                 <div class="section-title"><i class="fas fa-code-branch"></i><span>亲手构建 · Cloudflare Workers 项目集</span></div>
                 <div class="project-grid">
                     <div class="project-card">
                         <div class="project-header"><div class="project-icon"><i class="fas fa-network-wired"></i></div><div><div class="project-title">CF Workers NetDiag</div><div class="project-badge"># 网络诊断工具</div></div></div>
-                        <div class="project-body">
-                            <div class="project-desc">基于 Cloudflare Workers 构建的轻量级网络诊断工具。支持 HTTP/TCP Ping、路由追踪、DNS 解析等实用功能。</div>
-                            <div class="tech-stack"><span>TypeScript</span><span>Workers Runtime</span></div>
-                            <div class="github-badge"><img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff" alt="stars"></div>
-                            <div class="project-links"><a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a><a href="https://github.com/asiacomkhk/CF-workers-netdiag"><i class="fab fa-github"></i> 源码</a></div>
-                        </div>
+                        <div class="project-body"><div class="project-desc">基于 Cloudflare Workers 构建的轻量级网络诊断工具。支持 HTTP/TCP Ping、路由追踪、DNS 解析等实用功能。</div><div class="tech-stack"><span>TypeScript</span><span>Workers Runtime</span></div><div class="github-badge"><img src="https://img.shields.io/github/stars/asiacomkhk/CF-workers-netdiag?style=flat-square&color=2dc9ff" alt="stars"></div><div class="project-links"><a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="demo-btn"><i class="fas fa-external-link-alt"></i> 在线体验</a><a href="https://github.com/asiacomkhk/CF-workers-netdiag"><i class="fab fa-github"></i> 源码</a></div></div>
                     </div>
                     <div class="project-card">
                         <div class="project-header"><div class="project-icon"><i class="fas fa-video"></i></div><div><div class="project-title">M3U8 Player on Worker</div><div class="project-badge"># 流媒体代理</div></div></div>
-                        <div class="project-body">
-                            <div class="project-desc">基于 Cloudflare Worker 的 M3U8 流媒体播放器与代理。支持跨域资源获取、自动转码嗅探。</div>
-                            <div class="tech-stack"><span>JavaScript</span><span>HLS.js</span></div>
-                            <div class="github-badge"><img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff" alt="stars"></div>
-                            <div class="project-links"><a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a><a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player"><i class="fab fa-github"></i> 源码</a></div>
-                        </div>
+                        <div class="project-body"><div class="project-desc">基于 Cloudflare Worker 的 M3U8 流媒体播放器与代理。支持跨域资源获取、自动转码嗅探。</div><div class="tech-stack"><span>JavaScript</span><span>HLS.js</span></div><div class="github-badge"><img src="https://img.shields.io/github/stars/asiacomkhk/CF-Woker-M3U8Player?style=flat-square&color=2dc9ff" alt="stars"></div><div class="project-links"><a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="demo-btn"><i class="fas fa-play-circle"></i> 在线演示</a><a href="https://github.com/asiacomkhk/CF-Woker-M3U8Player"><i class="fab fa-github"></i> 源码</a></div></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 博客区域（保持不变） -->
         <div id="blog-area" class="section-anchor">
             <div class="section-title"><i class="fas fa-pen-nib"></i><span>最新技术笔记</span></div>
             <article class="blog-card"><div class="blog-content"><div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-04-10</span><span><i class="fas fa-tag"></i> Cloudflare Workers</span></div><h2 class="post-title"><a href="#">我为什么用 Cloudflare Workers 写网络诊断和视频代理工具</a></h2><p class="post-excerpt">从 NetDiag 到 M3U8 Player，分享我在 Workers 生态中的开发心得……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
@@ -268,19 +182,21 @@
             <article class="blog-card"><div class="blog-content"><div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-03-22</span><span><i class="fas fa-tag"></i> 流媒体 · HLS</span></div><h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理：跨域问题终极解决方案</a></h2><p class="post-excerpt">手把手搭建一个自托管的 HLS 流媒体代理……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
         </div>
 
-        <!-- ========== 优化后的访客时光机 ========== -->
+        <!-- 时光机模块（懒加载） -->
         <div id="visitor-time-machine" class="section-anchor time-machine-section">
-            <div class="section-title"><i class="fas fa-clock"></i><span>访客时光机 · IP人设卡</span></div>
-            <div id="tm-root">
-                <!-- 动态渲染 -->
-                <div class="time-machine-loading">
-                    <div class="loader-spinner"></div>
-                    <p style="margin-top:16px; color:var(--text-muted);">正在捕获你的数字足迹…</p>
-                </div>
+            <div class="section-title">
+                <i class="fas fa-clock"></i>
+                <span id="tm-section-title-text">访客时光机 · IP人设卡</span>
+                <span id="tm-country-count" style="font-size:0.9rem; color:var(--accent); margin-left:12px;"></span>
+            </div>
+            <div id="tm-placeholder" class="tm-placeholder">
+                <i class="fas fa-spinner fa-pulse"></i>&nbsp; 时光机待命...
+            </div>
+            <div id="tm-container" class="tm-container">
+                <!-- 动态填充 -->
             </div>
         </div>
 
-        <!-- 关于区域 -->
         <div id="about-area" class="section-anchor" style="margin-top:48px;">
             <div class="section-title"><i class="fas fa-user-astronaut"></i><span>关于 ASIACOMKHK</span></div>
             <div class="about-content">
@@ -291,52 +207,11 @@
     </div>
 
     <aside class="sidebar">
-        <div class="widget">
-            <div class="widget-title"><i class="fas fa-user-astronaut"></i> ASIACOMKHK</div>
-            <div class="dev-avatar"><img src="20200313143248_4TNKi.jpeg" style="width:56px;height:56px;border-radius:50%;object-fit:cover;" alt="avatar"><div><strong>@asiacomkhk</strong><br><span style="font-size:0.7rem;">Cloudflare Worker 开发者</span></div></div>
-            <p class="bio-text">独立开发者，专注于边缘计算。</p>
-            <div class="social-links">
-                <a href="https://github.com/asiacomkhk"><i class="fab fa-github"></i></a>
-                <a href="mailto:asiacomk@gmail.com"><i class="fas fa-envelope"></i></a>
-                <a href="https://t.me/BlueDriftHK"><i class="fab fa-telegram"></i></a>
-                <a href="https://twitter.com/BlueDriftHK"><i class="fab fa-twitter"></i></a>
-                <a href="https://youtube.com/@BlueDriftHK"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="widget">
-            <div class="widget-title"><i class="fas fa-heartbeat"></i> 项目状态</div>
-            <div><span class="status-badge"></span> NetDiag: ✅ 运行正常</div>
-            <div style="margin-top:8px;"><span class="status-badge"></span> M3U8 Player: ✅ 运行正常</div>
-            <div style="margin-top:8px;"><span class="status-badge"></span> API 可用率: 99.9%</div>
-        </div>
-        <div class="widget">
-            <div class="widget-title"><i class="fas fa-tags"></i> 标签云</div>
-            <div class="tag-cloud">
-                <a href="#" class="tag">Cloudflare Workers</a>
-                <a href="#" class="tag">TypeScript</a>
-                <a href="#" class="tag">HLS.js</a>
-                <a href="#" class="tag">网络协议</a>
-                <a href="#" class="tag">边缘计算</a>
-                <a href="#" class="tag">Rust</a>
-                <a href="#" class="tag">云原生</a>
-                <a href="#" class="tag">开源项目</a>
-            </div>
-        </div>
-        <div class="widget">
-            <div class="widget-title"><i class="fas fa-clock"></i> 近期文章</div>
-            <ul class="recent-list">
-                <li><a href="#"><i class="fas fa-file-alt"></i> CF Workers 部署最佳实践</a></li>
-                <li><a href="#"><i class="fas fa-file-alt"></i> Worker 与 Pages 对比分析</a></li>
-                <li><a href="#"><i class="fas fa-file-alt"></i> 边缘计算 2025 趋势</a></li>
-            </ul>
-        </div>
-        <div class="widget">
-            <div class="widget-title"><i class="fas fa-envelope"></i> 订阅更新</div>
-            <div style="display:flex;gap:8px;">
-                <input type="email" id="subEmail" placeholder="your@email.com" style="flex:1;background:var(--code-bg);border:1px solid var(--border-color);border-radius:40px;padding:10px 14px;color:var(--text-primary);font-size:0.8rem;">
-                <button id="subBtn" style="background:var(--accent);border:none;border-radius:40px;padding:0 18px;font-weight:bold;color:#0a0c12;cursor:pointer;">订阅</button>
-            </div>
-        </div>
+        <div class="widget"><div class="widget-title"><i class="fas fa-user-astronaut"></i> ASIACOMKHK</div><div class="dev-avatar"><img src="20200313143248_4TNKi.jpeg" style="width:56px;height:56px;border-radius:50%;object-fit:cover;" alt="avatar"><div><strong>@asiacomkhk</strong><br><span style="font-size:0.7rem;">Cloudflare Worker 开发者</span></div></div><p class="bio-text">独立开发者，专注于边缘计算。</p><div class="social-links"><a href="https://github.com/asiacomkhk"><i class="fab fa-github"></i></a><a href="mailto:asiacomk@gmail.com"><i class="fas fa-envelope"></i></a><a href="https://t.me/asiacomk"><i class="fab fa-telegram"></i></a><a href="https://twitter.com/asiacomk"><i class="fab fa-twitter"></i></a><a href="https://youtube.com/@BlueDriftHK"><i class="fab fa-youtube"></i></a></div></div>
+        <div class="widget"><div class="widget-title"><i class="fas fa-heartbeat"></i> 项目状态</div><div><span class="status-badge"></span> NetDiag: ✅ 运行正常</div><div style="margin-top:8px;"><span class="status-badge"></span> M3U8 Player: ✅ 运行正常</div><div style="margin-top:8px;"><span class="status-badge"></span> API 可用率: 99.9%</div></div>
+        <div class="widget"><div class="widget-title"><i class="fas fa-tags"></i> 标签云</div><div class="tag-cloud"><a href="#" class="tag">Cloudflare Workers</a><a href="#" class="tag">TypeScript</a><a href="#" class="tag">HLS.js</a><a href="#" class="tag">网络协议</a><a href="#" class="tag">边缘计算</a><a href="#" class="tag">Rust</a><a href="#" class="tag">云原生</a><a href="#" class="tag">开源项目</a></div></div>
+        <div class="widget"><div class="widget-title"><i class="fas fa-clock"></i> 近期文章</div><ul class="recent-list"><li><a href="#"><i class="fas fa-file-alt"></i> CF Workers 部署最佳实践</a></li><li><a href="#"><i class="fas fa-file-alt"></i> Worker 与 Pages 对比分析</a></li><li><a href="#"><i class="fas fa-file-alt"></i> 边缘计算 2025 趋势</a></li></ul></div>
+        <div class="widget"><div class="widget-title"><i class="fas fa-envelope"></i> 订阅更新</div><div style="display:flex;gap:8px;"><input type="email" id="subEmail" placeholder="your@email.com" style="flex:1;background:var(--code-bg);border:1px solid var(--border-color);border-radius:40px;padding:10px 14px;color:var(--text-primary);font-size:0.8rem;"><button id="subBtn" style="background:var(--accent);border:none;border-radius:40px;padding:0 18px;font-weight:bold;color:#0a0c12;cursor:pointer;">订阅</button></div></div>
     </aside>
 </main>
 
@@ -348,7 +223,7 @@
 </footer>
 
 <script>
-    // ========== 原有博客交互脚本（完整保留） ==========
+    // ========== 通用博客交互 ==========
     function scrollToElement(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' }); }
     function updateActiveNav(target) { document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active-link', i.dataset.target === target)); }
     document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', e => { e.preventDefault(); const t = item.dataset.target; if (t === 'home') window.scrollTo({ top: 0, behavior: 'smooth' }); else if (t === 'projects') scrollToElement('projects-area'); else if (t === 'blog') scrollToElement('blog-area'); else if (t === 'about') scrollToElement('about-area'); else if (t === 'visitor') scrollToElement('visitor-time-machine'); updateActiveNav(t === 'visitor-time-machine' ? 'visitor' : t); }); });
@@ -361,302 +236,446 @@
     themeToggle.addEventListener('click', () => { const isDark = document.documentElement.getAttribute('data-theme') !== 'light'; if (isDark) { document.documentElement.setAttribute('data-theme','light'); localStorage.setItem('theme','light'); themeToggle.innerHTML = '<i class="fas fa-sun"></i> 亮色'; } else { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('theme','dark'); themeToggle.innerHTML = '<i class="fas fa-moon"></i> 暗色'; } });
     document.getElementById('subBtn')?.addEventListener('click', () => { const email = document.getElementById('subEmail')?.value.trim(); alert(email && email.includes('@') ? '✅ 订阅成功！' : '请输入有效邮箱'); });
 
-    // ========== 优化版访客时光机引擎 ==========
-    (function() {
-        const ROOT = document.getElementById('tm-root');
-        const STORAGE_KEY = 'visitor_time_machine_v2';
-        const DEDUP_WINDOW = 60 * 60 * 1000; // 1 小时内去重
-        const MAX_HISTORY = 20;
+    // ========== 国际化文本 (i18n) ==========
+    const i18n = {
+        zh: {
+            title: '访客时光机 · IP人设卡',
+            loading: '时光机待命...',
+            greetingPrefix: '',
+            greetingMid: ' · ',
+            ispLabel: '运营商',
+            osLabel: '系统',
+            netLabel: '网络',
+            exportBtn: '📸 生成纪念卡',
+            timelineAll: '全部',
+            timelineToday: '今天',
+            timelineYesterday: '昨天',
+            countryCount: '已点亮 {n} 个国家',
+            unknownCity: '未知城市',
+            unknownISP: '未知运营商',
+            unknownOS: '未知系统',
+        },
+        en: {
+            title: 'Visitor Time Machine · IP Persona',
+            loading: 'Time machine standing by...',
+            greetingPrefix: '',
+            greetingMid: ' · ',
+            ispLabel: 'ISP',
+            osLabel: 'OS',
+            netLabel: 'Network',
+            exportBtn: '📸 Export Card',
+            timelineAll: 'All',
+            timelineToday: 'Today',
+            timelineYesterday: 'Yesterday',
+            countryCount: 'Lit up {n} countries',
+            unknownCity: 'Unknown City',
+            unknownISP: 'Unknown ISP',
+            unknownOS: 'Unknown OS',
+        }
+    };
+    function getLang() { return navigator.language.startsWith('zh') ? 'zh' : 'en'; }
+    function t(key, params = {}) {
+        let str = i18n[getLang()][key] || i18n['zh'][key] || key;
+        Object.entries(params).forEach(([k,v]) => str = str.replace(`{${k}}`, v));
+        return str;
+    }
 
-        // 扩展的地区映射表（国家代码 → 人设元素）
-        const REGION_MAP = {
-            CN: { vibe:'古风', animal:'🐼', headwear:'竹簪' },
-            JP: { vibe:'和风', animal:'🐱', headwear:'樱花发饰' },
-            US: { vibe:'自由牛仔', animal:'🦅', headwear:'牛仔帽' },
-            FR: { vibe:'浪漫', animal:'🐓', headwear:'贝雷帽' },
-            DE: { vibe:'严谨', animal:'🦅', headwear:'啤酒帽' },
-            UK: { vibe:'绅士', animal:'🦁', headwear:'高顶礼帽' },
-            KR: { vibe:'K-pop', animal:'🐯', headwear:'发带' },
-            IN: { vibe:'神秘', animal:'🐅', headwear:'纱丽珠饰' },
-            RU: { vibe:'豪迈', animal:'🐻', headwear:'哥萨克帽' },
-            BR: { vibe:'桑巴', animal:'🦜', headwear:'羽毛头饰' },
-            CA: { vibe:'极地', animal:'🦌', headwear:'保暖耳罩' },
-            AU: { vibe:'阳光', animal:'🐨', headwear:'软木帽' },
-            IT: { vibe:'艺术', animal:'🐺', headwear:'橄榄枝环' },
-            ES: { vibe:'热情', animal:'🐂', headwear:'弗拉明戈花' },
-            MX: { vibe:'玛雅', animal:'🦅', headwear:'宽边草帽' },
-            EG: { vibe:'法老', animal:'🐈', headwear:'圣甲虫冠' },
-            TH: { vibe:'微笑', animal:'🐘', headwear:'莲花金簪' },
-            GR: { vibe:'神话', animal:'🦉', headwear:'月桂叶冠' },
-            SE: { vibe:'北欧', animal:'🦌', headwear:'水晶头饰' },
-            TR: { vibe:'奥斯曼', animal:'🦅', headwear:'土耳其帽' },
-            AR: { vibe:'探戈', animal:'🦅', headwear:'探戈帽' },
-            ZA: { vibe:'彩虹', animal:'🦌', headwear:'珠串头饰' },
+    // ========== 时光机核心引擎 ==========
+    const STORAGE_KEY = 'visitor_time_machine_v3';
+    const MAX_HISTORY = 50; // 保存更多记录用于时间轴
+
+    const REGION_MAP = {
+        CN: { vibe:'古风', animal:'🐼', headwear:'竹簪' },
+        JP: { vibe:'和风', animal:'🐱', headwear:'樱花发饰' },
+        US: { vibe:'自由牛仔', animal:'🦅', headwear:'牛仔帽' },
+        FR: { vibe:'浪漫', animal:'🐓', headwear:'贝雷帽' },
+        DE: { vibe:'严谨', animal:'🦅', headwear:'啤酒帽' },
+        UK: { vibe:'绅士', animal:'🦁', headwear:'高顶礼帽' },
+        KR: { vibe:'K-pop', animal:'🐯', headwear:'发带' },
+        IN: { vibe:'神秘', animal:'🐅', headwear:'纱丽珠饰' },
+        RU: { vibe:'豪迈', animal:'🐻', headwear:'哥萨克帽' },
+        BR: { vibe:'桑巴', animal:'🦜', headwear:'羽毛头饰' },
+        CA: { vibe:'极地', animal:'🦌', headwear:'保暖耳罩' },
+        AU: { vibe:'阳光', animal:'🐨', headwear:'软木帽' }
+    };
+
+    const ISP_MAP = {
+        'China Telecom': '中国电信', 'China Unicom': '中国联通', 'China Mobile': '中国移动',
+        'NTT': 'NTT Communications', 'KDDI': 'KDDI', 'SoftBank': '软银',
+        'AT&T': 'AT&T', 'Verizon': 'Verizon', 'T-Mobile': 'T-Mobile',
+        'Vodafone': 'Vodafone', 'Orange': 'Orange', 'Deutsche Telekom': '德国电信',
+        'Comcast': 'Comcast', 'Bell Canada': 'Bell', 'Telstra': 'Telstra',
+        'Cloudflare': 'Cloudflare', 'Google': 'Google'
+    };
+
+    function getRegion(code) { return REGION_MAP[code] || { vibe:'赛博流浪者', animal:'🐱', headwear:'电子光环' }; }
+    function getIspName(org) {
+        if (!org) return t('unknownISP');
+        for (const [key, val] of Object.entries(ISP_MAP)) {
+            if (org.includes(key)) return val;
+        }
+        return org.split(' ')[0];
+    }
+    function getOSIcon(ua) {
+        if (ua.includes('Windows')) return '🪟 Windows';
+        if (ua.includes('Mac')) return '🍎 macOS';
+        if (ua.includes('Linux')) return '🐧 Linux';
+        if (ua.includes('Android')) return '🤖 Android';
+        if (ua.includes('iPhone') || ua.includes('iOS')) return '📱 iOS';
+        return t('unknownOS');
+    }
+    function getNetworkType() {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!conn) return '❓';
+        const type = conn.effectiveType;
+        if (type === '4g') return '4G 📶';
+        if (type === '5g') return '5G ⚡';
+        if (type === '3g') return '3G';
+        if (type === '2g') return '2G';
+        if (type === 'slow-2g') return '🐢 2G';
+        return 'WiFi 📶';
+    }
+
+    function getTimeVibe(hour) {
+        if (hour < 6)  return { phase:'深夜来访', greeting:'午夜星光伴你同行' };
+        if (hour < 10) return { phase:'清晨问候', greeting:'晨光中踏露而来的探险家' };
+        if (hour < 14) return { phase:'正午漫步', greeting:'正午的勇者，无惧烈日' };
+        if (hour < 18) return { phase:'午后探险', greeting:'慵懒午后难掩好奇心' };
+        if (hour < 22) return { phase:'黄昏魔术', greeting:'最美的黄昏时刻降临' };
+        return { phase:'深夜密话', greeting:'夜色为你披上神秘斗篷' };
+    }
+
+    function buildPersona(ipData) {
+        const t = getTimeVibe(new Date().getHours());
+        const r = getRegion(ipData.country_code);
+        const osIcon = getOSIcon(navigator.userAgent);
+        const net = getNetworkType();
+        return {
+            name: `${r.vibe} · ${ipData.city || ipData.region || t('unknownCity')}`,
+            title: `${getIspName(ipData.org)} | ${osIcon}`,
+            greeting: t.greeting,
+            animal: r.animal,
+            headwear: r.headwear,
+            country: ipData.country_name || '未知',
+            countryCode: ipData.country_code || 'XX',
+            lat: ipData.latitude,
+            lng: ipData.longitude,
+            raw: {
+                ip: ipData.ip,
+                city: ipData.city,
+                isp: getIspName(ipData.org),
+                os: osIcon,
+                net,
+                time: new Date().toLocaleString('zh-CN')
+            },
+            phase: t.phase,
+            timestamp: Date.now()
         };
+    }
 
-        function getRegion(code) {
-            return REGION_MAP[code] || { vibe:'赛博流浪者', animal:'🐱', headwear:'电子光环' };
-        }
+    async function fetchIPInfo() {
+        try {
+            const resp = await fetch('https://ipapi.co/json/');
+            if (resp.ok) return await resp.json();
+        } catch (e) {}
+        try {
+            const resp = await fetch('https://api.ipify.org?format=json');
+            const { ip } = await resp.json();
+            return { ip, country_name:'未知', city:'未知', org:'未知' };
+        } catch (e) {}
+        return null;
+    }
 
-        function getTimeVibe(hour) {
-            if (hour < 6)  return { phase:'深夜来访', greeting:'午夜星光伴你同行' };
-            if (hour < 10) return { phase:'清晨问候', greeting:'晨光中踏露而来的探险家' };
-            if (hour < 14) return { phase:'正午漫步', greeting:'正午的勇者，无惧烈日' };
-            if (hour < 18) return { phase:'午后探险', greeting:'慵懒午后难掩好奇心' };
-            if (hour < 22) return { phase:'黄昏魔术', greeting:'最美的黄昏时刻降临' };
-            return { phase:'深夜密话', greeting:'夜色为你披上神秘斗篷' };
-        }
+    function loadHistory() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+    function saveHistory(history) { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); }
 
-        function getBrowserIcon(ua) {
-            if (ua.includes('Chrome')) return '🌐';
-            if (ua.includes('Firefox')) return '🦊';
-            if (ua.includes('Safari')) return '🧭';
-            if (ua.includes('Edge')) return '🌊';
-            return '🌀';
-        }
-
-        function buildPersona(ipData) {
-            const t = getTimeVibe(new Date().getHours());
-            const r = getRegion(ipData.country_code);
-            const browserIcon = getBrowserIcon(navigator.userAgent);
-            return {
-                name: `${r.vibe} · ${ipData.city || ipData.region || '未知'}`,
-                title: `${ipData.org || '未知运营商'} | ${browserIcon}`,
-                greeting: t.greeting,
-                animal: r.animal,
-                headwear: r.headwear,
-                country: ipData.country_name || '未知',
-                countryCode: ipData.country_code || 'XX',
-                lat: ipData.latitude,
-                lng: ipData.longitude,
-                raw: {
-                    ip: ipData.ip,
-                    city: ipData.city,
-                    isp: ipData.org,
-                    time: new Date().toLocaleString('zh-CN')
-                },
-                phase: t.phase,
-                timestamp: Date.now()
-            };
-        }
-
-        async function fetchIPInfo() {
-            // 主 API
-            try {
-                const resp = await fetch('https://ipapi.co/json/');
-                if (resp.ok) return await resp.json();
-            } catch (e) {}
-            // 备用
-            try {
-                const resp = await fetch('https://api.ipify.org?format=json');
-                const { ip } = await resp.json();
-                return { ip, country_name:'未知', city:'未知', org:'未知' };
-            } catch (e) {}
-            return null;
-        }
-
-        function loadHistory() {
-            try {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-            } catch { return []; }
-        }
-
-        function saveHistory(history) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-        }
-
-        function addVisit(persona) {
-            let history = loadHistory();
-            // 去重：同一 IP 在 DEDUP_WINDOW 内不再重复添加
-            const now = Date.now();
-            const dup = history.find(v => v.raw.ip === persona.raw.ip && (now - v.timestamp) < DEDUP_WINDOW);
-            if (dup) {
-                // 更新时间戳，但不增加条目
-                dup.timestamp = now;
-                dup.raw.time = persona.raw.time;
-                saveHistory(history);
-                return history;
-            }
-            history.unshift(persona);
-            if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+    function addVisit(persona) {
+        let history = loadHistory();
+        const now = Date.now();
+        const dup = history.find(v => v.raw.ip === persona.raw.ip && (now - v.timestamp) < 3600000);
+        if (dup) {
+            dup.timestamp = now;
+            dup.raw.time = persona.raw.time;
             saveHistory(history);
             return history;
         }
+        history.unshift(persona);
+        if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+        saveHistory(history);
+        return history;
+    }
 
-        // 渲染函数
-        function render(persona, history) {
-            let mapLoaded = false;
-            const html = `
-                <div class="time-machine-grid">
-                    <div class="map-container" id="worldMap"></div>
-                    <div class="persona-card-optimized">
-                        <div class="persona-animal">${persona.animal}</div>
-                        <div class="persona-name">${persona.name}</div>
-                        <div class="persona-title">${persona.title}</div>
-                        <p class="persona-greeting">${persona.greeting}</p>
-                        <div class="persona-meta">
-                            <span>🎩 ${persona.headwear}</span>
-                            <span>📡 ${persona.raw.isp}</span>
-                        </div>
-                        <div class="persona-time">🕒 ${persona.phase} · ${persona.raw.time}</div>
-                    </div>
-                </div>
-                <div class="recent-visitors">
-                    <h3><i class="fas fa-users"></i> 最近访客 (${history.length})</h3>
-                    <div class="visitor-list">
-                        ${history.map((v, idx) => `
-                            <div class="visitor-item" data-index="${idx}">
-                                <span class="flag">${v.animal}</span>
-                                <div class="info">
-                                    <span class="name">${v.name}</span>
-                                    <span class="time">${v.raw.time}</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-            ROOT.innerHTML = html;
-            // 初始化地图
-            initMap(history, persona);
+    // 时间轴分组
+    function getDailyGroups(history) {
+        const groups = {};
+        history.forEach(v => {
+            const date = new Date(v.timestamp).toLocaleDateString();
+            if (!groups[date]) groups[date] = [];
+            groups[date].push(v);
+        });
+        return groups;
+    }
+
+    // ========== 懒加载 & 主渲染 ==========
+    let tmInitialized = false;
+    function initTimeMachine() {
+        if (tmInitialized) return;
+        tmInitialized = true;
+        const placeholder = document.getElementById('tm-placeholder');
+        const container = document.getElementById('tm-container');
+        placeholder.style.display = 'none';
+        container.classList.add('visible');
+        renderTimeMachine();
+    }
+
+    async function renderTimeMachine(filterDate = null) {
+        const ipData = await fetchIPInfo();
+        if (!ipData) {
+            document.getElementById('tm-container').innerHTML = `<div class="error-box"><p>⚠️ 无法获取IP信息</p><button class="retry-btn" onclick="location.reload()">重试</button></div>`;
+            return;
+        }
+        const persona = buildPersona(ipData);
+        let history = loadHistory();
+        // 如果是首次渲染，才添加当前访客；否则仅用于展示已有历史（切换时间轴时不再重复添加）
+        if (!filterDate) {
+            history = addVisit(persona);
+        } else {
+            // 时间轴筛选：只显示目标日期的记录（但当前卡片始终显示最新访客）
+            // 实际逻辑：地图和列表只显示 filterDate 对应的历史，但卡片仍为当前访客
         }
 
-        let chartInstance = null;
-        function initMap(history, currentPersona) {
-            const mapDom = document.getElementById('worldMap');
-            if (!mapDom) return;
-            if (chartInstance) chartInstance.dispose();
-            chartInstance = echarts.init(mapDom, 'dark');
+        const container = document.getElementById('tm-container');
+        // 构建 UI
+        container.innerHTML = buildUI(persona, history, filterDate);
+        // 更新国家统计
+        updateCountryCount(history);
+        // 初始化地图
+        initMap(history.filter(v => !filterDate || new Date(v.timestamp).toLocaleDateString() === filterDate));
+        // 绑定时间轴事件
+        bindTimeline(history);
+        // 导出按钮
+        document.getElementById('exportCardBtn')?.addEventListener('click', () => exportCard());
+    }
 
-            // 加载世界地图 GeoJSON（带 CDN 回退）
-            const geoURLs = [
-                'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
-                'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
-            ];
-            loadGeoJSON(geoURLs).then(geoJSON => {
-                echarts.registerMap('world', geoJSON);
-                const points = [];
-                // 添加历史数据点
-                history.forEach(v => {
-                    if (v.lat && v.lng) {
-                        points.push({
-                            name: v.raw.city,
-                            value: [v.lng, v.lat, v.name],
-                            itemStyle: { color: '#ff6b9d' }
-                        });
-                    }
-                });
-                // 当前访客单独高亮
-                if (currentPersona.lat && currentPersona.lng) {
-                    points.push({
-                        name: currentPersona.raw.city,
-                        value: [currentPersona.lng, currentPersona.lat, currentPersona.name],
-                        itemStyle: { color: '#f9d71c', borderColor: '#fff', borderWidth: 2 },
-                        symbolSize: 20,
-                    });
-                }
-                const option = {
-                    backgroundColor: 'transparent',
-                    geo: {
-                        map: 'world',
-                        roam: true,
-                        center: [15, 20],
-                        zoom: 1.3,
-                        itemStyle: {
-                            areaColor: '#1a1a3a',
-                            borderColor: 'rgba(100,150,255,0.4)',
-                            borderWidth: 1,
-                        },
-                        emphasis: {
-                            itemStyle: { areaColor: '#2a2a5a' }
-                        }
+    function buildUI(persona, history, filterDate) {
+        const groups = getDailyGroups(history);
+        const dates = Object.keys(groups).sort().reverse();
+        const selectedDate = filterDate || 'all';
+        const timelineHtml = `<button class="timeline-item ${selectedDate==='all'?'active':''}" data-date="all">${t('timelineAll')}</button>` +
+            dates.map(d => `<button class="timeline-item ${d===selectedDate?'active':''}" data-date="${d}">${d === new Date().toLocaleDateString() ? t('timelineToday') : d}</button>`).join('');
+
+        const filteredHistory = selectedDate === 'all' ? history : (groups[selectedDate] || []);
+        const visitorListHtml = filteredHistory.map((v, idx) => `
+            <div class="visitor-item" data-index="${idx}">
+                <span class="flag">${v.animal}</span>
+                <div class="info">
+                    <span class="name">${v.name}</span>
+                    <span class="time">${v.raw.time}</span>
+                </div>
+            </div>
+        `).join('');
+
+        return `
+            <div class="tm-stats">
+                <div class="tm-stat"><div class="tm-stat-value">${history.length}</div><div class="tm-stat-label">总访客</div></div>
+                <div class="tm-stat"><div class="tm-stat-value" id="tm-country-num">0</div><div class="tm-stat-label">国家</div></div>
+            </div>
+            <div class="time-machine-grid">
+                <div class="map-container" id="worldMap"></div>
+                <div class="persona-card-optimized" id="personaCard">
+                    <div class="persona-animal">${persona.animal}</div>
+                    <div class="persona-name">${persona.name}</div>
+                    <div class="persona-title">${persona.title}</div>
+                    <p class="persona-greeting">${persona.greeting}</p>
+                    <div class="persona-meta">
+                        <span>🎩 ${persona.headwear}</span>
+                        <span>📡 ${persona.raw.isp}</span>
+                        <span>💻 ${persona.raw.os}</span>
+                        <span>📶 ${persona.raw.net}</span>
+                    </div>
+                    <div class="persona-time">🕒 ${persona.phase} · ${persona.raw.time}</div>
+                    <button id="exportCardBtn" class="export-btn">${t('exportBtn')}</button>
+                </div>
+            </div>
+            <div class="timeline" id="timelineBar">${timelineHtml}</div>
+            <div class="recent-visitors">
+                <h3><i class="fas fa-users"></i> 最近访客</h3>
+                <div class="visitor-list">${visitorListHtml || '<span style="color:var(--text-muted);">暂无记录</span>'}</div>
+            </div>
+        `;
+    }
+
+    function updateCountryCount(history) {
+        const countries = new Set(history.map(v => v.countryCode).filter(c => c !== 'XX'));
+        document.getElementById('tm-country-num').textContent = countries.size;
+        document.getElementById('tm-country-count').textContent = t('countryCount', { n: countries.size });
+    }
+
+    let chartInstance = null;
+    async function initMap(history) {
+        const mapDom = document.getElementById('worldMap');
+        if (!mapDom) return;
+        if (chartInstance) chartInstance.dispose();
+        chartInstance = echarts.init(mapDom, 'dark');
+
+        const geoURLs = [
+            'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
+            'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+        ];
+        try {
+            const geoJSON = await loadGeoJSON(geoURLs);
+            echarts.registerMap('world', geoJSON);
+            const points = history.map(v => ({
+                name: v.raw.city,
+                value: [v.lng || 0, v.lat || 0, v.name],
+            }));
+            // 当前访客用 effectScatter 实现脉动
+            const current = history[0];
+            const option = {
+                backgroundColor: 'transparent',
+                geo: {
+                    map: 'world',
+                    roam: true,
+                    center: [15, 20],
+                    zoom: 1.3,
+                    itemStyle: {
+                        areaColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#e0e0e0' : '#1a1a3a',
+                        borderColor: document.documentElement.getAttribute('data-theme') === 'light' ? '#ccc' : 'rgba(100,150,255,0.4)',
                     },
-                    series: [{
+                },
+                series: [
+                    {
                         type: 'scatter',
                         coordinateSystem: 'geo',
-                        data: points,
-                        symbolSize: val => val.symbolSize || 12,
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowColor: 'rgba(255,255,255,0.5)'
-                        },
-                        label: {
-                            show: true,
-                            formatter: '{b}',
-                            position: 'right',
-                            fontSize: 10,
-                            color: '#ddd'
-                        },
-                        emphasis: { scale: 1.5 }
-                    }],
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: params => `${params.name}<br/>${params.value[2] || '访客'}`
+                        data: points.slice(1), // 历史点
+                        symbolSize: 10,
+                        itemStyle: { color: '#ff6b9d' },
+                    },
+                    {
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        data: current ? [{ name: current.raw.city, value: [current.lng || 0, current.lat || 0, current.name] }] : [],
+                        symbolSize: 14,
+                        showEffectOn: 'render',
+                        rippleEffect: { brushType: 'stroke', scale: 4, period: 4 },
+                        itemStyle: { color: '#f9d71c', shadowBlur: 10, shadowColor: '#fff' },
+                        label: { show: true, formatter: '{b}', position: 'right', fontSize: 10, color: '#ddd' },
                     }
-                };
-                chartInstance.setOption(option);
-                // 点击历史记录项高亮地图对应点
-                document.querySelectorAll('.visitor-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const idx = parseInt(item.dataset.index);
-                        if (!isNaN(idx) && idx < points.length) {
-                            chartInstance.dispatchAction({ type: 'highlight', seriesIndex: 0, dataIndex: idx });
-                            setTimeout(() => chartInstance.dispatchAction({ type: 'downplay', seriesIndex: 0, dataIndex: idx }), 2000);
-                        }
-                    });
-                });
-            }).catch(err => {
-                mapDom.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">🌐 地图加载失败，但访客信息已捕获</div>';
-            });
+                ],
+                tooltip: { trigger: 'item' }
+            };
+            chartInstance.setOption(option);
+            // 监听主题变化更新地图背景
+            observeThemeChange(chartInstance);
+        } catch (e) {
+            mapDom.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">🌐 地图加载失败</div>';
         }
+    }
 
-        async function loadGeoJSON(urls) {
-            for (const url of urls) {
-                try {
-                    const resp = await fetch(url);
-                    if (!resp.ok) throw new Error();
-                    // 如果是 topojson 格式（world-atlas），需要转换
-                    if (url.includes('world-atlas')) {
-                        const topo = await resp.json();
-                        const { features } = topojson.feature(topo, topo.objects.countries);
-                        return { type: 'FeatureCollection', features };
-                    }
-                    return await resp.json();
-                } catch (e) {}
-            }
-            throw new Error('All geo sources failed');
-        }
-
-        // topojson 转换函数（轻量级）
-        function topojsonFeature(topo, object) {
-            // 简化版 topojson 转 geojson，仅适用于 countries
-            const features = [];
-            const geoms = object.geometries;
-            for (const geom of geoms) {
-                const feat = { type: 'Feature', properties: geom.properties || {}, geometry: {} };
-                if (geom.type === 'Polygon') {
-                    feat.geometry = { type: 'Polygon', coordinates: geom.arcs.map(arc => arc.map(idx => topo.arcs[idx])) };
-                } else if (geom.type === 'MultiPolygon') {
-                    feat.geometry = { type: 'MultiPolygon', coordinates: geom.arcs.map(poly => poly.map(arc => arc.map(idx => topo.arcs[idx]))) };
+    async function loadGeoJSON(urls) {
+        for (const url of urls) {
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error();
+                if (url.includes('world-atlas')) {
+                    const topo = await resp.json();
+                    return topojson2geo(topo);
                 }
-                features.push(feat);
-            }
-            return { type: 'FeatureCollection', features };
+                return await resp.json();
+            } catch (e) {}
         }
+        throw new Error('All geo sources failed');
+    }
 
-        async function initTimeMachine() {
-            const ipData = await fetchIPInfo();
-            if (!ipData) {
-                ROOT.innerHTML = `<div class="error-box"><p>⚠️ 无法获取IP信息，请检查网络</p><button class="retry-btn" onclick="location.reload()">🔄 重试</button></div>`;
-                return;
+    function topojson2geo(topo) {
+        const features = [];
+        const geoms = topo.objects.countries.geometries;
+        for (const g of geoms) {
+            const feat = { type: 'Feature', properties: g.properties || {}, geometry: {} };
+            if (g.type === 'Polygon') {
+                feat.geometry = { type: 'Polygon', coordinates: g.arcs.map(arc => arc.map(idx => topo.arcs[idx])) };
+            } else if (g.type === 'MultiPolygon') {
+                feat.geometry = { type: 'MultiPolygon', coordinates: g.arcs.map(poly => poly.map(arc => arc.map(idx => topo.arcs[idx]))) };
             }
-            const persona = buildPersona(ipData);
-            const history = addVisit(persona);
-            render(persona, history);
+            features.push(feat);
         }
+        return { type: 'FeatureCollection', features };
+    }
 
-        initTimeMachine();
-    })();
+    function observeThemeChange(chart) {
+        const observer = new MutationObserver(() => {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            chart.setOption({
+                geo: {
+                    itemStyle: {
+                        areaColor: isLight ? '#f5f5f5' : '#1a1a3a',
+                        borderColor: isLight ? '#ccc' : 'rgba(100,150,255,0.4)'
+                    }
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+
+    function bindTimeline(history) {
+        document.querySelectorAll('.timeline-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const date = btn.dataset.date;
+                // 重新绘制，但不重新添加访客
+                renderFilteredHistory(date, history);
+            });
+        });
+    }
+
+    function renderFilteredHistory(date, history) {
+        const container = document.getElementById('tm-container');
+        const persona = history[0]; // 始终展示最新人设
+        const filtered = date === 'all' ? history : history.filter(v => new Date(v.timestamp).toLocaleDateString() === date);
+        container.innerHTML = buildUI(persona, history, date); // history 传入完整以用于时间轴
+        initMap(filtered);
+        bindTimeline(history);
+        updateCountryCount(history);
+        document.getElementById('exportCardBtn')?.addEventListener('click', exportCard);
+    }
+
+    // 导出卡片
+    function exportCard() {
+        const card = document.getElementById('personaCard');
+        if (!card) return;
+        // 动态加载 html2canvas
+        if (!window.html2canvas) {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            script.onload = () => doExport(card);
+            document.head.appendChild(script);
+        } else {
+            doExport(card);
+        }
+    }
+    function doExport(card) {
+        html2canvas(card, { backgroundColor: null, scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `visitor-card-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
+
+    // 懒加载 Observer
+    const tmSection = document.getElementById('visitor-time-machine');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                initTimeMachine();
+                observer.unobserve(tmSection);
+            }
+        });
+    }, { threshold: 0.2 });
+    observer.observe(tmSection);
+
+    // 更新标题文本
+    document.getElementById('tm-section-title-text').textContent = t('title');
+    document.getElementById('tm-placeholder').innerHTML = `<i class="fas fa-spinner fa-pulse"></i> ${t('loading')}`;
 </script>
 </body>
 </html>
