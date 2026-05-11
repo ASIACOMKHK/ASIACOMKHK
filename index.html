@@ -11,10 +11,8 @@
     <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- ECharts 全局引入（懒加载仅用于时光机初始化，但库本身已在 head 加载，实际可改为动态加载，为简单保留） -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
-        /* 原有样式完全保留，此处仅新增/修改时光机相关样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #0a0c12; --bg-secondary: #10131c; --bg-card: #10131c;
@@ -99,7 +97,6 @@
         .recent-list a:hover { color: var(--accent); }
         footer { border-top: 1px solid var(--border-color); padding: 28px 0; text-align: center; font-size: 0.75rem; color: var(--text-muted); }
 
-        /* 时光机进阶样式 */
         .time-machine-section { margin-top: 48px; }
         .tm-placeholder { height: 400px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-color); }
         .tm-container { display: none; flex-direction: column; gap: 20px; animation: fadeIn 0.5s ease; }
@@ -182,7 +179,6 @@
             <article class="blog-card"><div class="blog-content"><div class="post-meta"><span><i class="far fa-calendar-alt"></i> 2025-03-22</span><span><i class="fas fa-tag"></i> 流媒体 · HLS</span></div><h2 class="post-title"><a href="#">M3U8 播放器 + Worker 代理：跨域问题终极解决方案</a></h2><p class="post-excerpt">手把手搭建一个自托管的 HLS 流媒体代理……</p><a href="#" class="read-more">阅读全文 <i class="fas fa-arrow-right"></i></a></div></article>
         </div>
 
-        <!-- 时光机模块（懒加载） -->
         <div id="visitor-time-machine" class="section-anchor time-machine-section">
             <div class="section-title">
                 <i class="fas fa-clock"></i>
@@ -193,7 +189,6 @@
                 <i class="fas fa-spinner fa-pulse"></i>&nbsp; 时光机待命...
             </div>
             <div id="tm-container" class="tm-container">
-                <!-- 动态填充 -->
             </div>
         </div>
 
@@ -282,7 +277,7 @@
 
     // ========== 时光机核心引擎 ==========
     const STORAGE_KEY = 'visitor_time_machine_v3';
-    const MAX_HISTORY = 50; // 保存更多记录用于时间轴
+    const MAX_HISTORY = 50;
 
     const REGION_MAP = {
         CN: { vibe:'古风', animal:'🐼', headwear:'竹簪' },
@@ -405,7 +400,6 @@
         return history;
     }
 
-    // 时间轴分组
     function getDailyGroups(history) {
         const groups = {};
         history.forEach(v => {
@@ -416,7 +410,6 @@
         return groups;
     }
 
-    // ========== 懒加载 & 主渲染 ==========
     let tmInitialized = false;
     function initTimeMachine() {
         if (tmInitialized) return;
@@ -436,24 +429,15 @@
         }
         const persona = buildPersona(ipData);
         let history = loadHistory();
-        // 如果是首次渲染，才添加当前访客；否则仅用于展示已有历史（切换时间轴时不再重复添加）
         if (!filterDate) {
             history = addVisit(persona);
-        } else {
-            // 时间轴筛选：只显示目标日期的记录（但当前卡片始终显示最新访客）
-            // 实际逻辑：地图和列表只显示 filterDate 对应的历史，但卡片仍为当前访客
         }
 
         const container = document.getElementById('tm-container');
-        // 构建 UI
         container.innerHTML = buildUI(persona, history, filterDate);
-        // 更新国家统计
         updateCountryCount(history);
-        // 初始化地图
         initMap(history.filter(v => !filterDate || new Date(v.timestamp).toLocaleDateString() === filterDate));
-        // 绑定时间轴事件
         bindTimeline(history);
-        // 导出按钮
         document.getElementById('exportCardBtn')?.addEventListener('click', () => exportCard());
     }
 
@@ -529,7 +513,6 @@
                 name: v.raw.city,
                 value: [v.lng || 0, v.lat || 0, v.name],
             }));
-            // 当前访客用 effectScatter 实现脉动
             const current = history[0];
             const option = {
                 backgroundColor: 'transparent',
@@ -547,7 +530,7 @@
                     {
                         type: 'scatter',
                         coordinateSystem: 'geo',
-                        data: points.slice(1), // 历史点
+                        data: points.slice(1),
                         symbolSize: 10,
                         itemStyle: { color: '#ff6b9d' },
                     },
@@ -565,7 +548,6 @@
                 tooltip: { trigger: 'item' }
             };
             chartInstance.setOption(option);
-            // 监听主题变化更新地图背景
             observeThemeChange(chartInstance);
         } catch (e) {
             mapDom.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">🌐 地图加载失败</div>';
@@ -621,7 +603,6 @@
         document.querySelectorAll('.timeline-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const date = btn.dataset.date;
-                // 重新绘制，但不重新添加访客
                 renderFilteredHistory(date, history);
             });
         });
@@ -629,20 +610,18 @@
 
     function renderFilteredHistory(date, history) {
         const container = document.getElementById('tm-container');
-        const persona = history[0]; // 始终展示最新人设
+        const persona = history[0];
         const filtered = date === 'all' ? history : history.filter(v => new Date(v.timestamp).toLocaleDateString() === date);
-        container.innerHTML = buildUI(persona, history, date); // history 传入完整以用于时间轴
+        container.innerHTML = buildUI(persona, history, date);
         initMap(filtered);
         bindTimeline(history);
         updateCountryCount(history);
         document.getElementById('exportCardBtn')?.addEventListener('click', exportCard);
     }
 
-    // 导出卡片
     function exportCard() {
         const card = document.getElementById('personaCard');
         if (!card) return;
-        // 动态加载 html2canvas
         if (!window.html2canvas) {
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
@@ -661,7 +640,6 @@
         });
     }
 
-    // 懒加载 Observer
     const tmSection = document.getElementById('visitor-time-machine');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -673,9 +651,34 @@
     }, { threshold: 0.2 });
     observer.observe(tmSection);
 
-    // 更新标题文本
     document.getElementById('tm-section-title-text').textContent = t('title');
     document.getElementById('tm-placeholder').innerHTML = `<i class="fas fa-spinner fa-pulse"></i> ${t('loading')}`;
 </script>
+
+<!-- ========== 访问统计上报 ========== -->
+<script>
+(function(){
+    // 改这里：你的统计 Worker 地址
+    var STAT_URL = 'https://analyse.bjhr.space/collect';
+    
+    var d = {
+        p: location.pathname || '/',
+        r: document.referrer || '',
+        t: new Date().toISOString()
+    };
+    
+    // 优先 sendBeacon，不阻塞页面
+    if (navigator.sendBeacon) {
+        var blob = new Blob([JSON.stringify(d)], { type: 'application/json' });
+        navigator.sendBeacon(STAT_URL, blob);
+    } else {
+        var x = new XMLHttpRequest();
+        x.open('POST', STAT_URL, true);
+        x.setRequestHeader('Content-Type', 'application/json');
+        x.send(JSON.stringify(d));
+    }
+})();
+</script>
+
 </body>
 </html>
