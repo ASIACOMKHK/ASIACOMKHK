@@ -1,34 +1,18 @@
-确实，之前的版本在代码层面是“挺好”的，逻辑通顺且功能完整。但现在的黑屏并非代码本身有错，而是你的浏览器环境（插件）与代码发生了“打架”。
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ASIACOMKHK · 技术博客 | CF Workers 项目集</title>
+    <meta name="author" content="ASIACOMKHK">
+    <meta name="copyright" content="ASIACOMKHK">
+    <meta name="description" content="专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。">
+    <meta name="theme-color" content="#18171d">
 
-为什么会出现这种情况？
+    <!-- 直接引入 ECharts，避免动态加载失败 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 
-之前的版本可能因为代码结构简单，或者你没有安装某些特定的插件，所以运行正常。但现在的版本引入了更复杂的交互（如动态加载 ECharts），这触发了你浏览器里某些“激进”的插件（如广告拦截器、脚本管理器）的防御机制，导致它们强行注入错误的代码，把你的页面搞崩了。
-
-如何恢复到“挺好”的状态？
-
-要解决这个问题，你不需要重写代码，只需要做两件事：
-
-清理浏览器环境：这是最直接有效的方法。请按照上次的建议，暂时关闭所有广告拦截器和脚本管理器，然后刷新页面。如果页面恢复正常，说明问题出在插件上。
-优化代码以兼容插件：为了让你的网页在任何环境下都能稳定运行，我们可以对代码进行微调，使其更“抗揍”。
-
-以下是优化后的代码，我做了以下调整，以增强其稳定性：
-
-移除动态加载 ECharts：改回直接在  中引入，虽然会稍微增加首屏加载时间，但能避免因网络问题或插件拦截导致的加载失败。
-增加全局错误捕获：在 JavaScript 中加入 window.onerror，可以捕获未处理的错误，防止页面完全崩溃。
-简化交互逻辑：移除了一些可能触发插件误判的复杂操作。
-
-    
-    
-    ASIACOMKHK · 技术博客 | CF Workers 项目集
-    
-    
-    
-    
-
-    
-    
-
-    
+    <style>
         :root {
             --bg-primary: #18171d;
             --bg-secondary: #222126;
@@ -51,7 +35,7 @@
             --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -381,141 +365,142 @@
             border: 1px solid #ff6b6b;
             margin: 20px 0;
         }
-    
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container container">
+            <a href="#" class="logo">ASIACOMKHK</a>
+            <div class="nav-links">
+                <a href="#home" class="nav-link" data-lang="nav.home">首页</a>
+                <a href="#projects" class="nav-link" data-lang="nav.projects">项目</a>
+                <a href="#timeline" class="nav-link" data-lang="nav.timeline">时光机</a>
+                <a href="#about" class="nav-link" data-lang="nav.about">关于</a>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
 
-    
-    
-        
-            ASIACOMKHK
-            
-                首页
-                项目
-                时光机
-                关于
-            
-            
-                
-            
-        
-    
+    <!-- 主体内容 -->
+    <main class="container">
+        <!-- 英雄区域 -->
+        <section id="home" class="hero">
+            <h1 data-lang="hero.title">欢迎来到我的技术博客</h1>
+            <p data-lang="hero.subtitle">专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。</p>
+        </section>
 
-    
-    
-        
-        
-            欢迎来到我的技术博客
-            专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。
-        
-
-        
-        
-            我的项目
-            
-                
-                
-                    CF Workers 博客系统
-                    
+        <!-- 项目展示 -->
+        <section id="projects">
+            <h2 data-lang="projects.title">我的项目</h2>
+            <div class="projects-grid">
+                <!-- 项目卡片 1 -->
+                <div class="project-card">
+                    <h3 class="project-title">CF Workers 博客系统</h3>
+                    <p class="project-description" data-lang="projects.desc1">
                         基于 Cloudflare Workers 构建的无服务器博客系统，支持 Markdown 编辑、评论系统和 SEO 优化。
-                    
-                    
-                        Cloudflare Workers
-                        Markdown
-                        D1 Database
-                        R2 Storage
-                    
-                    
-                        
-                             GitHub
-                        
-                        
-                             在线演示
-                        
-                    
-                
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Cloudflare Workers</span>
+                        <span class="tech-tag">Markdown</span>
+                        <span class="tech-tag">D1 Database</span>
+                        <span class="tech-tag">R2 Storage</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/asiacomkhk/cf-workers-blog" class="btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://blog.asiacomkhk.com" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 在线演示
+                        </a>
+                    </div>
+                </div>
 
-                
-                
-                    边缘计算 API 网关
-                    
+                <!-- 项目卡片 2 -->
+                <div class="project-card">
+                    <h3 class="project-title">边缘计算 API 网关</h3>
+                    <p class="project-description" data-lang="projects.desc2">
                         一个高性能的 API 网关，利用 Cloudflare Workers 的全球边缘网络，提供请求路由、限流、认证等功能。
-                    
-                    
-                        Cloudflare Workers
-                        API Gateway
-                        Rate Limiting
-                        JWT Auth
-                    
-                    
-                        
-                             GitHub
-                        
-                        
-                             文档
-                        
-                    
-                
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Cloudflare Workers</span>
+                        <span class="tech-tag">API Gateway</span>
+                        <span class="tech-tag">Rate Limiting</span>
+                        <span class="tech-tag">JWT Auth</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/asiacomkhk/cf-api-gateway" class="btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://api.asiacomkhk.com" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 文档
+                        </a>
+                    </div>
+                </div>
 
-                
-                
-                    静态网站生成器
-                    
+                <!-- 项目卡片 3 -->
+                <div class="project-card">
+                    <h3 class="project-title">静态网站生成器</h3>
+                    <p class="project-description" data-lang="projects.desc3">
                         一个轻量级的静态网站生成器，支持 Markdown、Front Matter 和自定义模板，可部署到任何静态托管服务。
-                    
-                    
-                        Node.js
-                        Markdown
-                        Template Engine
-                        Static Site
-                    
-                    
-                        
-                             GitHub
-                        
-                        
-                             示例站点
-                        
-                    
-                
-            
-        
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Node.js</span>
+                        <span class="tech-tag">Markdown</span>
+                        <span class="tech-tag">Template Engine</span>
+                        <span class="tech-tag">Static Site</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/asiacomkhk/static-site-generator" class="btn btn-primary" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://ssg.asiacomkhk.com" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 示例站点
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        
-        
-            开发时光机
-            回顾我的开源项目开发历程
-            
-        
+        <!-- 时光机 -->
+        <section id="timeline">
+            <h2 data-lang="timeline.title">开发时光机</h2>
+            <p data-lang="timeline.subtitle">回顾我的开源项目开发历程</p>
+            <div id="timeline-chart"></div>
+        </section>
 
-        
-        
-            关于我
-            
-                
+        <!-- 关于 -->
+        <section id="about">
+            <h2 data-lang="about.title">关于我</h2>
+            <div class="project-card">
+                <p data-lang="about.content">
                     我是 ASIACOMKHK，一名专注于边缘计算和 Web 开发的全栈工程师。我热衷于探索 Cloudflare Workers 的无限可能，并将其应用于实际项目中。
-                
-                
+                </p>
+                <p data-lang="about.content2">
                     我的项目大多源于日常的技术探索和问题解决，希望能对社区有所贡献。如果你对我的项目感兴趣，欢迎通过 GitHub 与我交流。
-                
-                
-                    
-                         GitHub
-                    
-                    
-                         联系我
-                    
-                
-            
-        
-    
+                </p>
+                <div class="project-links" style="margin-top: 20px;">
+                    <a href="https://github.com/asiacomkhk" class="btn btn-primary" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="mailto:contact@asiacomkhk.com" class="btn btn-outline">
+                        <i class="fas fa-envelope"></i> 联系我
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    
+    <script>
         // 全局错误捕获，防止页面崩溃
         window.onerror = function(message, source, lineno, colno, error) {
             console.error('全局错误:', message, error);
             // 可以在这里显示一个友好的错误提示
             const errorDiv = document.createElement('div');
             errorDiv.className = 'error-message';
-            errorDiv.innerHTML = 发生错误: ${message}请尝试刷新页面或联系管理员。;
+            errorDiv.innerHTML = `<strong>发生错误:</strong> ${message}<br>请尝试刷新页面或联系管理员。`;
             document.body.appendChild(errorDiv);
             return true; // 阻止默认错误处理
         };
@@ -687,7 +672,7 @@
                 'hero.subtitle': 'Focused on Cloudflare Workers ecosystem and edge computing. My open-source projects are born from daily technical exploration. Welcome to communicate.',
                 'projects.title': 'My Projects',
                 'projects.desc1': 'A serverless blog system built with Cloudflare Workers, supporting Markdown editing, comment system, and SEO optimization.',
-                'projects.desc2': 'A high-performance API gateway leveraging Cloudflare Workers' global edge network, providing request routing, rate limiting, authentication, and more.',
+                'projects.desc2': 'A high-performance API gateway leveraging Cloudflare Workers\' global edge network, providing request routing, rate limiting, authentication, and more.',
                 'projects.desc3': 'A lightweight static site generator supporting Markdown, Front Matter, and custom templates, deployable to any static hosting service.',
                 'timeline.title': 'Development Timeline',
                 'timeline.subtitle': 'Review my open-source project development journey',
@@ -710,3 +695,6 @@
 
         // 默认设置为中文
         setLanguage('zh');
+    </script>
+</body>
+</html>
