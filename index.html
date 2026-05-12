@@ -3,355 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ASIACOMKHK · 技术博客 | 网络工程与边缘计算</title>
-    <meta name="author" content="ASIACOMKHK">
-    <meta name="description" content="网络工程师的技术沉淀。专注于 Cloudflare Workers 网络诊断与流媒体解决方案。">
-    <meta name="theme-color" content="#18171d">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.8em' font-size='90' font-family='Arial, Helvetica, sans-serif' fill='%236c5ce7'%3E⚡%3C/text%3E%3C/svg%3E">
+    <title>ASIACOMKHK | 网络工程与边缘计算</title>
+    <meta name="description" content="专注于 Cloudflare Workers 生态。提供边缘网络诊断工具与高性能 M3U8 播放器解决方案。">
+    <meta name="theme-color" content="#0f172a">
+    
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-primary: #18171d;
-            --bg-secondary: #222126;
-            --text-primary: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --accent-color: #6c5ce7; /* 紫色 */
-            --success-color: #00cec9; /* 青色 (用于网络状态) */
-            --border-color: #333236;
-            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            --transition-speed: 0.3s;
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --primary: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            transition: background-color var(--transition-speed) ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
+            transition: background-color 0.3s ease;
+            padding: 2rem 1rem;
+        }
+
+        /* 背景动态光效 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(129, 140, 248, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
+            max-width: 800px;
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* 导航栏 */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: rgba(24, 23, 29, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--accent-color);
-            transition: width var(--transition-speed) ease;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        /* 主体内容 */
-        main {
-            flex: 1;
-            padding-top: 80px;
-        }
-
-        .hero {
             text-align: center;
-            padding: 100px 20px 60px;
-            background: linear-gradient(135deg, #1e1e24 0%, #121214 100%);
-            border-radius: 15px;
-            margin-bottom: 40px;
-            border: 1px solid var(--border-color);
+            z-index: 1;
         }
 
-        .hero h1 {
+        /* 头部区域 */
+        header {
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            object-fit: cover;
+            background-color: #1e293b; /* 占位色 */
+        }
+
+        h1 {
             font-size: 2.5rem;
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, var(--accent-color), var(--success-color));
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
+        .bio {
+            color: var(--text-muted);
             font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 20px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(0, 206, 201, 0.1);
-            color: var(--success-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            border: 1px solid rgba(0, 206, 201, 0.3);
-        }
-
-        .projects-grid {
+        /* 项目卡片网格 */
+        .project-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
+            grid-template-columns: 1fr;
+            gap: 2rem;
         }
 
-        .project-card {
-            background-color: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            transition: transform 0.2s ease;
-            position: relative;
-            overflow: hidden;
+        @media (min-width: 768px) {
+            .project-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
         }
 
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), var(--success-color));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .project-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .project-title {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-        }
-
-        .project-description {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-
-        .project-tech {
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: left;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeInUp 0.8s ease-out backwards;
         }
 
-        .tech-tag {
-            background-color: rgba(108, 92, 231, 0.1);
-            color: var(--accent-color);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid rgba(108, 92, 231, 0.3);
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            padding: 10px 20px;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background: var(--text-main);
+            color: var(--bg-color);
             border-radius: 8px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .btn i { margin-right: 0.5rem; }
+
+        /* 底部 */
+        footer {
+            margin-top: 4rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            padding-bottom: 1rem;
+        }
+
+        .social-links {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .social-links a {
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            transition: color 0.2s;
+        }
+
+        .social-links a:hover { color: var(--primary); }
+
+        /* 动画 */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--text-main);
             cursor: pointer;
-            gap: 8px;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            z-index: 10;
         }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #5d3fd3;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero h1 {
-                font-size: 2rem;
-            }
-        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="nav-container container">
-            <a href="#" class="logo">⚡ ASIACOMKHK</a>
-            <div class="nav-links">
-                <a href="#home" class="nav-link">首页</a>
-                <a href="#projects" class="nav-link">项目</a>
-                <a href="https://github.com/ASIACOMKHK" class="nav-link" target="_blank">GitHub</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- 主体内容 -->
-    <main class="container">
-        <!-- 英雄区域 -->
-        <section id="home" class="hero">
-            <h1>网络工程与边缘计算</h1>
-            <p>基于 Cloudflare Workers 的高性能工具集。实时网络诊断与流媒体播放解决方案，零成本部署，全球边缘加速。</p>
-            <div class="status-indicator">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                系统运行正常 · 边缘网络就绪
-            </div>
-        </section>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+        <i class="fas fa-sun"></i>
+    </button>
 
-        <!-- 项目展示 -->
-        <section id="projects">
-            <h2 style="text-align: center; margin-bottom: 40px; font-size: 2rem;">核心项目</h2>
-            <div class="projects-grid">
+    <div class="container">
+        <!-- 头部简介 -->
+        <header>
+            <!-- 这里的 src 可以换成你的 GitHub 头像链接 -->
+            <img src="https://avatars.githubusercontent.com/u/your-username" alt="Avatar" class="avatar" onerror="this.src='https://ui-avatars.com/api/?name=ASIACOMKHK&background=38bdf8&color=fff&size=256'">
+            
+            <h1>ASIACOMKHK</h1>
+            <p class="bio">
+                网络工程师 | Cloudflare Workers 开发者<br>
+                专注于边缘网络诊断工具与高性能流媒体解决方案。
+            </p>
+        </header>
 
-                <!-- 项目 1: 网络诊断 -->
-                <div class="project-card">
-                    <h3 class="project-title">🌐 CF-workers-netdiag</h3>
-                    <p class="project-description">
-                        一站式网络诊断工具箱。基于 Cloudflare Workers 边缘网络运行，提供实时延迟 (RTT)、带宽测速、DNS 对比、IP 风险评分及 TLS 协议分析。
-                        <!-- 从你提供的网页中提取的关键点 -->
-                        <br><br>
-                        <strong>特性：</strong> 实时延迟图表、带宽吞吐测试、丢包率估算、边缘节点定位 (City/Colo)、隐私安全审计 (ECH)。
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Network Diag</span>
-                        <span classspan="tech-tag">Real-time</span>
-                        <span class="tech-tag">Cloudflare</span>
+        <!-- 项目展示区 -->
+        <main class="project-grid">
+            
+            <!-- 项目 1 -->
+            <article class="card">
+                <div class="card-header">
+                    <div class="icon-box">
+                        <i class="fas fa-network-wired"></i>
                     </div>
-                    <div class="project-links">
-                        <!-- 这里填入你提供的第一个链接 -->
-                        <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary" target="_blank">
-                            🔗 访问演示
-                        </a>
-                        <a href="https://github.com/ASIACOMKHK/CF-workers-netdiag" class="btn btn-outline" target="_blank">
-                            GitHub 仓库
-                        </a>
-                    </div>
+                    <h2 class="card-title">NetDiag 网络诊断</h2>
                 </div>
-
-                <!-- 项目 2: M3U8 播放器 -->
-                <div class="project-card">
-                    <h3 class="project-title">📺 CF-Woker-M3U8Player</h3>
-                    <p class="project-description">
-                        轻量级流媒体播放器。专为 M3U8 格式设计，利用边缘网络进行视频流代理与播放，解决跨域限制，提供流畅的直播与点播体验。
-                        <!-- 通用描述，因为没有具体内容，但符合名字含义 -->
-                        <br><br>
-                        <strong>特性：</strong> 原生 M3U8 支持、HLS 播放、边缘缓存加速、响应式界面、低延迟播放。
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Streaming</span>
-                        <span class="tech-tag">M3U8</span>
-                        <span class="tech-tag">Media</span>
-                    </div>
-                    <div class="project-links">
-                        <!-- 这里填入你提供的第二个链接 -->
-                        <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" class="btn btn-primary" target="_blank">
-                            ▶️ 立即播放
-                        </a>
-                        <a href="https://github.com/ASIACOMKHK/CF-Woker-M3U8Player" class="btn btn-outline" target="_blank">
-                            GitHub 仓库
-                        </a>
-                    </div>
+                <p class="card-desc">
+                    基于 Cloudflare Workers 构建的边缘网络诊断工具。
+                    支持多节点延迟测试、带宽测速及路由追踪，帮助开发者快速定位全球网络链路质量。
+                </p>
+                <div class="tags">
+                    <span class="tag">Cloudflare Workers</span>
+                    <span class="tag">Network</span>
+                    <span class="tag">Latency Test</span>
                 </div>
+                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn">
+                    <i class="fas fa-external-link-alt"></i> 访问工具
+                </a>
+            </article>
 
+            <!-- 项目 2 -->
+            <article class="card">
+                <div class="card-header">
+                    <div class="icon-box">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h2 class="card-title">M3U8 播放器</h2>
+                </div>
+                <p class="card-desc">
+                    轻量级、无广告的在线流媒体播放器。
+                    专为 Hls/M3U8 格式优化，支持低延迟播放，提供纯净的观看体验，适合视频流调试与日常使用。
+                </p>
+                <div class="tags">
+                    <span class="tag">Video Player</span>
+                    <span class="tag">HLS / M3U8</span>
+                    <span class="tag">Streaming</span>
+                </div>
+                <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="btn">
+                    <i class="fas fa-play"></i> 立即播放
+                </a>
+            </article>
+
+        </main>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://github.com/asiacomkhk" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <!-- 如果有其他链接可以在这里添加 -->
             </div>
-        </section>
-    </main>
+            <p>&copy; 2026 ASIACOMKHK. Built with Cloudflare Workers.</p>
+        </footer>
+    </div>
 
     <script>
-        // 简单的平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+        // 主题切换逻辑
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const icon = themeToggle.querySelector('i');
 
-        // 简单的暗色模式切换 (可选增强)
-        // 如果你想要切换功能，可以保留这个逻辑，或者直接在 body 上写死
+        // 检查本地存储或系统偏好
+        const currentTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (currentTheme === 'light' || (!currentTheme && !systemPrefersDark)) {
+            html.setAttribute('data-theme', 'light');
+            icon.classList.replace('fa-sun', 'fa-moon');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        });
     </script>
 </body>
 </html>
