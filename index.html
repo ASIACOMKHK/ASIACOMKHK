@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+、<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -23,350 +23,266 @@
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
-            /* 添加微妙的背景网格纹理 */
-            background-image:
-                radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 60%),
+            /* 添加背景网格纹理 */
+            background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-size: 40px 40px;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem 1rem;
-            position: relative;
-            overflow-x: hidden;
+            padding: 40px 20px;
         }
 
-        /* 头部区域优化 */
-        header {
+        /* --- 头部区域优化 --- */
+        .header-container {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 50px;
             position: relative;
-            z-index: 10;
-            animation: fadeInDown 0.8s ease-out;
+            z-index: 1;
         }
 
-        /* 头像容器 */
-        .avatar-container {
+        /* 头像外壳：带有光晕和边框 */
+        .avatar-wrapper {
             position: relative;
             width: 100px;
             height: 100px;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            padding: 3px; /* 边框厚度 */
+            background: linear-gradient(135deg, var(--primary-color), #818cf8); /* 渐变边框 */
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); /* 外部发光 */
+            animation: rotateBorder 4s linear infinite; /* 缓慢旋转光效 */
         }
 
-        /* 头像本体 */
-        .avatar {
+        /* 头像图片本身 */
+        .avatar-img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--bg-color);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            z-index: 2;
+            border: 3px solid var(--bg-color); /* 内层隔离，让头像不紧贴边框 */
+            background-color: #1e293b;
         }
 
-        /* 头像背后的光晕 */
-        .avatar-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%;
-            height: 120%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(15, 23, 42, 0) 70%);
-            z-index: 1;
-            animation: pulse 3s infinite;
-        }
-
-        /* 头像悬停效果 */
-        .avatar-container:hover .avatar {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
-        }
-
+        /* 标题样式 */
         h1 {
             font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff 0%, var(--primary-color) 100%);
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #fff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
             font-size: 0.9rem;
-            color: var(--text-sub);
-            font-weight: 400;
-            margin-bottom: 1rem;
-            letter-spacing: 0.5px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 20px;
-            font-size: 0.75rem;
             color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid rgba(56, 189, 248, 0.2);
         }
 
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background-color: #4ade80;
-            border-radius: 50%;
-            margin-right: 6px;
-            box-shadow: 0 0 8px #4ade80;
-            animation: blink 2s infinite;
-        }
-
-        /* 卡片容器 */
-        .container {
+        /* --- 卡片网格布局 --- */
+        .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            gap: 30px;
             width: 100%;
             max-width: 900px;
-            z-index: 10;
+            z-index: 1;
         }
 
+        /* --- 卡片样式 --- */
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            padding: 30px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.8s ease-out backwards;
+            height: 100%;
         }
 
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-
-        /* 卡片悬停特效 */
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-color);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
-        }
-
-        /* 卡片内部装饰光点 */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
-        }
-
-        .card:hover::before {
-            transform: translateX(100%);
+            box-shadow: 0 10px 40px -10px rgba(56, 189, 248, 0.15);
         }
 
         .icon-box {
             width: 50px;
             height: 50px;
-            background: rgba(56, 189, 248, 0.1);
             border-radius: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
             font-size: 1.5rem;
-            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
         }
 
         .card:hover .icon-box {
             background: var(--primary-color);
             color: var(--bg-color);
-            transform: rotateY(180deg);
         }
 
         .card h2 {
             font-size: 1.25rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 12px;
             font-weight: 600;
         }
 
         .card p {
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: var(--text-sub);
             line-height: 1.6;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
+            margin-bottom: 25px;
+            flex-grow: 1; /* 让描述占满空间，把标签推到下方 */
         }
 
+        /* 标签组 */
         .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            gap: 8px;
+            margin-bottom: 25px;
         }
 
         .tag {
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.75rem;
+            padding: 4px 10px;
             border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-sub);
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .card:hover .tag {
-            border-color: rgba(56, 189, 248, 0.3);
-            color: #fff;
-        }
-
+        /* 按钮样式 */
         .btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            padding: 0.75rem 1.5rem;
-            background: var(--primary-color);
-            color: var(--bg-color);
-            border: none;
+            padding: 12px;
             border-radius: 8px;
+            text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
-            cursor: pointer;
             transition: all 0.2s ease;
-            text-decoration: none;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background: #fff;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-            transform: scale(1.02);
-        }
-
-        footer {
-            margin-top: auto;
-            padding-top: 3rem;
-            text-align: center;
-            color: var(--text-sub);
-            font-size: 0.8rem;
-            opacity: 0.6;
             width: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0ea5e9;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(56, 189, 248, 0.05);
         }
 
         /* 动画定义 */
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
-            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.2; }
-            100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+        @keyframes rotateBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 移动端适配 */
+        /* 响应式调整 */
         @media (max-width: 600px) {
             h1 { font-size: 1.5rem; }
-            .container { grid-template-columns: 1fr; padding: 0 1rem; }
-            .card { padding: 1.5rem; }
+            .grid-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 头部区域：包含头像、标题和状态 -->
-    <header>
-        <div class="avatar-container">
-            <div class="avatar-glow"></div>
-            <!-- 蜡笔小新头像 -->
-            <img src="https://s2.loli.net/2025/05/12/P6y9YJj74Qn8K5H.jpg" alt="Avatar" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=ASIACOMKHK'">
+    <!-- 头部区域：包含头像、标题和描述 -->
+    <header class="header-container">
+        <!-- 头像外壳 -->
+        <div class="avatar-wrapper">
+            <!-- 头像图片：这里使用了蜡笔小新的直链，并强制裁剪为圆形 -->
+            <img src="https://cdn.jsdelivr.net/gh/asiacomkhk/images/xiaoxin-avatar.jpg" alt="Avatar" class="avatar-img">
         </div>
-
+        
         <h1>ASIACOMKHK</h1>
-        <p class="subtitle">网络工程师 | Cloudflare Workers 开发者</p>
-
-        <div class="status-badge">
-            <span class="status-dot"></span>
-            系统运行正常
+        <div class="subtitle">
+            <i class="fas fa-code"></i> 网络工程师 | Cloudflare Workers 开发者
         </div>
     </header>
 
-    <!-- 主体内容：原有的功能卡片保持不变 -->
-    <main class="container">
-
-        <!-- 卡片 1：NetDiag -->
-        <div class="card">
+    <!-- 功能卡片区域 -->
+    <main class="grid-container">
+        
+        <!-- 卡片 1: NetDiag 网络诊断 -->
+        <article class="card">
             <div class="icon-box">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <i class="fas fa-network-wired"></i>
             </div>
             <h2>NetDiag 网络诊断</h2>
             <p>基于 Cloudflare Workers 构建的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪，帮助开发者快速定位全球网络链路质量。</p>
-
+            
             <div class="tags">
                 <span class="tag">Cloudflare Workers</span>
                 <span class="tag">Network</span>
                 <span class="tag">Latency Test</span>
             </div>
 
-            <a href="#" class="btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                访问工具
+            <!-- 这里的 href 就是你要的链接 -->
+            <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary">
+                <i class="fas fa-external-link-alt" style="margin-right: 8px;"></i> 访问工具
             </a>
-        </div>
+        </article>
 
-        <!-- 卡片 2：M3U8 Player -->
-        <div class="card">
+        <!-- 卡片 2: M3U8 播放器 -->
+        <article class="card">
             <div class="icon-box">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                <i class="fas fa-video"></i>
             </div>
             <h2>M3U8 播放器</h2>
-            <p>轻量级、无广告的在线流媒体播放器。专为 Hls/M3U8 格式优化，支持低延迟播放，提供纯净的观看体验，适合视频流调试与日常使用。</p>
-
+            <p>轻量级、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持低延迟播放，提供纯净的观看体验，适合直播源调试与日常使用。</p>
+            
             <div class="tags">
                 <span class="tag">Video Player</span>
                 <span class="tag">HLS / M3U8</span>
                 <span class="tag">Streaming</span>
             </div>
 
-            <a href="#" class="btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                立即播放
+            <!-- 这里的 href 就是你要的链接 -->
+            <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" class="btn btn-primary">
+                <i class="fas fa-play" style="margin-right: 8px;"></i> 立即播放
             </a>
-        </div>
+        </article>
 
     </main>
 
-    <footer>
-        <p>© 2024 ASIACOMKHK. Powered by Cloudflare Workers.</p>
+    <!-- 底部版权 -->
+    <footer style="margin-top: 60px; color: var(--text-sub); font-size: 0.8rem; opacity: 0.6;">
+        &copy; 2026 ASIACOMKHK. Powered by Cloudflare.
     </footer>
 
 </body>
