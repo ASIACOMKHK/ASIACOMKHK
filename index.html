@@ -6,8 +6,6 @@
     <title>ASIACOMKHK | 网络工程与流媒体</title>
     <meta name="description" content="专注于 Cloudflare Workers 生态。提供边缘网络诊断工具与高性能 M3U8 播放器解决方案。">
     <meta name="theme-color" content="#0f172a">
-    <!-- 预加载关键资源 -->
-    <link rel="preload" as="image" href="https://cdn.jsdelivr.net/gh/asiacomkhk/images/xiaoxin-avatar.jpg">
     
     <style>
         :root {
@@ -37,7 +35,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 60px 20px; /* 稍微增加顶部内边距 */
             line-height: 1.6;
         }
 
@@ -49,50 +47,27 @@
 
         .header-container {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 60px; /* 增加底部间距，平衡视觉 */
             position: relative;
             z-index: 1;
         }
 
-        .avatar-wrapper {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            padding: 3px;
-            background: linear-gradient(135deg, var(--primary-color), #818cf8);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-            animation: rotateBorder 4s linear infinite;
-        }
-
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--bg-color);
-            background-color: #1e293b;
-            /* 添加加载优化 */
-            loading: lazy;
-        }
-
         h1 {
-            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-size: clamp(1.8rem, 5vw, 2.2rem); /* 稍微调大标题 */
             font-weight: 800;
             letter-spacing: 2px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             background: linear-gradient(to right, #fff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--primary-color);
             font-family: 'Courier New', monospace;
             background: rgba(56, 189, 248, 0.1);
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 12px;
             display: inline-block;
             border: 1px solid rgba(56, 189, 248, 0.2);
@@ -202,66 +177,22 @@
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
 
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-outline:hover,
-        .btn-outline:focus {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        /* 可访问性增强 */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* 动画定义 */
-        @keyframes rotateBorder {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* 响应式调整 */
         @media (max-width: 600px) {
             .grid-container {
                 grid-template-columns: 1fr;
             }
-            
             body {
-                padding: 20px 15px;
+                padding: 40px 15px;
             }
-            
             .card {
                 padding: 20px;
             }
         }
 
-        /* 减少动画效果（用户偏好） */
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            *, *::before, *::after {
                 animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
-            }
-            
-            .card,
-            .icon-box {
-                transform: translateZ(0) !important;
             }
         }
     </style>
@@ -269,25 +200,15 @@
 <body>
     <div class="container">
         <header class="header-container">
-            <div class="avatar-wrapper" aria-label="开发者头像">
-                <img 
-                    src="https://cdn.jsdelivr.net/gh/asiacomkhk/images/xiaoxin-avatar.jpg" 
-                    alt="ASIACOMKHK 开发者头像" 
-                    class="avatar-img"
-                    loading="lazy"
-                    width="94"
-                    height="94"
-                >
-            </div>
             <h1>ASIACOMKHK</h1>
-            <div class="subtitle" aria-hidden="true">
+            <div class="subtitle">
                 网络工程师 | Cloudflare Workers 开发者
             </div>
         </header>
 
         <main class="grid-container">
-            <article class="card" role="region" aria-labelledby="netdiag-title">
-                <div class="icon-box" aria-hidden="true">
+            <article class="card">
+                <div class="icon-box">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 22v-2"/>
                         <path d="M11 22v-2"/>
@@ -299,7 +220,7 @@
                         <path d="M16 15l-4 4-4-4"/>
                     </svg>
                 </div>
-                <h2 id="netdiag-title">NetDiag 网络诊断</h2>
+                <h2>NetDiag 网络诊断</h2>
                 <p>基于 Cloudflare Workers 构建的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪，帮助开发者快速定位全球网络链路质量。</p>
                 
                 <div class="tags">
@@ -308,25 +229,19 @@
                     <span class="tag">Latency Test</span>
                 </div>
 
-                <a 
-                    href="https://asiacomkhk.github.io/CF-workers-netdiag/" 
-                    class="btn btn-primary"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="访问网络诊断工具 (新窗口打开)"
-                >
+                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
                     访问工具
                 </a>
             </article>
 
-            <article class="card" role="region" aria-labelledby="player-title">
-                <div class="icon-box" aria-hidden="true">
+            <article class="card">
+                <div class="icon-box">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="23 7 16 12 23 17 23 7"></polygon>
                         <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
                     </svg>
                 </div>
-                <h2 id="player-title">M3U8 播放器</h2>
+                <h2>M3U8 播放器</h2>
                 <p>轻量级、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持低延迟播放，提供纯净的观看体验，适合直播源调试与日常使用。</p>
                 
                 <div class="tags">
@@ -335,19 +250,13 @@
                     <span class="tag">Streaming</span>
                 </div>
 
-                <a 
-                    href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" 
-                    class="btn btn-primary"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="立即播放 (新窗口打开)"
-                >
+                <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
                     立即播放
                 </a>
             </article>
         </main>
 
-        <footer aria-label="网站版权信息" style="margin-top: 60px; color: var(--text-sub); font-size: 0.8rem; opacity: 0.6;">
+        <footer style="margin-top: 60px; color: var(--text-sub); font-size: 0.8rem; opacity: 0.6;">
             &copy; 2026 ASIACOMKHK. Powered by Cloudflare.
         </footer>
     </div>
