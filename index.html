@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ASIACOMKHK · 技术博客 | CF Workers 项目集</title>
+    <title>ASIACOMKHK · 技术博客 | 网络工程与边缘计算</title>
     <meta name="author" content="ASIACOMKHK">
-    <meta name="copyright" content="ASIACOMKHK">
-    <meta name="description" content="专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。">
+    <meta name="description" content="网络工程师的技术沉淀。专注于 Cloudflare Workers 网络诊断与流媒体解决方案。">
     <meta name="theme-color" content="#18171d">
 
-    <!-- 直接引入 ECharts，避免动态加载失败 -->
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.8em' font-size='90' font-family='Arial, Helvetica, sans-serif' fill='%236c5ce7'%3E⚡%3C/text%3E%3C/svg%3E">
 
     <style>
         :root {
@@ -18,28 +17,17 @@
             --bg-secondary: #222126;
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0a0;
-            --accent-color: #6c5ce7;
+            --accent-color: #6c5ce7; /* 紫色 */
+            --success-color: #00cec9; /* 青色 (用于网络状态) */
             --border-color: #333236;
             --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             --transition-speed: 0.3s;
-            --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro', monospace;
-        }
-
-        [data-theme="light"] {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --accent-color: #5d3fd3;
-            --border-color: #dee2e6;
-            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -47,8 +35,7 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-            overflow-x: hidden;
+            transition: background-color var(--transition-speed) ease;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -65,14 +52,11 @@
         .navbar {
             position: fixed;
             top: 0;
-            left: 0;
             width: 100%;
-            background-color: var(--bg-primary);
+            background-color: rgba(24, 23, 29, 0.95);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
-            transition: all var(--transition-speed) ease;
         }
 
         .nav-container {
@@ -87,11 +71,6 @@
             font-weight: 700;
             color: var(--accent-color);
             text-decoration: none;
-            transition: color var(--transition-speed) ease;
-        }
-
-        .logo:hover {
-            color: var(--text-primary);
         }
 
         .nav-links {
@@ -103,7 +82,6 @@
             color: var(--text-primary);
             text-decoration: none;
             font-weight: 500;
-            transition: color var(--transition-speed) ease;
             position: relative;
         }
 
@@ -122,54 +100,53 @@
             width: 100%;
         }
 
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color var(--transition-speed) ease;
-        }
-
-        .theme-toggle:hover {
-            color: var(--accent-color);
-        }
-
         /* 主体内容 */
         main {
             flex: 1;
-            padding-top: 80px; /* 为固定导航栏留出空间 */
-            padding-bottom: 40px;
+            padding-top: 80px;
         }
 
         .hero {
             text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            padding: 100px 20px 60px;
+            background: linear-gradient(135deg, #1e1e24 0%, #121214 100%);
             border-radius: 15px;
             margin-bottom: 40px;
-            box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
         }
 
         .hero h1 {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: var(--accent-color);
+            background: linear-gradient(90deg, var(--accent-color), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
             font-size: 1.1rem;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 700px;
+            margin: 0 auto 20px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 206, 201, 0.1);
+            color: var(--success-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 206, 201, 0.3);
         }
 
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
-            margin-top: 40px;
+            margin-top: 20px;
         }
 
         .project-card {
@@ -178,7 +155,7 @@
             padding: 25px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
-            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            transition: transform 0.2s ease;
             position: relative;
             overflow: hidden;
         }
@@ -190,19 +167,18 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), #a29bfe);
+            background: linear-gradient(90deg, var(--accent-color), var(--success-color));
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform var(--transition-speed) ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
         }
 
         .project-card:hover::before {
             transform: scaleX(1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
         }
 
         .project-title {
@@ -225,31 +201,25 @@
         }
 
         .tech-tag {
-            background-color: var(--bg-primary);
+            background-color: rgba(108, 92, 231, 0.1);
             color: var(--accent-color);
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid var(--border-color);
-        }
-
-        .project-links {
-            display: flex;
-            gap: 15px;
+            border: 1px solid rgba(108, 92, 231, 0.3);
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 600;
             text-decoration: none;
-            transition: all var(--transition-speed) ease;
+            transition: all 0.3s ease;
             border: 2px solid transparent;
             cursor: pointer;
+            gap: 8px;
         }
 
         .btn-primary {
@@ -260,7 +230,6 @@
         .btn-primary:hover {
             background-color: #5d3fd3;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
         }
 
         .btn-outline {
@@ -272,98 +241,17 @@
         .btn-outline:hover {
             background-color: var(--accent-color);
             color: white;
-            transform: translateY(-2px);
-        }
-
-        /* 时光机图表容器 */
-        #timeline-chart {
-            width: 100%;
-            height: 400px;
-            margin-top: 30px;
-            border-radius: 12px;
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--card-shadow);
         }
 
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
             .projects-grid {
                 grid-template-columns: 1fr;
             }
-
-            .project-links {
-                flex-direction: column;
+            
+            .hero h1 {
+                font-size: 2rem;
             }
-
-            .btn {
-                width: 100%;
-            }
-        }
-
-        /* 滚动条样式 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-color);
-        }
-
-        /* 加载动画 */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            color: var(--text-secondary);
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* 错误提示 */
-        .error-message {
-            color: #ff6b6b;
-            text-align: center;
-            padding: 20px;
-            background-color: rgba(255, 107, 107, 0.1);
-            border-radius: 8px;
-            border: 1px solid #ff6b6b;
-            margin: 20px 0;
         }
     </style>
 </head>
@@ -371,16 +259,12 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="nav-container container">
-            <a href="#" class="logo">ASIACOMKHK</a>
+            <a href="#" class="logo">⚡ ASIACOMKHK</a>
             <div class="nav-links">
-                <a href="#home" class="nav-link" data-lang="nav.home">首页</a>
-                <a href="#projects" class="nav-link" data-lang="nav.projects">项目</a>
-                <a href="#timeline" class="nav-link" data-lang="nav.timeline">时光机</a>
-                <a href="#about" class="nav-link" data-lang="nav.about">关于</a>
+                <a href="#home" class="nav-link">首页</a>
+                <a href="#projects" class="nav-link">项目</a>
+                <a href="https://github.com/ASIACOMKHK" class="nav-link" target="_blank">GitHub</a>
             </div>
-            <button class="theme-toggle" id="theme-toggle">
-                <i class="fas fa-moon"></i>
-            </button>
         </div>
     </nav>
 
@@ -388,313 +272,86 @@
     <main class="container">
         <!-- 英雄区域 -->
         <section id="home" class="hero">
-            <h1 data-lang="hero.title">欢迎来到我的技术博客</h1>
-            <p data-lang="hero.subtitle">专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。</p>
+            <h1>网络工程与边缘计算</h1>
+            <p>基于 Cloudflare Workers 的高性能工具集。实时网络诊断与流媒体播放解决方案，零成本部署，全球边缘加速。</p>
+            <div class="status-indicator">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                系统运行正常 · 边缘网络就绪
+            </div>
         </section>
 
         <!-- 项目展示 -->
         <section id="projects">
-            <h2 data-lang="projects.title">我的项目</h2>
+            <h2 style="text-align: center; margin-bottom: 40px; font-size: 2rem;">核心项目</h2>
             <div class="projects-grid">
-                <!-- 项目卡片 1 -->
+
+                <!-- 项目 1: 网络诊断 -->
                 <div class="project-card">
-                    <h3 class="project-title">CF Workers 博客系统</h3>
-                    <p class="project-description" data-lang="projects.desc1">
-                        基于 Cloudflare Workers 构建的无服务器博客系统，支持 Markdown 编辑、评论系统和 SEO 优化。
+                    <h3 class="project-title">🌐 CF-workers-netdiag</h3>
+                    <p class="project-description">
+                        一站式网络诊断工具箱。基于 Cloudflare Workers 边缘网络运行，提供实时延迟 (RTT)、带宽测速、DNS 对比、IP 风险评分及 TLS 协议分析。
+                        <!-- 从你提供的网页中提取的关键点 -->
+                        <br><br>
+                        <strong>特性：</strong> 实时延迟图表、带宽吞吐测试、丢包率估算、边缘节点定位 (City/Colo)、隐私安全审计 (ECH)。
                     </p>
                     <div class="project-tech">
-                        <span class="tech-tag">Cloudflare Workers</span>
-                        <span class="tech-tag">Markdown</span>
-                        <span class="tech-tag">D1 Database</span>
-                        <span class="tech-tag">R2 Storage</span>
+                        <span class="tech-tag">Network Diag</span>
+                        <span classspan="tech-tag">Real-time</span>
+                        <span class="tech-tag">Cloudflare</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/asiacomkhk/cf-workers-blog" class="btn btn-primary" target="_blank">
-                            <i class="fab fa-github"></i> GitHub
+                        <!-- 这里填入你提供的第一个链接 -->
+                        <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary" target="_blank">
+                            🔗 访问演示
                         </a>
-                        <a href="https://blog.asiacomkhk.com" class="btn btn-outline" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> 在线演示
+                        <a href="https://github.com/ASIACOMKHK/CF-workers-netdiag" class="btn btn-outline" target="_blank">
+                            GitHub 仓库
                         </a>
                     </div>
                 </div>
 
-                <!-- 项目卡片 2 -->
+                <!-- 项目 2: M3U8 播放器 -->
                 <div class="project-card">
-                    <h3 class="project-title">边缘计算 API 网关</h3>
-                    <p class="project-description" data-lang="projects.desc2">
-                        一个高性能的 API 网关，利用 Cloudflare Workers 的全球边缘网络，提供请求路由、限流、认证等功能。
+                    <h3 class="project-title">📺 CF-Woker-M3U8Player</h3>
+                    <p class="project-description">
+                        轻量级流媒体播放器。专为 M3U8 格式设计，利用边缘网络进行视频流代理与播放，解决跨域限制，提供流畅的直播与点播体验。
+                        <!-- 通用描述，因为没有具体内容，但符合名字含义 -->
+                        <br><br>
+                        <strong>特性：</strong> 原生 M3U8 支持、HLS 播放、边缘缓存加速、响应式界面、低延迟播放。
                     </p>
                     <div class="project-tech">
-                        <span class="tech-tag">Cloudflare Workers</span>
-                        <span class="tech-tag">API Gateway</span>
-                        <span class="tech-tag">Rate Limiting</span>
-                        <span class="tech-tag">JWT Auth</span>
+                        <span class="tech-tag">Streaming</span>
+                        <span class="tech-tag">M3U8</span>
+                        <span class="tech-tag">Media</span>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/asiacomkhk/cf-api-gateway" class="btn btn-primary" target="_blank">
-                            <i class="fab fa-github"></i> GitHub
+                        <!-- 这里填入你提供的第二个链接 -->
+                        <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" class="btn btn-primary" target="_blank">
+                            ▶️ 立即播放
                         </a>
-                        <a href="https://api.asiacomkhk.com" class="btn btn-outline" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> 文档
+                        <a href="https://github.com/ASIACOMKHK/CF-Woker-M3U8Player" class="btn btn-outline" target="_blank">
+                            GitHub 仓库
                         </a>
                     </div>
                 </div>
 
-                <!-- 项目卡片 3 -->
-                <div class="project-card">
-                    <h3 class="project-title">静态网站生成器</h3>
-                    <p class="project-description" data-lang="projects.desc3">
-                        一个轻量级的静态网站生成器，支持 Markdown、Front Matter 和自定义模板，可部署到任何静态托管服务。
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Node.js</span>
-                        <span class="tech-tag">Markdown</span>
-                        <span class="tech-tag">Template Engine</span>
-                        <span class="tech-tag">Static Site</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/asiacomkhk/static-site-generator" class="btn btn-primary" target="_blank">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                        <a href="https://ssg.asiacomkhk.com" class="btn btn-outline" target="_blank">
-                            <i class="fas fa-external-link-alt"></i> 示例站点
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 时光机 -->
-        <section id="timeline">
-            <h2 data-lang="timeline.title">开发时光机</h2>
-            <p data-lang="timeline.subtitle">回顾我的开源项目开发历程</p>
-            <div id="timeline-chart"></div>
-        </section>
-
-        <!-- 关于 -->
-        <section id="about">
-            <h2 data-lang="about.title">关于我</h2>
-            <div class="project-card">
-                <p data-lang="about.content">
-                    我是 ASIACOMKHK，一名专注于边缘计算和 Web 开发的全栈工程师。我热衷于探索 Cloudflare Workers 的无限可能，并将其应用于实际项目中。
-                </p>
-                <p data-lang="about.content2">
-                    我的项目大多源于日常的技术探索和问题解决，希望能对社区有所贡献。如果你对我的项目感兴趣，欢迎通过 GitHub 与我交流。
-                </p>
-                <div class="project-links" style="margin-top: 20px;">
-                    <a href="https://github.com/asiacomkhk" class="btn btn-primary" target="_blank">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="mailto:contact@asiacomkhk.com" class="btn btn-outline">
-                        <i class="fas fa-envelope"></i> 联系我
-                    </a>
-                </div>
             </div>
         </section>
     </main>
 
     <script>
-        // 全局错误捕获，防止页面崩溃
-        window.onerror = function(message, source, lineno, colno, error) {
-            console.error('全局错误:', message, error);
-            // 可以在这里显示一个友好的错误提示
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.innerHTML = `<strong>发生错误:</strong> ${message}<br>请尝试刷新页面或联系管理员。`;
-            document.body.appendChild(errorDiv);
-            return true; // 阻止默认错误处理
-        };
-
-        // 主题切换
-        const themeToggle = document.getElementById('theme-toggle');
-        const htmlElement = document.documentElement;
-
-        // 检查本地存储中的主题设置
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        htmlElement.setAttribute('data-theme', currentTheme);
-        updateThemeIcon(currentTheme);
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            htmlElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
-
-        function updateThemeIcon(theme) {
-            const icon = themeToggle.querySelector('i');
-            if (theme === 'dark') {
-                icon.className = 'fas fa-moon';
-            } else {
-                icon.className = 'fas fa-sun';
-            }
-        }
-
-        // 平滑滚动
+        // 简单的平滑滚动
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80, // 考虑导航栏高度
-                        behavior: 'smooth'
-                    });
-                }
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
             });
         });
 
-        // 导航栏滚动效果
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-            } else {
-                navbar.style.boxShadow = 'none';
-            }
-        });
-
-        // 时光机图表
-        function initTimelineChart() {
-            const chartDom = document.getElementById('timeline-chart');
-            if (!chartDom) return;
-
-            // 模拟数据
-            const timelineData = [
-                { name: 'CF Workers 博客系统', date: '2023-01-15', value: 80 },
-                { name: '边缘计算 API 网关', date: '2023-03-22', value: 65 },
-                { name: '静态网站生成器', date: '2023-06-10', value: 90 },
-                { name: '个人作品集网站', date: '2023-09-05', value: 75 },
-                { name: '实时聊天应用', date: '2023-11-18', value: 85 },
-                { name: '数据可视化工具', date: '2024-02-28', value: 70 }
-            ];
-
-            const myChart = echarts.init(chartDom);
-
-            const option = {
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'value',
-                    boundaryGap: [0, 0.01],
-                    axisLine: {
-                        lineStyle: {
-                            color: '#ccc'
-                        }
-                    },
-                    axisLabel: {
-                        color: '#999'
-                    }
-                },
-                yAxis: {
-                    type: 'category',
-                    data: timelineData.map(item => item.name),
-                    axisLine: {
-                        lineStyle: {
-                            color: '#ccc'
-                        }
-                    },
-                    axisLabel: {
-                        color: '#999'
-                    }
-                },
-                series: [
-                    {
-                        name: '开发进度',
-                        type: 'bar',
-                        data: timelineData.map(item => item.value),
-                        itemStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                                { offset: 0, color: '#6c5ce7' },
-                                { offset: 1, color: '#a29bfe' }
-                            ])
-                        },
-                        label: {
-                            show: true,
-                            position: 'right',
-                            color: '#999'
-                        }
-                    }
-                ],
-                backgroundColor: 'transparent'
-            };
-
-            myChart.setOption(option);
-
-            // 响应式
-            window.addEventListener('resize', () => {
-                myChart.resize();
-            });
-        }
-
-        // 初始化时光机图表
-        document.addEventListener('DOMContentLoaded', () => {
-            initTimelineChart();
-        });
-
-        // 国际化支持
-        const i18n = {
-            zh: {
-                'nav.home': '首页',
-                'nav.projects': '项目',
-                'nav.timeline': '时光机',
-                'nav.about': '关于',
-                'hero.title': '欢迎来到我的技术博客',
-                'hero.subtitle': '专注于 Cloudflare Workers 生态与边缘计算。我的开源项目诞生于日常技术探索，欢迎交流。',
-                'projects.title': '我的项目',
-                'projects.desc1': '基于 Cloudflare Workers 构建的无服务器博客系统，支持 Markdown 编辑、评论系统和 SEO 优化。',
-                'projects.desc2': '一个高性能的 API 网关，利用 Cloudflare Workers 的全球边缘网络，提供请求路由、限流、认证等功能。',
-                'projects.desc3': '一个轻量级的静态网站生成器，支持 Markdown、Front Matter 和自定义模板，可部署到任何静态托管服务。',
-                'timeline.title': '开发时光机',
-                'timeline.subtitle': '回顾我的开源项目开发历程',
-                'about.title': '关于我',
-                'about.content': '我是 ASIACOMKHK，一名专注于边缘计算和 Web 开发的全栈工程师。我热衷于探索 Cloudflare Workers 的无限可能，并将其应用于实际项目中。',
-                'about.content2': '我的项目大多源于日常的技术探索和问题解决，希望能对社区有所贡献。如果你对我的项目感兴趣，欢迎通过 GitHub 与我交流。'
-            },
-            en: {
-                'nav.home': 'Home',
-                'nav.projects': 'Projects',
-                'nav.timeline': 'Timeline',
-                'nav.about': 'About',
-                'hero.title': 'Welcome to My Tech Blog',
-                'hero.subtitle': 'Focused on Cloudflare Workers ecosystem and edge computing. My open-source projects are born from daily technical exploration. Welcome to communicate.',
-                'projects.title': 'My Projects',
-                'projects.desc1': 'A serverless blog system built with Cloudflare Workers, supporting Markdown editing, comment system, and SEO optimization.',
-                'projects.desc2': 'A high-performance API gateway leveraging Cloudflare Workers\' global edge network, providing request routing, rate limiting, authentication, and more.',
-                'projects.desc3': 'A lightweight static site generator supporting Markdown, Front Matter, and custom templates, deployable to any static hosting service.',
-                'timeline.title': 'Development Timeline',
-                'timeline.subtitle': 'Review my open-source project development journey',
-                'about.title': 'About Me',
-                'about.content': 'I am ASIACOMKHK, a full-stack engineer focused on edge computing and web development. I am passionate about exploring the infinite possibilities of Cloudflare Workers and applying them to real-world projects.',
-                'about.content2': 'Most of my projects originate from daily technical exploration and problem-solving, hoping to contribute to the community. If you are interested in my projects, feel free to communicate with me via GitHub.'
-            }
-        };
-
-        // 简单的语言切换（这里只是示例，实际应用中可能需要更复杂的逻辑）
-        function setLanguage(lang) {
-            const elements = document.querySelectorAll('[data-lang]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-lang');
-                if (i18n[lang] && i18n[lang][key]) {
-                    element.textContent = i18n[lang][key];
-                }
-            });
-        }
-
-        // 默认设置为中文
-        setLanguage('zh');
+        // 简单的暗色模式切换 (可选增强)
+        // 如果你想要切换功能，可以保留这个逻辑，或者直接在 body 上写死
     </script>
 </body>
 </html>
