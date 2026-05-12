@@ -1,146 +1,307 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- ... (保留原有的 meta 标签) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASIACOMKHK | 网络工程与流媒体</title>
-    <!-- ... (保留原有的 CSS 样式) ... -->
+    <meta name="description" content="专注于 Cloudflare Workers 生态。提供边缘网络诊断工具与高性能 M3U8 播放器解决方案。">
+    <meta name="theme-color" content="#0f172a">
+    
     <style>
-        /* ... (原有样式保持不变) ... */
+        /* --- 核心配色与基础样式 --- */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary-color: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-        /* --- 新增：时间与问候语样式 --- */
-        .time-greeting {
+        /* 浅色模式变量 */
+        body.light-mode {
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --primary-color: #0284c7;
+            --primary-hover: #0369a1;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* --- 头部区域 --- */
+        .header-container {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
             font-size: 0.95rem;
             color: var(--primary-color);
-            font-weight: 500;
-            margin-top: 0.5rem;
-            text-align: center;
-            width: 100%;
-            max-width: 300px;
+            font-family: 'Courier New', monospace;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 6px 16px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            margin-bottom: 10px;
         }
 
-        /* --- 新增：天气卡片样式 --- */
-        .weather-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 0.5rem;
+        /* 新增：本地时间与问候语样式 */
+        .time-greeting {
             font-size: 0.9rem;
             color: var(--text-sub);
+            margin-top: 8px;
+            font-weight: 500;
         }
-        .weather-icon { font-size: 1.5rem; }
+
+        /* --- 主题切换按钮 --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+        }
+        .theme-toggle:hover { background-color: var(--primary-color); color: #fff; }
+
+        /* --- 卡片网格 --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.8s ease-out backwards;
+            position: relative;
+        }
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 40px -10px rgba(56, 189, 248, 0.15);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .card h2 { font-size: 1.25rem; margin-bottom: 12px; font-weight: 600; }
+        .card p { font-size: 0.875rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; }
+        .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); color: var(--text-sub); border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .btn {
+            display: flex; align-items: center; justify-content: center; padding: 12px;
+            border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            transition: all 0.2s ease; width: 100%; border: none; cursor: pointer;
+            background-color: var(--primary-color); color: var(--bg-color);
+        }
+        .btn:hover { background-color: var(--primary-hover); box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+
+        /* 天气信息样式 */
+        .weather-info {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.9rem; color: var(--text-sub); margin-bottom: 25px;
+        }
+
+        /* 动画定义 */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .grid-container { grid-template-columns: 1fr; }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- ... (保留原有的主题切换按钮) ... -->
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/浅色模式">☀️</button>
 
-    <!-- 修改：头部信息区域 -->
+    <!-- 头部区域 -->
     <header class="header-container">
         <h1>ASIACOMKHK</h1>
         <div class="subtitle">
-            <span><span class="status-dot"></span> 在线服务</span>
-            <span>|</span>
-            <span id="visitor-ip">正在加载 IP...</span>
+            <i class="fas fa-code"></i> 网络工程师 | Cloudflare Workers 开发者
         </div>
-        <!-- 新增：本地化时间与问候 -->
-        <div class="time-greeting" id="timeGreeting">
-            <!-- 动态内容由 JS 生成 -->
-        </div>
+        <!-- 新增：本地时间与问候语 -->
+        <div class="time-greeting" id="timeGreeting">正在加载时间...</div>
     </header>
 
-    <!-- 卡片区域 (新增天气卡片) -->
+    <!-- 功能卡片区域 -->
     <main class="grid-container">
         
-        <!-- ... (保留原有的 NetDiag 和 M3U8 Player 卡片) ... -->
-
-        <!-- 新增卡片：地点与天气 -->
+        <!-- 卡片 1: NetDiag -->
         <article class="card">
-            <div class="card-icon">🌤️</div>
-            <h3>江门气象站</h3>
+            <div class="icon-box"><i class="fas fa-network-wired"></i></div>
+            <h2>NetDiag 网络诊断</h2>
+            <p>基于 Cloudflare Workers 构建的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。</p>
+            <div class="tags">
+                <span class="tag">Cloudflare Workers</span>
+                <span class="tag">Network</span>
+            </div>
+            <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn" target="_blank">访问工具</a>
+        </article>
+
+        <!-- 卡片 2: M3U8 播放器 -->
+        <article class="card">
+            <div class="icon-box"><i class="fas fa-video"></i></div>
+            <h2>M3U8 播放器</h2>
+            <p>轻量级、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持低延迟播放。</p>
+            <div class="tags">
+                <span class="tag">Video Player</span>
+                <span class="tag">HLS / M3U8</span>
+            </div>
+            <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" class="btn" target="_blank">立即播放</a>
+        </article>
+
+        <!-- 新增卡片 3: 江门气象站 -->
+        <article class="card">
+            <div class="icon-box"><i class="fas fa-cloud-sun"></i></div>
+            <h2>江门气象站</h2>
             <p>实时获取广东江门的天气状况，辅助网络测试环境评估。</p>
             <div class="weather-info" id="weatherInfo">
-                <span class="weather-icon">📡</span>
-                <span>正在获取天气数据...</span>
+                <i class="fas fa-spinner fa-spin"></i> 正在获取天气数据...
             </div>
+            <a href="https://www.tianqi.com/jiangmen/" class="btn" target="_blank">查看详细预报</a>
         </article>
 
     </main>
 
-    <!-- ... (保留原有的 Footer) ... -->
+    <footer style="margin-top: 60px; color: var(--text-sub); font-size: 0.8rem; opacity: 0.6;">
+        &copy; <span id="year"></span> ASIACOMKHK. Powered by Cloudflare.
+    </footer>
 
     <script>
-        // ... (保留原有的主题切换逻辑) ...
+        // 1. 主题切换逻辑
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'light') {
+            body.classList.add('light-mode');
+            themeToggle.textContent = '🌙';
+        }
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '🌙';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '☀️';
+            }
+        });
 
-        // --- 1. 本地化时间与智能问候 ---
+        // 2. 本地化时间与智能问候 (针对广东江门时区)
         function updateTime() {
             const now = new Date();
-            
-            // 格式化日期：2026年5月12日 星期二
-            const dateStr = now.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                weekday: 'long'
+            // 格式化时间：2026年5月12日 星期二 21:54:53
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric', month: 'long', day: 'numeric',
+                weekday: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit'
             });
-
-            // 格式化时间：14:30:25
-            const timeStr = now.toLocaleTimeString('zh-CN');
-
-            // 智能问候语
+            
+            // 智能问候
             const hours = now.getHours();
             let greeting = '';
-            if (hours < 6) greeting = '夜猫子，注意身体';
-            else if (hours < 9) greeting = '早上好，新的一天';
-            else if (hours < 12) greeting = '上午好，工作顺利';
-            else if (hours < 14) greeting = '中午好，该休息了';
-            else if (hours < 18) greeting = '下午好，效率满满';
-            else if (hours < 22) greeting = '晚上好，放松一下';
-            else greeting = '晚安，世界';
+            if (hours < 6) greeting = '🌙 夜深了，注意休息';
+            else if (hours < 9) greeting = '☀️ 早上好，开启高效一天';
+            else if (hours < 12) greeting = '💪 上午好，工作顺利';
+            else if (hours < 14) greeting = '🍱 中午好，记得午休';
+            else if (hours < 18) greeting = '☕ 下午好，保持专注';
+            else if (hours < 22) greeting = '🌆 晚上好，放松一下';
+            else greeting = '✨ 晚安，好梦';
 
-            document.getElementById('timeGreeting').innerHTML = 
-                `${dateStr} ${timeStr} <br> <small>${greeting} | 广东江门`</small>`;
+            document.getElementById('timeGreeting').innerHTML = `${greeting} | ${timeStr}`;
         }
+        setInterval(updateTime, 1000);
+        updateTime();
 
-        // 页面加载时执行，并设置每秒更新
-        window.addEventListener('load', () => {
-            updateTime(); // 立即执行一次
-            setInterval(updateTime, 1000); // 每秒更新
-            // ... (原有的 IP 获取逻辑) ...
-        });
-
-        // --- 2. 天气获取逻辑 (针对广东江门) ---
+        // 3. 获取江门天气 (使用 wttr.in 公共接口)
         async function fetchWeather() {
             try {
-                // 使用 wttr.in 的 JSON 接口，指定城市为 Jiangmen
-                // 注意：在真实 Workers 环境中，如果 Workers 本身在海外，显示的是 Workers 的位置天气
-                // 如果你想显示访客（江门）的天气，需要前端 JS 请求
                 const response = await fetch('https://wttr.in/Jiangmen?format=j1');
                 const data = await response.json();
-                
-                const weatherInfo = document.getElementById('weatherInfo');
                 const current = data.current_condition[0];
-                
-                weatherInfo.innerHTML = `
-                    <span class="weather-icon">☀️</span>
-                    <span>
-                        ${current.temp_C}°C | ${current.weatherDesc[0].value}
-                        <br>
-                        <small>湿度: ${current.humidity}% | 风速: ${current.windspeedKmph} km/h</small>
-                    </span>
+                document.getElementById('weatherInfo').innerHTML = `
+                    <i class="fas fa-temperature-high"></i> 
+                    <span>当前气温: ${current.temp_C}°C | ${current.weatherDesc[0].value} | 湿度: ${current.humidity}%</span>
                 `;
             } catch (error) {
-                console.error('天气获取失败:', error);
-                document.getElementById('weatherInfo').innerHTML = 
-                    '<span class="weather-icon">⚠️</span> <span>天气数据加载中...</span>';
+                document.getElementById('weatherInfo').innerHTML = '<i class="fas fa-exclamation-circle"></i> 天气数据加载失败';
             }
         }
+        fetchWeather();
 
-        // 在页面加载完成后调用
-        window.addEventListener('load', () => {
-            fetchVisitorInfo(); // 原有逻辑
-            fetchWeather();     // 新增逻辑
-            document.getElementById('year').textContent = new Date().getFullYear();
-        });
+        // 设置年份
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
