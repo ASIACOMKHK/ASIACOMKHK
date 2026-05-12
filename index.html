@@ -21,25 +21,31 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 80%);
         }
 
-        /* --- 布局容器 --- */
-        .container {
+        /* --- 头部信息 --- */
+        header { text-align: center; margin-bottom: 30px; margin-top: 10px; }
+        .time-display { font-family: 'Courier New', monospace; color: var(--primary-color); font-size: 0.8rem; opacity: 0.8; margin-top: 5px; }
+        h1 { font-weight: 600; letter-spacing: 1px; color: #fff; text-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+        .subtitle { font-size: 0.9rem; color: var(--text-sub); margin-top: 5px; }
+
+        /* --- 网格布局 --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
             width: 100%;
             max-width: 1000px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding-bottom: 40px;
         }
 
-        /* --- 卡片通用样式 (毛玻璃效果) --- */
+        /* --- 卡片通用样式 --- */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -47,383 +53,309 @@
             padding: 24px;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative;
+            overflow: hidden;
         }
-        .card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); border-color: rgba(56, 189, 248, 0.3); }
+        .card-header { display: flex; align-items: center; margin-bottom: 20px; }
+        .card-icon { width: 32px; height: 32px; margin-right: 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
+        .card-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 20px; flex-grow: 1; }
 
-        /* --- 卡片头部 --- */
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .card-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-size: 18px;
-        }
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        /* --- 按钮系统 --- */
+        /* --- 按钮样式 --- */
         .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 10px 16px;
-            margin-top: 10px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            text-decoration: none;
-        }
-        .btn-primary {
             background-color: var(--primary-color);
             color: #0f172a;
-        }
-        .btn-primary:hover {
-            background-color: #7dd3fc;
-        }
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--text-sub);
-            font-size: 0.85rem;
-            padding: 8px;
-        }
-        .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-        }
-
-        /* --- 特定模块样式 --- */
-        /* 天气 */
-        .weather-content { text-align: center; margin: 15px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .temp { font-size: 2.5rem; font-weight: 700; color: var(--text-main); }
-        .desc { color: var(--text-sub); margin-top: 5px; font-size: 0.9rem; }
-        .location { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 10px; }
-
-        /* 状态 */
-        .status-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; }
-        .status-label { color: var(--text-sub); }
-        .status-value { font-family: monospace; color: var(--text-main); }
-        .status-dot { height: 8px; width: 8px; background-color: #4ade80; border-radius: 50%; display: inline-block; margin-right: 6px; }
-
-        /* 工具箱 */
-        .tool-group { margin-bottom: 15px; }
-        .tool-label { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 8px; display: block; }
-        .input-group { display: flex; gap: 8px; }
-        input {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px;
-            border-radius: 6px;
-            flex: 1;
-            font-size: 0.9rem;
-        }
-        input:focus { outline: 1px solid var(--primary-color); }
-        .mini-btn {
-            background: var(--primary-color);
-            color: #0f172a;
             border: none;
-            padding: 0 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
         }
+        .btn:hover { background-color: #7dd3fc; }
+        .btn:active { transform: scale(0.98); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); margin-top: 10px; }
+        .btn-outline:hover { background: rgba(56, 189, 248, 0.1); }
+
+        /* --- 模块特定样式 --- */
+        /* 天气 */
+        #weather-temp { font-size: 2rem; font-weight: 700; color: #fff; }
+        #weather-desc { color: var(--primary-color); font-size: 0.9rem; margin-top: 5px; }
+        #weather-loading { font-size: 0.9rem; color: var(--text-sub); }
 
         /* GitHub */
-        .github-stats { display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
-        .stat-item { display: flex; align-items: center; font-size: 0.85rem; color: var(--text-sub); }
-        .stat-num { color: var(--text-main); font-weight: 600; margin-left: 4px; }
+        .gh-container { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; padding: 10px 0; }
+        .gh-avatar { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--primary-color); margin-bottom: 15px; background-color: #fff; }
+        .gh-username { font-weight: 600; color: #fff; margin-bottom: 15px; font-size: 1.1rem; }
 
-        /* 顶部时间 */
-        .header { text-align: center; margin-bottom: 30px; padding-top: 20px; }
-        .greeting { font-size: 1.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
-        .current-time { font-size: 0.9rem; color: var(--text-sub); font-family: monospace; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 20px; display: inline-block; }
+        /* 状态 */
+        .status-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .status-label { color: var(--text-sub); }
+        .status-value { font-family: 'Courier New', monospace; color: #fff; font-weight: 600; }
+        .status-online { color: #4ade80; }
+
+        /* 工具箱 */
+        .tool-group { margin-bottom: 20px; }
+        .tool-label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #fff; }
+        .input-group { display: flex; gap: 10px; }
+        input { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); color: #fff; padding: 8px 12px; border-radius: 6px; flex: 1; font-size: 0.9rem; outline: none; }
+        input:focus { border-color: var(--primary-color); }
+        .small-btn { width: auto; padding: 0 15px; font-size: 0.85rem; }
+        #base64-result { margin-top: 10px; font-size: 0.85rem; color: var(--primary-color); word-break: break-all; background: rgba(15, 23, 42, 0.4); padding: 10px; border-radius: 6px; display: none; }
 
         /* 响应式 */
-        @media (max-width: 600px) {
-            .container { grid-template-columns: 1fr; }
-            .input-group { flex-direction: column; }
+        @media (max-width: 768px) {
+            .grid-container { grid-template-columns: 1fr; }
+            .card { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- 顶部问候 -->
-        <div style="grid-column: 1 / -1;" class="header">
-            <div class="greeting" id="greeting">晚上好，欢迎回来</div>
-            <div class="current-time" id="clock">2026/05/12 22:56:03</div>
-        </div>
+    <header>
+        <h1>ASIACOMKHK</h1>
+        <div class="subtitle">Cloudflare Workers 生态导航</div>
+        <div class="time-display" id="clock">00:00:00</div>
+    </header>
 
-        <!-- 1. NetDiag 网络诊断 -->
+    <main class="grid-container">
+
+        <!-- 1. 网络诊断 (外部链接) -->
         <div class="card">
             <div class="card-header">
-                <div class="card-icon">🛰️</div>
+                <div class="card-icon" style="background: rgba(56, 189, 248, 0.2);">🛰️</div>
                 <div class="card-title">NetDiag 网络诊断</div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-sub); flex-grow: 1; margin-bottom: 20px; line-height: 1.5;">
-                基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。
-            </p>
-            <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary">访问工具</a>
+            <div class="card-desc">基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。</div>
+            <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn">访问工具</a>
         </div>
 
-        <!-- 2. M3U8 播放器 -->
+        <!-- 2. M3U8 播放器 (外部链接) -->
         <div class="card">
             <div class="card-header">
-                <div class="card-icon">🎬</div>
+                <div class="card-icon" style="background: rgba(251, 146, 60, 0.2); color: #fbbf24;">🎬</div>
                 <div class="card-title">M3U8 播放器</div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-sub); flex-grow: 1; margin-bottom: 20px; line-height: 1.5;">
-                轻量级、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持低延迟播放。
-            </p>
-            <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" class="btn btn-primary">立即播放</a>
+            <div class="card-desc">轻量级、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持极低延迟播放。</div>
+            <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="btn">立即播放</a>
         </div>
 
-        <!-- 3. 智能天气 (优化版) -->
+        <!-- 3. 智能天气 (JS 动态获取) -->
         <div class="card">
             <div class="card-header">
-                <div class="card-icon">⛅</div>
+                <div class="card-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">⛅</div>
                 <div class="card-title">智能天气</div>
             </div>
-            <div class="weather-content">
-                <div class="location" id="weather-loc">定位中...</div>
-                <div class="temp" id="weather-temp">--°C</div>
-                <div class="desc" id="weather-desc">正在获取数据</div>
+            <div style="text-align: center; padding: 20px 0; flex-grow: 1;">
+                <div id="weather-temp">--°C</div>
+                <div id="weather-desc">定位中...</div>
+                <div id="weather-loading" style="font-size: 0.8rem; margin-top: 10px; opacity: 0.6;"></div>
             </div>
-            <button class="btn btn-secondary" onclick="fetchWeather()">刷新天气</button>
+            <button onclick="fetchWeather()" class="btn btn-outline" style="margin-top: 0;">刷新天气</button>
         </div>
 
-        <!-- 4. GitHub 动态 -->
+        <!-- 4. GitHub 动态 (修复版) -->
         <div class="card">
             <div class="card-header">
-                <div class="card-icon">🐙</div>
+                <div class="card-icon" style="background: rgba(255, 255, 255, 0.1);">🐙</div>
                 <div class="card-title">GitHub 动态</div>
             </div>
-            <div class="github-stats">
-                <div class="stat-item">
-                    <span>Stars:</span>
-                    <span class="stat-num" id="gh-stars">-</span>
-                </div>
-                <div class="stat-item">
-                    <span>Forks:</span>
-                    <span class="stat-num" id="gh-forks">-</span>
+            <div class="gh-container">
+                <!-- 头像 -->
+                <img src="https://avatars.githubusercontent.com/asiacomkhk" alt="Avatar" class="gh-avatar" onerror="this.src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'">
+                <div class="gh-username">@asiacomkhk</div>
+
+                <!-- 核心修复：使用原生贡献图，并添加 onerror 隐藏 -->
+                <img
+                    src="https://ghchart.rshah.org/38bdf8/asiacomkhk"
+                    alt="asiacomkhk's Github Chart"
+                    style="width: 100%; border-radius: 6px; filter: invert(1) hue-rotate(180deg);"
+                    onerror="this.style.display='none'; document.getElementById('gh-fallback').style.display='block';"
+                >
+
+                <!-- 如果图片加载失败，显示这个 -->
+                <div id="gh-fallback" style="display:none; text-align:center; color: var(--text-sub); font-size: 0.9rem;">
+                    暂无动态数据
                 </div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 15px;">
-                实时同步 GitHub 仓库数据。
-            </p>
-            <a href="https://github.com/asiacomkhk" target="_blank" class="btn btn-primary">查看主页</a>
+            <a href="https://github.com/asiacomkhk" target="_blank" class="btn btn-outline">查看主页</a>
         </div>
 
         <!-- 5. 开发者工具箱 -->
         <div class="card">
             <div class="card-header">
-                <div class="card-icon">🛠️</div>
+                <div class="card-icon" style="background: rgba(139, 92, 246, 0.2); color: #a78bfa;">🛠️</div>
                 <div class="card-title">开发者工具箱</div>
             </div>
 
             <!-- 密码生成 -->
             <div class="tool-group">
-                <label class="tool-label">🔑 密码生成 (长度)</label>
+                <label class="tool-label">随机密码生成</label>
                 <div class="input-group">
-                    <input type="number" id="pwd-len" value="16" min="4" max="64">
-                    <button class="mini-btn" onclick="genPass()">生成</button>
+                    <input type="number" id="pwd-len" value="16" min="4" max="64" style="max-width: 80px;">
+                    <button class="btn small-btn" onclick="generatePassword()">生成</button>
                 </div>
-                <input type="text" id="pwd-result" readonly style="margin-top:8px; color: var(--primary-color); cursor: pointer;" onclick="copyText('pwd-result')" placeholder="点击生成">
+                <input type="text" id="pwd-result" readonly style="margin-top: 10px; cursor: pointer;" onclick="copyText('pwd-result')" placeholder="点击生成...">
             </div>
 
             <!-- Base64 -->
-            <div class="tool-group" style="border-top: 1px solid var(--border-color); padding-top: 15px;">
-                <label class="tool-label">🔡 Base64 编解码</label>
-                <input type="text" id="b64-input" placeholder="输入文本" style="margin-bottom: 8px;">
-                <div class="input-group">
-                    <button class="btn btn-secondary" style="margin:0; flex:1;" onclick="b64('enc')">编码</button>
-                    <button class="btn btn-secondary" style="margin:0; flex:1;" onclick="b64('dec')">解码</button>
+            <div class="tool-group">
+                <label class="tool-label">Base64 编解码</label>
+                <input type="text" id="base64-input" placeholder="输入文本..." style="margin-bottom: 10px;">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn small-btn" onclick="base64Encode()" style="flex:1">编码</button>
+                    <button class="btn small-btn" onclick="base64Decode()" style="flex:1">解码</button>
                 </div>
+                <div id="base64-result"></div>
             </div>
         </div>
 
-        <!-- 6. 网站运行状态 -->
+        <!-- 6. 运行状态 (静态展示) -->
         <div class="card">
             <div class="card-header">
-                <div class="card-icon">🟢</div>
-                <div class="card-title">系统运行状态</div>
+                <div class="card-icon" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">📊</div>
+                <div class="card-title">运行状态</div>
             </div>
-            <div style="margin: 10px 0;">
-                <div class="status-row">
-                    <span class="status-label"><span class="status-dot"></span>服务状态</span>
-                    <span class="status-value" style="color: #4ade80;">正常运行</span>
+            <div style="flex-grow: 1;">
+                <div class="status-item">
+                    <span class="status-label">服务状态</span>
+                    <span class="status-value status-online">正常运行</span>
                 </div>
-                <div class="status-row">
-                    <span class="status-label">累计运行时长</span>
-                    <span class="status-value" id="uptime">1227 天 22 小时</span>
+                <div class="status-item">
+                    <span class="status-label">累计运行</span>
+                    <span class="status-value" id="uptime">计算中...</span>
                 </div>
-                <div class="status-row">
-                    <span class="status-label">边缘节点延迟</span>
-                    <span class="status-value" style="color: #4ade80;">&lt; 50ms</span>
+                <div class="status-item" style="border:none;">
+                    <span class="status-label">部署版本</span>
+                    <span class="status-value">v2.4.0</span>
                 </div>
             </div>
-            <button class="btn btn-secondary" onclick="location.reload()">刷新页面</button>
+            <button onclick="location.reload()" class="btn btn-outline">刷新页面</button>
         </div>
 
-    </div>
+    </main>
 
     <script>
-        // --- 1. 时间与问候 ---
-        function updateTime() {
+        // --- 1. 时钟逻辑 ---
+        function updateClock() {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
-            const dateStr = now.toLocaleDateString('zh-CN').replace(/\//g, '/');
-            document.getElementById('clock').textContent = `${dateStr} ${timeStr}`;
-
-            const hour = now.getHours();
-            let greet = "晚上好";
-            if (hour < 6) greet = "凌晨好";
-            else if (hour < 11) greet = "上午好";
-            else if (hour < 14) greet = "中午好";
-            else if (hour < 18) greet = "下午好";
-            document.getElementById('greeting').textContent = `${greet}，欢迎回来`;
+            document.getElementById('clock').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
         }
-        setInterval(updateTime, 1000);
-        updateTime();
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        // --- 2. 天气模块 (带兜底) ---
+        // --- 2. 运行时长计算 ---
+        // 假设上线日期：2023年1月1日
+        const launchDate = new Date("2023-01-01").getTime();
+        const uptimeEl = document.getElementById('uptime');
+
+        function updateUptime() {
+            const now = Date.now();
+            const diff = now - launchDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            uptimeEl.textContent = `${days} 天 ${hours} 小时`;
+        }
+        setInterval(updateUptime, 60000); // 每分钟更新
+        updateUptime();
+
+        // --- 3. 天气逻辑 (带兜底) ---
         async function fetchWeather() {
-            const locEl = document.getElementById('weather-loc');
             const tempEl = document.getElementById('weather-temp');
             const descEl = document.getElementById('weather-desc');
+            const loadingEl = document.getElementById('weather-loading');
 
-            // 重置状态
-            locEl.textContent = "定位中...";
-            tempEl.textContent = "--°C";
-            descEl.textContent = "获取数据...";
+            tempEl.textContent = '--°C';
+            descEl.textContent = '定位中...';
+            loadingEl.textContent = '';
 
-            // 默认城市坐标 (北京) - 兜底方案
+            // 默认城市坐标 (北京)
             let lat = 39.9042;
             let lon = 116.4074;
-            let isDefault = true;
+            let isDefault = false;
 
-            // 尝试获取真实位置
             try {
+                // 尝试获取位置，超时时间 5秒
                 const position = await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
                 });
                 lat = position.coords.latitude;
                 lon = position.coords.longitude;
-                isDefault = false;
-            } catch (e) {
-                console.log("定位失败，使用默认城市");
+            } catch (err) {
+                console.warn("定位失败，使用默认城市", err);
+                isDefault = true;
+                loadingEl.textContent = '定位失败，已切换至默认城市';
             }
 
             try {
-                // 使用 Open-Meteo 免费API (无需Key，支持跨域)
-                const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=Asia/Shanghai`);
+                // 使用免费的 Open-Meteo API (无需Key)
+                const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`);
                 const data = await resp.json();
 
                 const temp = Math.round(data.current.temperature_2m);
                 const code = data.current.weather_code;
-                const weatherMap = { 0: '晴朗', 1: '主要晴朗', 2: '少云', 3: '多云', 45: '雾', 48: '雾', 51: '毛毛雨', 61: '小雨', 63: '中雨', 65: '大雨', 71: '小雪', 80: '阵雨' };
-                const desc = weatherMap[code] || '多云';
 
                 tempEl.textContent = `${temp}°C`;
-                descEl.textContent = desc;
-                locEl.textContent = isDefault ? "📍 北京 (默认)" : "📍 当前位置";
+                descEl.textContent = isDefault ? '北京 (默认)' : '当前位置';
 
-            } catch (err) {
-                tempEl.textContent = "Error";
-                descEl.textContent = "天气服务不可用";
-                locEl.textContent = "离线模式";
+            } catch (e) {
+                tempEl.textContent = 'Err';
+                descEl.textContent = '获取天气失败';
+                loadingEl.textContent = '';
             }
         }
         // 初始化天气
         fetchWeather();
 
-        // --- 3. 工具箱逻辑 ---
-        // 密码生成
-        function genPass() {
+        // --- 4. 工具箱逻辑 ---
+        function generatePassword() {
             const len = document.getElementById('pwd-len').value;
-            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-            let retVal = "";
-            for (let i = 0, n = charset.length; i < len; ++i) {
-                retVal += charset.charAt(Math.floor(Math.random() * n));
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+            let pwd = "";
+            for (let i = 0; i < len; i++) {
+                pwd += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            document.getElementById('pwd-result').value = retVal;
+            document.getElementById('pwd-result').value = pwd;
         }
 
-        // Base64
-        function b64(mode) {
-            const input = document.getElementById('b64-input').value;
-            if(!input) return;
-            try {
-                if(mode === 'enc') {
-                    document.getElementById('b64-input').value = btoa(input);
-                } else {
-                    document.getElementById('b64-input').value = atob(input);
-                }
-            } catch(e) {
-                alert("转换出错，请检查输入格式");
-            }
-        }
-
-        // 复制功能
-        function copyText(id) {
-            const el = document.getElementById(id);
+        function copyText(elementId) {
+            const el = document.getElementById(elementId);
             el.select();
             document.execCommand('copy');
-            // 简单提示
-            const original = el.style.borderColor;
-            el.style.borderColor = 'var(--primary-color)';
-            setTimeout(() => el.style.borderColor = original, 500);
+            alert('已复制到剪贴板');
         }
 
-        // --- 4. GitHub 数据 (模拟或API) ---
-        // 注意：直接请求 GitHub API 可能会遇到 CORS 限制，这里做一个简单的 fetch 尝试
-        // 如果失败则显示静态占位符
-        async function fetchGitHub() {
+        function base64Encode() {
+            const input = document.getElementById('base64-input').value;
+            const resultDiv = document.getElementById('base64-result');
+            if(!input) return;
             try {
-                // 使用 GitHub API (替换为你自己的用户名/仓库)
-                const resp = await fetch('https://api.github.com/users/asiacomkhk');
-                if(resp.ok) {
-                    const data = await resp.json();
-                    // 这里简化处理，只显示公开仓库数等
-                    // 实际 Stars 需要单独请求某个 Repo，这里用 Public Repos 代替演示
-                    document.getElementById('gh-stars').textContent = data.public_repos;
-                    document.getElementById('gh-forks').textContent = "N/A";
-                }
-            } catch(e) {
-                console.log("GitHub API 受限");
-            }
+                resultDiv.textContent = btoa(unescape(encodeURIComponent(input)));
+                resultDiv.style.display = 'block';
+            } catch(e) { resultDiv.textContent = "编码错误"; resultDiv.style.display = 'block'; }
         }
-        fetchGitHub();
 
-        // --- 5. 模拟运行时长 ---
-        // 这里写死一个漂亮的数据，避免 JS 计算误差
-        document.getElementById('uptime').textContent = "1227 天 22 小时";
-
+        function base64Decode() {
+            const input = document.getElementById('base64-input').value;
+            const resultDiv = document.getElementById('base64-result');
+            if(!input) return;
+            try {
+                resultDiv.textContent = decodeURIComponent(escape(window.atob(input)));
+                resultDiv.style.display = 'block';
+            } catch(e) { resultDiv.textContent = "解码错误 (非Base64字符串)"; resultDiv.style.display = 'block'; }
+        }
     </script>
 </body>
 </html>
