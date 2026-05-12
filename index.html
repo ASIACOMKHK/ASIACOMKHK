@@ -17,15 +17,6 @@
             --primary: #38bdf8;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-        }
-
-        [data-theme="light"] {
-            --bg-color: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --primary: #0284c7;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -39,87 +30,102 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
-            transition: background-color 0.3s ease;
-            padding: 2rem 1rem;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* 背景动态光效 */
-        body::before {
-            content: '';
-            position: absolute;
+        /* --- 新增：动态网格背景 --- */
+        .bg-grid {
+            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 50%, rgba(129, 140, 248, 0.08) 0%, transparent 50%);
-            pointer-events: none;
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, #1e293b 1px, transparent 1px),
+                linear-gradient(to bottom, #1e293b 1px, transparent 1px);
+            opacity: 0.1;
             z-index: -1;
+            animation: moveGrid 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes moveGrid {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(40px); }
+        }
+
+        /* 装饰性光晕 */
+        .glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, rgba(15,23,42,0) 70%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .container {
+            width: 90%;
             max-width: 800px;
-            width: 100%;
             text-align: center;
+            padding: 2rem 0;
             z-index: 1;
         }
 
-        /* 头部区域 */
-        header {
-            margin-bottom: 3rem;
-            animation: fadeInDown 0.8s ease-out;
-        }
-
+        /* 头像区域 */
+        .profile-section { margin-bottom: 2.5rem; animation: fadeInDown 0.8s ease-out; }
         .avatar {
-            width: 96px;
-            height: 96px;
+            width: 96px; height: 96px;
             border-radius: 50%;
             border: 3px solid var(--primary);
-            margin-bottom: 1.5rem;
             box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            margin-bottom: 1rem;
             object-fit: cover;
             background-color: #1e293b; /* 占位色 */
         }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            margin-bottom: 0.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .title { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.5rem; }
+        
+        /* --- 新增：终端打字效果 --- */
+        .terminal-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--primary);
+            font-size: 0.95rem;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            display: inline-block;
+            min-height: 1.5em;
+        }
+        .cursor {
+            display: inline-block;
+            width: 8px; height: 16px;
+            background-color: var(--primary);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
         }
 
-        .bio {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* 项目卡片网格 */
-        .project-grid {
+        /* 项目卡片区域 */
+        .projects-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
         }
 
-        @media (min-width: 768px) {
-            .project-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 1.5rem;
-            }
+        @media(min-width: 640px) {
+            .projects-grid { grid-template-columns: 1fr 1fr; }
         }
 
         .card {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: left;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: left;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -131,242 +137,187 @@
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
             border-color: var(--primary);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
+        .card-header { display: flex; align-items: center; margin-bottom: 1rem; }
+        .card-icon {
+            font-size: 1.5rem; color: var(--primary);
+            margin-right: 0.75rem;
         }
-
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
+        .card-title { font-size: 1.25rem; font-weight: 600; color: #fff; }
         .card-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            font-size: 0.875rem; color: var(--text-muted);
+            line-height: 1.6; margin-bottom: 1.5rem;
             flex-grow: 1;
         }
 
-        .tags {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 100px;
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--primary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
-            background: var(--text-main);
-            color: var(--bg-color);
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            width: 100%;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 100%; padding: 0.75rem 1rem;
+            background: var(--primary); color: #0f172a;
+            font-weight: 600; font-size: 0.9rem;
+            border-radius: 8px; text-decoration: none;
+            transition: background 0.2s;
+            border: none; cursor: pointer;
         }
-
-        .btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.02);
-        }
-
+        .btn:hover { background: #7dd3fc; }
         .btn i { margin-right: 0.5rem; }
 
         /* 底部 */
-        footer {
-            margin-top: 4rem;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            padding-bottom: 1rem;
+        .footer {
+            margin-top: 2rem; padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted); font-size: 0.8rem;
+            animation: fadeIn 1s ease-out 0.5s backwards;
         }
-
-        .social-links {
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
+        
+        /* --- 新增：复制提示 Toast --- */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary); color: #0f172a;
+            padding: 10px 20px; border-radius: 30px;
+            font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            display: flex; align-items: center;
         }
-
-        .social-links a {
-            color: var(--text-muted);
-            font-size: 1.25rem;
-            transition: color 0.2s;
-        }
-
-        .social-links a:hover { color: var(--primary); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast i { margin-right: 8px; }
 
         /* 动画 */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* 主题切换按钮 */
-        .theme-toggle {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: var(--text-main);
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s;
-            z-index: 10;
-        }
-        .theme-toggle:hover { background: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
-    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
-        <i class="fas fa-sun"></i>
-    </button>
+    <!-- 背景特效 -->
+    <div class="bg-grid"></div>
+    <div class="glow"></div>
 
     <div class="container">
-        <!-- 头部简介 -->
-        <header>
-            <!-- 这里的 src 可以换成你的 GitHub 头像链接 -->
-            <img src="https://avatars.githubusercontent.com/u/your-username" alt="Avatar" class="avatar" onerror="this.src='https://ui-avatars.com/api/?name=ASIACOMKHK&background=38bdf8&color=fff&size=256'">
-            
-            <h1>ASIACOMKHK</h1>
-            <p class="bio">
-                网络工程师 | Cloudflare Workers 开发者<br>
-                专注于边缘网络诊断工具与高性能流媒体解决方案。
-            </p>
+        
+        <!-- 个人资料 -->
+        <header class="profile-section">
+            <!-- 这里的 src 可以换成你自己的头像链接，或者保留这个占位符 -->
+            <img src="https://avatars.githubusercontent.com/u/your-username" alt="Avatar" class="avatar" onerror="this.src='https://ui-avatars.com/api/?name=ASIACOMKHK&background=38bdf8&color=0f172a&size=128'">
+            <h1 class="title">ASIACOMKHK</h1>
+            <div class="terminal-text">
+                <span id="typewriter"></span><span class="cursor"></span>
+            </div>
         </header>
 
-        <!-- 项目展示区 -->
-        <main class="project-grid">
-            
-            <!-- 项目 1 -->
+        <!-- 项目展示 -->
+        <main class="projects-grid">
+            <!-- 项目 1: NetDiag -->
             <article class="card">
                 <div class="card-header">
-                    <div class="icon-box">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <h2 class="card-title">NetDiag 网络诊断</h2>
+                    <i class="fa-solid fa-network-wired card-icon"></i>
+                    <h2 class="card-title">网络诊断工具</h2>
                 </div>
                 <p class="card-desc">
-                    基于 Cloudflare Workers 构建的边缘网络诊断工具。
-                    支持多节点延迟测试、带宽测速及路由追踪，帮助开发者快速定位全球网络链路质量。
+                    基于 Cloudflare Workers 的边缘网络诊断平台。提供节点延迟测试、路由追踪及全球连通性分析，帮助工程师快速定位网络瓶颈。
                 </p>
-                <div class="tags">
-                    <span class="tag">Cloudflare Workers</span>
-                    <span class="tag">Network</span>
-                    <span class="tag">Latency Test</span>
-                </div>
                 <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn">
-                    <i class="fas fa-external-link-alt"></i> 访问工具
+                    <i class="fa-solid fa-rocket"></i> 立即测试
                 </a>
             </article>
 
-            <!-- 项目 2 -->
+            <!-- 项目 2: M3U8 Player -->
             <article class="card">
                 <div class="card-header">
-                    <div class="icon-box">
-                        <i class="fas fa-video"></i>
-                    </div>
+                    <i class="fa-solid fa-film card-icon"></i>
                     <h2 class="card-title">M3U8 播放器</h2>
                 </div>
                 <p class="card-desc">
-                    轻量级、无广告的在线流媒体播放器。
-                    专为 Hls/M3U8 格式优化，支持低延迟播放，提供纯净的观看体验，适合视频流调试与日常使用。
+                    轻量级流媒体播放解决方案。支持 HLS/M3U8 协议，低延迟解码，适配多端设备，专为高性能视频流体验设计。
                 </p>
-                <div class="tags">
-                    <span class="tag">Video Player</span>
-                    <span class="tag">HLS / M3U8</span>
-                    <span class="tag">Streaming</span>
-                </div>
                 <a href="https://asiacomkhk.github.io/CF-Woker-M3U8Player/" target="_blank" class="btn">
-                    <i class="fas fa-play"></i> 立即播放
+                    <i class="fa-solid fa-play"></i> 开始播放
                 </a>
             </article>
-
         </main>
 
-        <footer>
-            <div class="social-links">
-                <a href="https://github.com/asiacomkhk" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <!-- 如果有其他链接可以在这里添加 -->
+        <!-- 底部联系方式 -->
+        <footer class="footer">
+            <p>© 2024 ASIACOMKHK. Built with Edge Computing.</p>
+            <div style="margin-top: 10px;">
+                <button onclick="copyEmail()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.8rem; text-decoration:underline;">
+                    <i class="fa-regular fa-envelope"></i> 点击复制邮箱联系我
+                </button>
             </div>
-            <p>&copy; 2026 ASIACOMKHK. Built with Cloudflare Workers.</p>
         </footer>
+
+    </div>
+
+    <!-- 复制提示弹窗 -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-check-circle"></i> 邮箱已复制
     </div>
 
     <script>
-        // 主题切换逻辑
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        const icon = themeToggle.querySelector('i');
+        // --- 功能 1: 终端打字效果 ---
+        const texts = [
+            "Network Engineer",
+            "Cloudflare Worker Dev",
+            "Latency Optimization",
+            "Stream Media Specialist"
+        ];
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typeWriterElement = document.getElementById('typewriter');
 
-        // 检查本地存储或系统偏好
-        const currentTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        if (currentTheme === 'light' || (!currentTheme && !systemPrefersDark)) {
-            html.setAttribute('data-theme', 'light');
-            icon.classList.replace('fa-sun', 'fa-moon');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            if (html.getAttribute('data-theme') === 'dark') {
-                html.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                icon.classList.replace('fa-sun', 'fa-moon');
+        function type() {
+            const currentText = texts[textIndex];
+            
+            if (isDeleting) {
+                typeWriterElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
             } else {
-                html.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                icon.classList.replace('fa-moon', 'fa-sun');
+                typeWriterElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
             }
-        });
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentText.length) {
+                typeSpeed = 2000; // 停顿时间
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+        
+        // 启动打字机
+        document.addEventListener('DOMContentLoaded', type);
+
+        // --- 功能 2: 一键复制邮箱 ---
+        function copyEmail() {
+            // 这里修改为你真实的邮箱
+            const email = "contact@asiacomkhk.com"; 
+            
+            navigator.clipboard.writeText(email).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
     </script>
 </body>
 </html>
