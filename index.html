@@ -21,65 +21,72 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
-            /* 添加微妙的背景光效，增加科技感 */
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
+            /* 添加微妙的背景网格纹理 */
+            background-image:
+                radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* --- 头部区域优化 --- */
-        .header {
+        /* 头部区域优化 */
+        header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 10;
             animation: fadeInDown 0.8s ease-out;
-            position: relative;
-            padding-top: 20px;
         }
 
-        /* 蜡笔小新头像样式 */
+        /* 头像容器 */
         .avatar-container {
-            margin-bottom: 1.2rem;
             position: relative;
-            display: inline-block;
-        }
-
-        .avatar {
             width: 100px;
             height: 100px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* 头像本体 */
+        .avatar {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            /* 这里使用了你提供的蜡笔小新图片 */
-            background-image: url('https://s2.loli.net/2024/05/12/o8K5xZz69Xj7L42.png');
-            background-size: cover;
-            background-position: center;
-            border: 3px solid var(--primary-color);
-            /* 添加发光效果，模拟“网络信号”感 */
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* 悬停动画：头像放大并旋转 */
-        .avatar:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.9);
-        }
-
-        /* 头像右上角的在线状态点（装饰） */
-        .status-dot {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 16px;
-            height: 16px;
-            background-color: #4ade80; /* 绿色 */
+            object-fit: cover;
             border: 3px solid var(--bg-color);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 头像背后的光晕 */
+        .avatar-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
             border-radius: 50%;
-            box-shadow: 0 0 10px #4ade80;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(15, 23, 42, 0) 70%);
+            z-index: 1;
+            animation: pulse 3s infinite;
+        }
+
+        /* 头像悬停效果 */
+        .avatar-container:hover .avatar {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
         }
 
         h1 {
@@ -97,70 +104,107 @@
             color: var(--text-sub);
             font-weight: 400;
             margin-bottom: 1rem;
+            letter-spacing: 0.5px;
         }
 
-        /* 标签胶囊 */
-        .tags {
+        .status-badge {
             display: inline-flex;
-            gap: 0.5rem;
-        }
-
-        .tag {
-            font-size: 0.75rem;
+            align-items: center;
             padding: 4px 12px;
-            border-radius: 20px;
             background: rgba(56, 189, 248, 0.1);
-            color: var(--primary-color);
             border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary-color);
         }
 
-        /* --- 卡片网格布局 --- */
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            margin-right: 6px;
+            box-shadow: 0 0 8px #4ade80;
+            animation: blink 2s infinite;
+        }
+
+        /* 卡片容器 */
         .container {
-            width: 100%;
-            max-width: 900px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 0 1rem;
+            gap: 2rem;
+            width: 100%;
+            max-width: 900px;
+            z-index: 10;
         }
 
-        /* --- 卡片样式 --- */
         .card {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 2rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            position: relative;
+            overflow: hidden;
             animation: fadeInUp 0.8s ease-out backwards;
         }
 
         .card:nth-child(1) { animation-delay: 0.1s; }
         .card:nth-child(2) { animation-delay: 0.2s; }
 
+        /* 卡片悬停特效 */
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-color);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
+        }
+
+        /* 卡片内部装饰光点 */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: translateX(100%);
         }
 
         .icon-box {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 1.2rem;
+            width: 50px;
+            height: 50px;
             background: rgba(56, 189, 248, 0.1);
-            padding: 12px;
             border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .icon-box {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            transform: rotateY(180deg);
         }
 
         .card h2 {
             font-size: 1.25rem;
-            margin-bottom: 0.8rem;
-            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
         }
 
         .card p {
@@ -171,59 +215,74 @@
             flex-grow: 1;
         }
 
-        .tech-tags {
+        .tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
 
-        .tech-tag {
+        .tag {
             font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 4px 8px;
             background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
             color: var(--text-sub);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
 
-        /* --- 按钮样式 --- */
+        .card:hover .tag {
+            border-color: rgba(56, 189, 248, 0.3);
+            color: #fff;
+        }
+
         .btn {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
             padding: 0.75rem 1.5rem;
-            border-radius: 10px;
+            background: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
             gap: 8px;
         }
 
-        .btn-primary {
-            background: var(--primary-color);
-            color: #0f172a;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background: #7dd3fc;
+        .btn:hover {
+            background: #fff;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
             transform: scale(1.02);
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
+        footer {
+            margin-top: auto;
+            padding-top: 3rem;
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+            opacity: 0.6;
+            width: 100%;
         }
 
-        .btn-outline:hover {
-            background: rgba(56, 189, 248, 0.1);
+        /* 动画定义 */
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.2; }
+            100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
         }
 
-        /* --- 动画 --- */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -236,77 +295,78 @@
 
         /* 移动端适配 */
         @media (max-width: 600px) {
-            .container { grid-template-columns: 1fr; padding: 0; }
-            .card { padding: 1.5rem; }
             h1 { font-size: 1.5rem; }
+            .container { grid-template-columns: 1fr; padding: 0 1rem; }
+            .card { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 头部区域：包含蜡笔小新头像 -->
-    <header class="header">
+    <!-- 头部区域：包含头像、标题和状态 -->
+    <header>
         <div class="avatar-container">
-            <div class="avatar"></div>
-            <!-- 这是一个装饰性的绿点，表示“在线” -->
-            <div class="status-dot"></div>
+            <div class="avatar-glow"></div>
+            <!-- 蜡笔小新头像 -->
+            <img src="https://s2.loli.net/2025/05/12/P6y9YJj74Qn8K5H.jpg" alt="Avatar" class="avatar" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=ASIACOMKHK'">
         </div>
 
         <h1>ASIACOMKHK</h1>
         <p class="subtitle">网络工程师 | Cloudflare Workers 开发者</p>
 
-        <div class="tags">
-            <span class="tag">Edge Computing</span>
-            <span class="tag">Frontend</span>
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            系统运行正常
         </div>
     </header>
 
-    <!-- 主体内容：保留了你原有的两个工具卡片 -->
+    <!-- 主体内容：原有的功能卡片保持不变 -->
     <main class="container">
 
-        <!-- 工具 1: 网络诊断 -->
-        <article class="card">
+        <!-- 卡片 1：NetDiag -->
+        <div class="card">
             <div class="icon-box">
-                <i class="fa-solid fa-network-wired"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             </div>
             <h2>NetDiag 网络诊断</h2>
             <p>基于 Cloudflare Workers 构建的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪，帮助开发者快速定位全球网络链路质量。</p>
 
-            <div class="tech-tags">
-                <span class="tech-tag">Cloudflare Workers</span>
-                <span class="tech-tag">Network</span>
-                <span class="tech-tag">Latency Test</span>
+            <div class="tags">
+                <span class="tag">Cloudflare Workers</span>
+                <span class="tag">Network</span>
+                <span class="tag">Latency Test</span>
             </div>
 
-            <a href="#" class="btn btn-primary">
-                <i class="fa-solid fa-up-right-from-square"></i> 访问工具
+            <a href="#" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                访问工具
             </a>
-        </article>
+        </div>
 
-        <!-- 工具 2: M3U8 播放器 -->
-        <article class="card">
+        <!-- 卡片 2：M3U8 Player -->
+        <div class="card">
             <div class="icon-box">
-                <i class="fa-solid fa-video"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
             </div>
             <h2>M3U8 播放器</h2>
             <p>轻量级、无广告的在线流媒体播放器。专为 Hls/M3U8 格式优化，支持低延迟播放，提供纯净的观看体验，适合视频流调试与日常使用。</p>
 
-            <div class="tech-tags">
-                <span class="tech-tag">Video Player</span>
-                <span class="tech-tag">HLS / M3U8</span>
-                <span class="tech-tag">Streaming</span>
+            <div class="tags">
+                <span class="tag">Video Player</span>
+                <span class="tag">HLS / M3U8</span>
+                <span class="tag">Streaming</span>
             </div>
 
-            <a href="#" class="btn btn-primary">
-                <i class="fa-solid fa-play"></i> 立即播放
+            <a href="#" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                立即播放
             </a>
-        </article>
+        </div>
 
     </main>
 
-    <!-- 页脚 -->
-    <footer style="margin-top: 3rem; color: var(--text-sub); font-size: 0.8rem; text-align: center;">
-        <p>© 2024 ASIACOMKHK. Built with Cloudflare Workers.</p>
+    <footer>
+        <p>© 2024 ASIACOMKHK. Powered by Cloudflare Workers.</p>
     </footer>
 
 </body>
