@@ -278,25 +278,27 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // 3. 根据 IP 自动获取天气 (核心升级部分)
+        // 3. 根据 IP 自动获取天气 (更换为 Open-Meteo 稳定接口)
         async function fetchWeatherByIP() {
             try {
-                // 第一步：通过 IP 获取城市信息 (使用免费的 wttr.in 接口自动定位)
-                // wttr.in 如果后面不加城市名，会自动根据请求者的 IP 返回当地天气
-                const response = await fetch('https://wttr.in/?format=j1');
-                const data = await response.json();
+                // 第一步：通过免费的 IP 接口获取当前经纬度
+                const locationRes = await fetch('https://ipapi.co/json/');
+                const locationData = await locationRes.json();
+                const { latitude, longitude, city } = locationData;
+
+                // 第二步：将经纬度传给 Open-Meteo 获取天气数据
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=auto`);
+                const weatherData = await weatherRes.json();
                 
-                const current = data.current_condition[0];
-                const area = data.nearest_area[0];
-                
-                // 提取中文城市名
-                const cityName = area.areaName[0].value;
-                
+                const current = weatherData.current_weather;
+                const temp = current.temperature;
+                const wind = current.windspeed;
+
                 // 更新页面显示的城市名和天气数据
-                document.getElementById('weatherCity').textContent = `${cityName} 实时天气`;
+                document.getElementById('weatherCity').textContent = `${city} 实时天气`;
                 document.getElementById('weatherInfo').innerHTML = `
                     <i class="fas fa-cloud-sun-rain"></i> 
-                    <span>当前气温: ${current.temp_C}°C | ${current.weatherDesc[0].value} | 湿度: ${current.humidity}%</span>
+                    <span>当前气温: ${temp}°C | 风速: ${wind} km/h</span>
                 `;
             } catch (error) {
                 console.error('天气获取失败:', error);
