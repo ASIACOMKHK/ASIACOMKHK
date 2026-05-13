@@ -3,88 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极客技术生态中心 | ASIACOMKHK</title>
-    <meta name="description" content="Cloudflare Workers 生态工具箱与技术博客：网络诊断、M3U8播放器、代理技术及开发者实用工具。">
-    <meta name="theme-color" content="#0f172a">
+    <title>极客技术生态中心</title>
     <style>
         /* --- 全局样式与变量 --- */
         :root {
             --bg-color: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.6);
-            --card-hover: rgba(30, 41, 59, 0.9);
             --primary-color: #38bdf8;
             --text-main: #f1f5f9;
             --text-sub: #94a3b8;
             --border-color: rgba(148, 163, 184, 0.1);
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: var(--font-family);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
             min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 70%);
-            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg-color) 70%);
         }
 
         /* --- 容器 --- */
         .container {
-            max-width: 680px;
-            margin: 0 auto;
-            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
         }
 
-        /* --- 头部 --- */
+        /* --- 头部区域 --- */
         header {
             text-align: center;
-            padding: 30px 0 20px;
-            animation: fadeInDown 0.8s ease;
+            margin-bottom: 30px;
+            padding-top: 20px;
         }
 
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
             letter-spacing: -0.5px;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .subtitle {
-            font-size: 14px;
+        header p {
             color: var(--text-sub);
-            max-width: 500px;
-            margin: 0 auto;
+            font-size: 0.9rem;
         }
-
-        /* --- 导航标签 --- */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 25px 0;
-            flex-wrap: wrap;
-        }
-
-        .nav-item {
-            font-size: 14px;
-            color: var(--text-sub);
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 20px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-item:hover { color: var(--primary-color); background: rgba(56, 189, 248, 0.1); }
-        .nav-item.active { background: var(--primary-color); color: #0f172a; font-weight: 600; }
 
         /* --- 卡片通用样式 --- */
         .card {
@@ -95,204 +68,197 @@
             margin-bottom: 20px;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            transition: transform 0.2s, background 0.2s;
-            animation: fadeInUp 0.8s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
         .card:hover {
-            background: var(--card-hover);
+            border-color: var(--primary-color);
             transform: translateY(-2px);
-            border-color: rgba(56, 189, 248, 0.3);
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
             color: var(--text-main);
         }
 
-        .card-desc {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-bottom: 15px;
-            line-height: 1.5;
+        .card-title i {
+            margin-right: 8px;
+            color: var(--primary-color);
         }
 
-        /* --- 按钮 --- */
+        /* --- 按钮样式 --- */
         .btn {
             display: inline-block;
             padding: 8px 16px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 0.9rem;
             font-weight: 500;
             text-decoration: none;
             transition: all 0.2s;
             cursor: pointer;
             border: none;
+            text-align: center;
         }
 
         .btn-primary {
-            background: var(--primary-color);
+            background-color: var(--primary-color);
             color: #0f172a;
-        }
-
-        .btn-primary:hover {
-            background: #7dd3fc;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-sub);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        /* --- 工具特定样式 --- */
-        .tool-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
+            width: 100%;
             margin-top: 10px;
         }
 
-        input[type="number"], input[type="text"] {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: rgba(0, 0, 0, 0.2);
-            color: var(--text-main);
-            font-size: 13px;
-            outline: none;
+        .btn-primary:hover {
+            background-color: #7dd3fc;
         }
 
-        input:focus { border-color: var(--primary-color); }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        .btn-sm:hover {
+            background: rgba(56, 189, 248, 0.2);
+        }
+
+        /* --- 工具列表 --- */
+        .tool-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tool-item:last-child { border-bottom: none; }
+
+        .tool-info h3 { font-size: 1rem; margin-bottom: 4px; }
+        .tool-info p { font-size: 0.8rem; color: var(--text-sub); }
+
+        /* --- 天气组件 --- */
+        .weather-widget {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .weather-temp { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .weather-desc { color: var(--text-sub); font-size: 0.9rem; }
 
         /* --- 底部 --- */
         footer {
+            margin-top: auto;
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
+            padding: 20px 0;
             color: var(--text-sub);
-            font-size: 12px;
+            font-size: 0.8rem;
+            width: 100%;
+            max-width: 600px;
         }
 
-        /* --- 动画 --- */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- 输入框 --- */
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1rem;
         }
 
-        /* --- 响应式 --- */
-        @media (max-width: 480px) {
-            .tool-grid { grid-template-columns: 1fr; }
-            .nav-tabs { gap: 10px; }
-            .nav-item { font-size: 13px; padding: 4px 8px; }
-        }
     </style>
 </head>
 <body>
 
+    <!-- 页面主要内容容器 -->
     <div class="container">
-        <!-- 头部区域 -->
+
+        <!-- 头部信息 -->
         <header>
-            <div class="logo">极客技术生态中心</div>
-            <p class="subtitle">Cloudflare Workers 生态工具箱：网络诊断、M3U8播放器、代理技术及开发者实用工具。</p>
+            <h1>极客技术生态中心</h1>
+            <p>Cloudflare Workers 生态工具箱与技术博客：网络诊断、M3U8播放器、代理技术及开发者实用工具</p>
         </header>
 
-        <!-- 导航标签 -->
-        <nav class="nav-tabs">
-            <div class="nav-item active">🛠️ 实用工具</div>
-            <div class="nav-item">📝 开发笔记</div>
-            <div class="nav-item">📚 DIY教程</div>
-            <div class="nav-item">🔗 学习资源</div>
-        </nav>
-
-        <!-- 工具区域 -->
+        <!-- 核心工具区域 -->
         <main>
+
             <!-- 网络诊断工具 -->
-            <section class="card">
+            <div class="card">
                 <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                    NetDiag 网络诊断
+                    <i>🛠️</i> NetDiag 网络诊断
                 </div>
-                <p class="card-desc">基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。</p>
-                <button class="btn btn-primary">开始测速</button>
-                <button class="btn btn-outline" style="margin-left: 10px;">查看路由</button>
-            </section>
+                <div class="tool-info">
+                    <p style="font-size: 0.9rem; color: var(--text-sub); margin-bottom: 15px;">
+                        基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。
+                    </p>
+                    <a href="#" class="btn btn-primary">立即测试</a>
+                </div>
+            </div>
 
-            <!-- M3U8 播放器 -->
-            <section class="card">
+            <!-- 媒体播放工具 -->
+            <div class="card">
                 <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    M3U8 播放器
+                    <i>📺</i> M3U8 播放器
                 </div>
-                <p class="card-desc">轻量级、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持低延迟播放。</p>
-                <button class="btn btn-primary">立即播放</button>
-            </section>
+                <div class="tool-info">
+                    <p style="font-size: 0.9rem; color: var(--text-sub); margin-bottom: 15px;">
+                        轻量、无广告的在线流媒体播放器。专为 HLS/M3U8 格式优化，支持低延迟播放。
+                    </p>
+                    <a href="#" class="btn btn-primary">立即播放</a>
+                </div>
+            </div>
 
-            <!-- 智能天气 -->
-            <section class="card">
+            <!-- 状态与天气 -->
+            <div class="card">
                 <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    智能天气
+                    <i>☀️</i> 智能天气
                 </div>
-                <p class="card-desc">31°C 主要晴朗 - 当前位置</p>
-                <button class="btn btn-outline">刷新天气</button>
-            </section>
+                <div class="weather-widget">
+                    <div class="weather-temp">31°C</div>
+                    <div class="weather-desc">主要晴朗</div>
+                    <div style="margin-top:5px; font-size: 0.8rem; color: var(--text-sub);">当前位置</div>
+                </div>
+            </div>
 
-            <!-- GitHub 动态 -->
-            <section class="card">
+            <!-- GitHub 数据 -->
+            <div class="card">
                 <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    GitHub 动态
+                    <i>🐙</i> GitHub 动态
                 </div>
-                <p class="card-desc">实时同步 GitHub 仓库数据。</p>
-                <div style="display: flex; gap: 15px; font-size: 13px; color: var(--text-sub);">
-                    <span>Stars: <strong style="color:var(--text-main)">9</strong></span>
-                    <span>Forks: <strong style="color:var(--text-main)">4</strong></span>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: var(--text-sub); font-size: 0.9rem;">Stars</span>
+                    <span style="font-weight: bold;">9</span>
                 </div>
-                <button class="btn btn-outline" style="margin-top: 10px; width: 100%;">查看主页</button>
-            </section>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-sub); font-size: 0.9rem;">Forks</span>
+                    <span style="font-weight: bold;">4</span>
+                </div>
+                <a href="#" style="display:block; text-align:center; margin-top:15px; color: var(--primary-color); font-size: 0.85rem; text-decoration: none;">查看主页 &rarr;</a>
+            </div>
 
-            <!-- 开发者工具箱 -->
-            <section class="card">
+            <!-- 底部小工具 -->
+            <div class="card">
                 <div class="card-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                    开发者工具箱
+                    <i>🔒</i> 密码生成
                 </div>
-                <p class="card-desc">密码生成 (长度):</p>
-                <div class="input-group">
-                    <input type="number" value="16" min="4" max="64">
-                    <button class="btn btn-primary">生成</button>
-                </div>
-            </section>
+                <label style="font-size: 0.8rem; color: var(--text-sub); display:block; margin-bottom: 5px;">密码长度</label>
+                <input type="number" value="16" min="4" max="64">
+                <button class="btn btn-primary" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-main);">生成</button>
+            </div>
+
         </main>
-
-        <!-- 底部 -->
-        <footer>
-            <p>© 2026 ASIACOMKHK. Powered by Cloudflare Workers.</p>
-        </footer>
     </div>
+
+    <!-- 底部版权 -->
+    <footer>
+        <p>&copy; 2026 ASIACOMKHK. Powered by Cloudflare Workers.</p>
+    </footer>
 
 </body>
 </html>
