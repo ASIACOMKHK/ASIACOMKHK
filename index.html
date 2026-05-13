@@ -3,317 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极客技术生态中心 · 全功能工具箱</title>
+    <meta name="description" content="极客技术生态中心 - Cloudflare Workers 生态工具箱：网络诊断、M3U8播放器、代理技术及开发者实用工具">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="canonical" href="https://asiacomkhk.pages.dev/">
+    <title>极客技术生态中心 | Cloudflare Workers 工具箱</title>
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: rgba(30,41,59,0.55);
-            --primary: #38bdf8;
-            --text: #f1f5f9;
-            --sub: #94a3b8;
-            --border: rgba(148,163,184,0.12);
-            --success: #34d399;
-            --danger: #f87171;
-            --radius: 18px;
-            --shadow: 0 2px 16px rgba(0,0,0,0.25);
-        }
-        .light-theme {
-            --bg: #f8fafc;
-            --card-bg: rgba(255,255,255,0.7);
-            --text: #0f172a;
-            --sub: #475569;
-            --border: rgba(0,0,0,0.1);
-            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.55);
+            --primary-color: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.12);
+            --success-color: #34d399;
+            --danger-color: #f87171;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-card: 0 2px 16px rgba(0,0,0,0.25);
         }
         *{box-sizing:border-box;margin:0;padding:0}
         body{
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height:100vh;
-            padding:20px;
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
+            background:var(--bg-color);color:var(--text-main);min-height:100vh;
             display:flex;flex-direction:column;align-items:center;
-            transition:background 0.3s, color 0.3s;
+            padding:clamp(12px,4vw,24px);
+            background-image:radial-gradient(ellipse 80% 60% at 50% -5%,#1e3a5f 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 80% 90%,#1a2740 0%,transparent 50%),radial-gradient(circle at 50% 0%,#1e293b 0%,var(--bg-color) 70%);
+            background-attachment:fixed;
         }
-        .container{max-width:700px;width:100%}
+        .container{width:100%;max-width:620px;margin-top:10px}
+        header{text-align:center;margin-bottom:32px;padding-top:16px}
+        header h1{
+            font-size:clamp(1.5rem,5vw,1.9rem);font-weight:700;
+            background:linear-gradient(135deg,#ffffff 0%,#b0c4de 45%,#94a3b8 100%);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;color:transparent;margin-bottom:8px;
+        }
+        header p{color:var(--text-sub);font-size:0.88rem;max-width:480px;margin:0 auto}
         .card{
-            background:var(--card-bg);
-            backdrop-filter:blur(12px);
-            -webkit-backdrop-filter:blur(12px);
-            border:1px solid var(--border);
-            border-radius:var(--radius);
-            padding:18px 20px;
-            margin-bottom:18px;
-            box-shadow:var(--shadow);
-            transition:border 0.2s, background 0.2s;
+            background:var(--card-bg);border:1px solid var(--border-color);
+            border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:18px;
+            backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+            box-shadow:var(--shadow-card);
+            transition:transform 0.28s,border-color 0.28s,background 0.28s;
+            position:relative;overflow:hidden;
         }
-        .card:hover{border-color:var(--primary);}
-        h2{font-size:1.2rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+        .card:hover{border-color:var(--primary-color);transform:translateY(-2px);background:rgba(30,41,59,0.75)}
+        .card-title{font-size:1.05rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+        .card-title .icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--radius-sm);background:rgba(56,189,248,0.12);font-size:1.1rem}
         .btn{
-            background:var(--primary);color:#0f172a;border:none;
-            padding:8px 16px;border-radius:8px;font-weight:600;cursor:pointer;
-            transition:0.2s;display:inline-flex;align-items:center;gap:6px;
+            display:inline-flex;align-items:center;justify-content:center;gap:6px;
+            padding:10px 18px;border-radius:var(--radius-sm);font-size:0.9rem;
+            font-weight:530;text-decoration:none;transition:all 0.18s;cursor:pointer;
+            border:none;font-family:inherit;letter-spacing:-0.1px;
         }
-        .btn:hover{background:#7dd3fc;box-shadow:0 0 12px rgba(56,189,248,0.4)}
-        .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
-        input,textarea,select{
-            background:rgba(0,0,0,0.2);border:1px solid var(--border);
-            color:var(--text);padding:10px;border-radius:8px;width:100%;
-            font-family:inherit;margin-top:6px;
-        }
-        .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-        .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1e3a5f;color:#fff;padding:10px 20px;border-radius:20px;z-index:999;opacity:0;transition:0.3s;}
-        .toast.show{opacity:1}
-        #themeToggle{position:fixed;bottom:20px;right:20px;background:var(--primary);border:none;border-radius:50%;width:44px;height:44px;font-size:1.4rem;cursor:pointer;z-index:10}
-        .strength-bar{height:6px;border-radius:3px;background:var(--border);margin-top:8px;overflow:hidden}
-        .strength-fill{height:100%;width:0%;transition:0.3s}
+        .btn-primary{background:var(--primary-color);color:#0f172a;width:100%;margin-top:8px;font-weight:600}
+        .btn-primary:hover{background:#7dd3fc;box-shadow:0 4px 16px rgba(56,189,248,0.35)}
+        .btn-sm{padding:5px 11px;font-size:0.78rem;background:rgba(56,189,248,0.1);color:var(--primary-color);border-radius:6px;display:inline-block}
+        .btn-sm:hover{background:rgba(56,189,248,0.2)}
+        .weather-temp{font-size:2.6rem;font-weight:700;color:var(--primary-color)}
+        .weather-desc{color:var(--text-sub);font-size:0.9rem}
+        .weather-location{margin-top:5px;font-size:0.78rem;color:#64748b;display:flex;align-items:center;justify-content:center;gap:5px}
+        .github-stats{display:flex;gap:16px;margin-bottom:8px}
+        .github-stat{flex:1;text-align:center;padding:10px;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);border:1px solid var(--border-color)}
+        .github-stat .stat-value{font-size:1.3rem;font-weight:700}
+        .github-link{display:block;text-align:center;margin-top:12px;color:var(--primary-color);text-decoration:none}
+        .pwd-display{background:rgba(0,0,0,0.35);border:1px solid var(--border-color);padding:10px;border-radius:var(--radius-sm);font-family:monospace;margin-bottom:10px}
+        footer{margin-top:auto;text-align:center;padding:22px 0 8px;color:#64748b;font-size:0.78rem}
+        @media(max-width:400px){.card{padding:16px 14px}}
     </style>
 </head>
 <body>
-    <div class="toast" id="toast"></div>
-    <button id="themeToggle" title="切换主题">🌓</button>
-
     <div class="container">
-        <header style="text-align:center;margin-bottom:30px">
-            <h1 style="font-size:2rem;background:linear-gradient(135deg,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">极客技术生态中心</h1>
-            <p style="color:var(--sub)">Cloudflare Workers 工具箱 · 27合1开发者瑞士军刀</p>
+        <header>
+            <h1>极客技术生态中心</h1>
+            <p>Cloudflare Workers 生态工具箱与技术博客：网络诊断、M3U8 播放器、代理技术及开发者实用工具</p>
         </header>
-
-        <!-- 原有卡片开始 -->
-        <div class="card"><h2>🛠️ NetDiag 网络诊断</h2><p style="color:var(--sub);margin-bottom:10px">边缘网络诊断工具</p><a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn">⚡ 立即测试</a></div>
-        <div class="card"><h2>📺 M3U8 播放器</h2><p style="color:var(--sub);margin-bottom:10px">轻量流媒体播放器</p><a href="https://asiacomkhk.github.io/CF-Wroker-M3U8Player/" target="_blank" class="btn">▶️ 立即播放</a></div>
-        <div class="card"><h2>☀️ 智能天气</h2><div id="weatherWidget"><span id="weatherTemp" style="font-size:2rem">--</span><span id="weatherDesc"></span></div><button class="btn btn-outline" id="refreshWeather">刷新</button></div>
-        <div class="card"><h2>🐙 GitHub 动态</h2><p>Stars: <b id="ghStars">9</b>  Forks: <b id="ghForks">4</b></p><a href="https://github.com/ASIACOMKHK" target="_blank" style="color:var(--primary)">查看主页 →</a></div>
-        <div class="card"><h2>🔒 安全密码生成</h2><div class="row"><input type="text" id="pwdDisplay" readonly placeholder="点击生成"><button class="btn" id="pwdGen">🎲 生成</button><button class="btn btn-outline" id="pwdCopy">复制</button></div><input type="range" id="pwdLength" min="6" max="64" value="16"><span id="pwdLenValue">16</span><div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div></div>
-        <!-- 原有卡片结束 -->
-
-        <!-- 新增功能卡片按顺序插入 -->
-        <div class="card"><h2>📡 实时 Ping 测试</h2><input type="text" id="pingUrl" value="https://cloudflare.com" placeholder="输入 URL"><button class="btn" id="pingBtn">测速</button><p id="pingResult" style="margin-top:8px"></p></div>
-
-        <div class="card"><h2>🌐 DNS 查询</h2><input type="text" id="dnsDomain" value="example.com" placeholder="域名"><select id="dnsType"><option>A</option><option>AAAA</option><option>MX</option></select><button class="btn" id="dnsBtn">查询</button><pre id="dnsResult" style="white-space:pre-wrap;margin-top:8px"></pre></div>
-
-        <div class="card"><h2>🌍 全球节点延迟</h2><p style="color:var(--sub);margin-bottom:8px">预置 Cloudflare 边缘节点</p><div id="nodesContainer" class="row"></div><button class="btn" id="testNodesBtn">测试延迟</button></div>
-
-        <div class="card"><h2>📊 站点可用性监测</h2><input type="text" id="monitorUrl" value="https://asiacomkhk.github.io" placeholder="站点 URL"><button class="btn" id="monitorCheckBtn">立即检查</button><ul id="monitorHistory" style="margin-top:10px;list-style:none"></ul></div>
-
-        <div class="card"><h2>📝 M3U8 在线编辑/校验</h2><textarea id="m3u8Input" rows="6" placeholder="粘贴 M3U8 内容..."></textarea><button class="btn" id="m3u8ValidateBtn">校验</button><div id="m3u8Result" style="margin-top:8px;font-size:0.9rem"></div></div>
-
-        <div class="card"><h2>🎬 嵌入式 M3U8 播放器</h2><input type="text" id="hlsUrl" placeholder="输入 .m3u8 地址"><button class="btn" id="loadHlsBtn">加载播放器</button><div id="hlsPlayerContainer" style="margin-top:10px"></div></div>
-
-        <div class="card"><h2>📡 直播流状态轮询</h2><input type="text" id="liveUrl" value="" placeholder="M3U8 直播地址"><button class="btn" id="liveCheckBtn">开始监测</button><p id="liveStatus" style="margin-top:8px">未开始</p></div>
-
-        <div class="card"><h2>🔣 Base64 / URL 编解码</h2><textarea id="codecInput" rows="3" placeholder="输入文本"></textarea><div class="row"><button class="btn" data-action="encode64">Base64 编码</button><button class="btn" data-action="decode64">Base64 解码</button><button class="btn" data-action="encodeURI">URL 编码</button><button class="btn" data-action="decodeURI">URL 解码</button></div><textarea id="codecOutput" rows="3" readonly style="margin-top:10px"></textarea></div>
-
-        <div class="card"><h2>🧩 JSON 格式化</h2><textarea id="jsonInput" rows="5" placeholder='{"hello":"world"}'></textarea><button class="btn" id="jsonFormatBtn">格式化</button><pre id="jsonOutput" style="background:rgba(0,0,0,0.3);padding:10px;border-radius:8px;margin-top:10px;white-space:pre-wrap"></pre></div>
-
-        <div class="card"><h2>🔐 JWT 解析</h2><input type="text" id="jwtInput" placeholder="粘贴 JWT token"><button class="btn" id="jwtBtn">解析</button><div id="jwtResult" style="margin-top:10px;font-family:monospace"></div></div>
-
-        <div class="card"><h2>🔍 正则表达式测试</h2><input type="text" id="regexPattern" placeholder="/正则表达式/标志"><input type="text" id="regexTest" placeholder="测试文本"><p id="regexResult" style="margin-top:8px"></p></div>
-
-        <div class="card"><h2>🕒 时间戳转换</h2><input type="number" id="timestampInput" placeholder="Unix 时间戳 (秒)"><button class="btn" id="tsConvertBtn">转换</button><p id="tsResult" style="margin-top:8px"></p></div>
-
-        <div class="card"><h2>🔐 哈希生成</h2><input type="text" id="hashInput" placeholder="输入文本"><select id="hashAlgo"><option>SHA-256</option><option>SHA-1</option><option>MD5</option></select><button class="btn" id="hashBtn">生成</button><p id="hashResult" style="word-break:break-all;margin-top:8px"></p></div>
-
-        <div class="card"><h2>🆔 UUID / ULID 生成</h2><button class="btn" id="uuidBtn">生成 UUID</button><button class="btn" id="ulidBtn">生成 ULID</button><div id="uuidList" style="margin-top:10px;font-family:monospace"></div></div>
-
-        <div class="card"><h2>⚙️ Cloudflare Worker 状态</h2><p style="color:var(--sub)">此功能需要配置 Worker 端点。当前为占位展示。</p><div id="workerStatus">状态：未配置</div></div>
-
-        <div class="card"><h2>📋 剪贴板历史</h2><ul id="clipboardHistory" style="list-style:decimal inside"></ul></div>
-
-        <div class="card"><h2>📱 客户端信息</h2><div id="clientInfo"></div></div>
-
-        <div class="card"><h2>📰 最新文章</h2><p style="color:var(--sub)">当您配置博客 RSS 端点后，此处将显示文章列表。</p></div>
-
-        <div class="card"><h2>💬 反馈建议</h2><textarea id="feedbackText" rows="3" placeholder="您的建议..."></textarea><button class="btn" id="feedbackBtn">提交（需后端）</button></div>
-
-        <div class="card"><h2>📈 访问统计</h2><p>本页面累计访问：<b id="visitCount">0</b> 次</p></div>
-
-        <div class="card"><h2>💭 编程名言</h2><p id="quoteText" style="font-style:italic"></p></div>
-
-        <div class="card"><h2>📱 二维码生成</h2><input type="text" id="qrText" value="https://asiacomkhk.github.io" placeholder="文本或 URL"><button class="btn" id="qrGenBtn">生成</button><img id="qrImg" style="display:block;margin-top:10px;max-width:200px" alt="QR"></div>
-
-        <div class="card"><h2>🎨 颜色渐变生成</h2><input type="color" id="gradColor1" value="#38bdf8"><input type="color" id="gradColor2" value="#818cf8"><div id="gradPreview" style="height:80px;border-radius:8px;margin-top:10px;background:linear-gradient(to right, #38bdf8, #818cf8)"></div><code id="gradCss" style="margin-top:8px;display:block">background: linear-gradient(to right, #38bdf8, #818cf8);</code></div>
-
-        <div class="card"><h2>📝 简易便签</h2><textarea id="notepad" rows="4" placeholder="写点什么..."></textarea></div>
-
-        <div class="card"><h2>🐍 摸鱼贪吃蛇</h2><canvas id="snakeCanvas" width="300" height="300" style="background:#1e293b;border-radius:8px;display:block;margin:10px auto"></canvas><button class="btn" id="snakeRestart">重新开始</button></div>
+        <main>
+            <div class="card">
+                <div class="card-title"><span class="icon">🛠️</span> NetDiag 网络诊断</div>
+                <p style="color:var(--text-sub);margin-bottom:14px">基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。</p>
+                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn btn-primary">⚡ 立即测试</a>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">📺</span> M3U8 播放器</div>
+                <p style="color:var(--text-sub);margin-bottom:14px">轻量、无广告的在线流媒体播放器。专为 HLS / M3U8 格式优化，支持低延迟播放与自定义 header。</p>
+                <a href="https://asiacomkhk.github.io/CF-Wroker-M3U8Player/" target="_blank" class="btn btn-primary">▶️ 立即播放</a>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">☀️</span> 智能天气</div>
+                <div style="text-align:center">
+                    <div class="weather-temp" id="weatherTemp">31°C</div>
+                    <div class="weather-desc" id="weatherDesc">主要晴朗</div>
+                    <div class="weather-location" id="weatherLocation">📍 正在定位...</div>
+                </div>
+                <button class="btn btn-sm" id="weatherRefresh" style="display:block;margin:10px auto 0">🔄 刷新天气</button>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🐙</span> GitHub 动态</div>
+                <div class="github-stats">
+                    <div class="github-stat"><div class="stat-value">9</div><div style="font-size:0.7rem">Stars</div></div>
+                    <div class="github-stat"><div class="stat-value">4</div><div style="font-size:0.7rem">Forks</div></div>
+                </div>
+                <a href="https://github.com/ASIACOMKHK" target="_blank" class="github-link">查看主页 →</a>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🔒</span> 安全密码生成</div>
+                <div class="pwd-display" id="pwdDisplay">点击生成按钮创建密码</div>
+                <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+                    <label style="font-size:0.8rem">密码长度</label>
+                    <input type="range" id="pwdLength" min="6" max="64" value="16" style="flex:1">
+                    <span id="pwdLenValue">16</span>
+                </div>
+                <button class="btn btn-primary" id="pwdGen" style="margin-top:0">🎲 生成密码</button>
+                <button class="btn btn-sm" id="pwdCopy" style="margin-top:8px;width:100%">📋 复制密码</button>
+            </div>
+        </main>
     </div>
+    <footer>© 2026 ASIACOMKHK. Powered by Cloudflare Workers.</footer>
 
     <script>
-        (function(){
-            // Toast
-            const toast = document.getElementById('toast');
-            function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000)}
+        (function() {
+            // 天气模块
+            const tempEl = document.getElementById('weatherTemp');
+            const descEl = document.getElementById('weatherDesc');
+            const locEl = document.getElementById('weatherLocation');
+            async function loadWeather() {
+                try {
+                    const pos = await new Promise((res, rej) =>
+                        navigator.geolocation.getCurrentPosition(
+                            p => res({ lat: p.coords.latitude, lon: p.coords.longitude }),
+                            rej, { timeout: 5000 }
+                        )
+                    );
+                    const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat.toFixed(4)}&longitude=${pos.lon.toFixed(4)}&current_weather=true`);
+                    const data = await resp.json();
+                    const w = data.current_weather;
+                    tempEl.textContent = w.temperature + '°C';
+                    descEl.textContent = ['晴朗','大部晴朗','多云','阴天'][w.weathercode] || '未知';
+                    locEl.innerHTML = `📍 ${pos.lat.toFixed(1)}°, ${pos.lon.toFixed(1)}°`;
+                } catch {
+                    tempEl.textContent = '31°C';
+                    descEl.textContent = '主要晴朗';
+                    locEl.innerHTML = '📍 默认位置';
+                }
+            }
+            loadWeather();
+            document.getElementById('weatherRefresh').addEventListener('click', loadWeather);
 
-            // 主题切换
-            const themeBtn = document.getElementById('themeToggle');
-            themeBtn.addEventListener('click',()=>document.body.classList.toggle('light-theme'));
+            // 密码模块
+            const pwdDisplay = document.getElementById('pwdDisplay');
+            const pwdLength = document.getElementById('pwdLength');
+            const pwdLenValue = document.getElementById('pwdLenValue');
+            const pwdGen = document.getElementById('pwdGen');
+            const pwdCopy = document.getElementById('pwdCopy');
+            const charset = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#$%^&*_-+=';
 
-            // 天气 (复用原逻辑)
-            async function fetchWeather(){try{const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(p=>res({lat:p.coords.latitude,lon:p.coords.longitude}),rej,{timeout:5000}));const data=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat}&longitude=${pos.lon}&current_weather=true`).then(r=>r.json());document.getElementById('weatherTemp').textContent=data.current_weather.temperature+'°C';document.getElementById('weatherDesc').textContent=data.current_weather.weathercode;}catch{ document.getElementById('weatherTemp').textContent='31°C';document.getElementById('weatherDesc').textContent='主要晴朗'}}fetchWeather();document.getElementById('refreshWeather').onclick=fetchWeather;
-            // GitHub 静态
-            // 密码生成器增强
-            const pwdDisplay=document.getElementById('pwdDisplay'),pwdLength=document.getElementById('pwdLength'),pwdLenValue=document.getElementById('pwdLenValue'),strengthFill=document.getElementById('strengthFill');
-            pwdLength.oninput=()=>pwdLenValue.textContent=pwdLength.value;
-            const charset='abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#$%^&*';
-            function genPwd(){let p='';const len=+pwdLength.value;const arr=new Uint32Array(len);crypto.getRandomValues(arr);for(let i=0;i<len;i++)p+=charset[arr[i]%charset.length];pwdDisplay.value=p;let score=0;if(len>12)score++;if(/[A-Z]/.test(p))score++;if(/[0-9]/.test(p))score++;if(/[^a-zA-Z0-9]/.test(p))score++;strengthFill.style.width=(score*25)+'%';strengthFill.style.background=score<2?'var(--danger)':score<3?'orange':'var(--success)'}
-            document.getElementById('pwdGen').onclick=genPwd;
-            document.getElementById('pwdCopy').onclick=()=>{navigator.clipboard.writeText(pwdDisplay.value).then(()=>showToast('已复制'))};
+            pwdLength.addEventListener('input', () => pwdLenValue.textContent = pwdLength.value);
 
-            // ---- 新功能 JS 逐一实现 ----
-            // Ping
-            document.getElementById('pingBtn').onclick=async()=>{const url=document.getElementById('pingUrl').value;const start=Date.now();try{await fetch(url,{mode:'no-cors'});document.getElementById('pingResult').textContent=`延迟: ${Date.now()-start}ms`}catch(e){document.getElementById('pingResult').textContent='请求失败'}};
+            function generatePassword() {
+                const len = parseInt(pwdLength.value, 10);
+                const arr = new Uint32Array(len);
+                crypto.getRandomValues(arr);
+                let pwd = '';
+                for (let i = 0; i < len; i++) pwd += charset[arr[i] % charset.length];
+                pwdDisplay.textContent = pwd;
+            }
 
-            // DNS
-            document.getElementById('dnsBtn').onclick=async()=>{const domain=document.getElementById('dnsDomain').value;const type=document.getElementById('dnsType').value;try{const res=await fetch(`https://cloudflare-dns.com/dns-query?name=${domain}&type=${type}`,{headers:{accept:'application/dns-json'}});const d=await res.json();document.getElementById('dnsResult').textContent=JSON.stringify(d.Answer||d,null,2)}catch(e){document.getElementById('dnsResult').textContent='查询失败'}};
-
-            // 全球节点 (简化)
-            const nodes=['1.1.1.1','8.8.8.8','9.9.9.9','208.67.222.222'];
-            document.getElementById('testNodesBtn').onclick=async()=>{const container=document.getElementById('nodesContainer');container.innerHTML='';for(let ip of nodes){const start=Date.now();try{await fetch(`https://${ip}`,{mode:'no-cors'});container.innerHTML+=`<span>${ip}: ${Date.now()-start}ms</span> `}catch{container.innerHTML+=`<span>${ip}: 超时</span> `}}};
-
-            // 站点监测
-            const monitorHistory=document.getElementById('monitorHistory');
-            document.getElementById('monitorCheckBtn').onclick=async()=>{const url=document.getElementById('monitorUrl').value;try{const r=await fetch(url,{mode:'no-cors'});const li=document.createElement('li');li.textContent=`${new Date().toLocaleTimeString()} ✅ ${url}`;monitorHistory.prepend(li)}catch{const li=document.createElement('li');li.textContent=`❌ 不可达`;monitorHistory.prepend(li)}};
-
-            // M3U8 校验
-            document.getElementById('m3u8ValidateBtn').onclick=()=>{const content=document.getElementById('m3u8Input').value;const lines=content.split('\n');let errs=[];if(!lines[0]?.startsWith('#EXTM3U')) errs.push('缺少 #EXTM3U 头');document.getElementById('m3u8Result').innerHTML=errs.length?errs.join('<br>'):'✅ 格式基本正确'};
-
-            // 内嵌播放器 (hls.js 动态加载)
-            document.getElementById('loadHlsBtn').onclick=()=>{const url=document.getElementById('hlsUrl').value;const container=document.getElementById('hlsPlayerContainer');if(!url)return;container.innerHTML='';const video=document.createElement('video');video.controls=true;video.style.width='100%';container.appendChild(video);if(window.Hls){const hls=new Hls();hls.loadSource(url);(url);hlshls.attach.attachMedia(vMedia(video)}ideo)}else{else{const scriptconst script=document=document.createElement('.createElement('script');script');script.srcscript.src='https='https://cdn://cdn.jsdel.jsdelivrivr.net/n.net/npm/hpm/hls.jsls.js@latest@latest';script';script.onload.onload=()=()=>{=>{const hconst hls=newls=new Hls Hls();h();hls.loadls.loadSource(urlSource(url);h);hls.ls.attachMediaattachMedia(video(video)};)};script.onscript.onerror=error=()=>()=>container.innerHTMLcontainer.innerHTML='='<p style<p style==color:color:redred>无法>无法加载 h加载 hls.jsls.js</</p>p>';document';document.head.appendChild.head.appendChild(script(script)}})}};
-
-           ;
-
-            //  // 直播状态直播状态
-           
-            let live let liveIntervalInterval;
-           ;
-            document.getElementById document.getElementById('live('liveCheckBtnCheckBtn').on').onclick=click=function(){function(){constconst url= url=document.getElementByIddocument.getElementById('live('liveUrl').Url').value;value;if(!if(!url)url)return;return;if(lif(liveIntervaliveInterval)clear)clearInterval(lInterval(liveIntervaliveInterval);const);const statusEl statusEl=document=document.getElementById('.getElementById('liveStatusliveStatus');const');const check= check=()()=>{=>{fetch(urlfetch(url,{,{method:'method:'HEAD',HEAD',mode:'mode:'no-cno-cors'ors'}).then}).then(()=>(()=>statusElstatusEl.textContent.textContent='='🟢🟢 在线 在线').catch').catch(()=>(()=>statusElstatusEl.text.textContentContent='='🔴 🔴 离线')离线')};check};check();live();liveInterval=Interval=setIntervalsetInterval(check,(check,1000010000);status);statusEl.textEl.textContent='Content='监测中监测中...'};
-
-           ...'};
-
-            //  // 编解码编解码
-           
-            document.querySelector document.querySelectorAll('#All('#codeccodecInput +Input + . .row .row .btn').btn').forEach(bforEach(b=>b=>b.onclick.onclick=()=()=>{=>{const inputconst input=document=document.getElementById('.getElementById('codeccodecInput').Input').value;value;const actionconst action=b.dat=b.dataset.actionaset.action;let;let out=' out='';try';try{switch{switch(action){(action){case'case'encode64encode64':out':out=bto=btoa(a(unescape(encodeunescape(encodeURIComponentURIComponent(input))(input)));break);break;case;case'decode'decode64':64':out=out=decodeURIdecodeURIComponent(Component(escape(atescape(atob(inputob(input)));break;)));break;case'case'encodeURIencodeURI':out':out=encode=encodeURIComponentURIComponent(input);(input);break;case'break;case'decodeURIdecodeURI':out':out=decode=decodeURIComponentURIComponent(input);(input);break}}break}}catch{catch{out='out='转换转换错误'}错误'}document.getElementByIddocument.getElementById('code('codecOutputcOutput').value').value=out=out});
-
-           });
-
-            // JSON // JSON
-           
-            document.getElementById document.getElementById('json('jsonFormatBtn').FormatBtn').onclick=onclick=()=>()=>{try{try{const{const obj= obj=JSON.parseJSON.parse(document.getElementById(document.getElementById('json('jsonInput').Input').value);value);document.getElementByIddocument.getElementById('json('jsonOutput').Output').textContenttextContent=JSON=JSON.stringify(obj.stringify(obj,null,,null,2)}2)}catch{catch{ document document.getElementById('.getElementById('jsonOutputjsonOutput').text').textContent='无效Content='无效 JSON' JSON'}};
-
-}};
-
-            //            // JWT
-            document.getElementById('jwtBtn').on JWT
-            document.getElementById('jwtBtn').onclick=click=()=>()=>{const{const token= token=document.getElementByIddocument.getElementById('j('jwtInputwtInput').value').value;try;try{const{const parts= parts=token.splittoken.split('.'('.');if);if(parts(parts.length!.length!==3==3)throw)throw new Error new Error();const();const header= header=JSON.parseJSON.parse(atob(atob(parts(parts[0[0]));]));const payloadconst payload=JSON=JSON.parse(at.parse(atob(ob(partsparts[1][1]));document));document.getElementById('.getElementById('jwtjwtResult').innerHTMLResult').innerHTML=`=`<b<b>Header>Header:</b:</b><pre><pre>${>${JSON.stringifyJSON.stringify(header(header,null,,null,2)}</pre2)}</pre><b><b>Payload>Payload:</b:</b><pre><pre>${>${JSON.stringifyJSON.stringify(payload(payload,null,,null,22)})}</pre</pre>`}>`}catch{catch{ document.getElementById document.getElementById('j('jwtResultwtResult').text').textContent='Content='无效 J无效 JWT'WT'}};
-
-}};
-
-            //            // 正则 正则
-           
-            document document.getElementById('.getElementById('regexPatternregexPattern').on').oninput=input=documentdocument.getElementById('.getElementById('regexTestregexTest').on').oninput=input=()=>()=>{try{try{const{const pattern= pattern=document.getElementByIddocument.getElementById('regex('regexPattern').Pattern').value;value;const flagsconst flags=pattern=pattern.replace.replace(/.*(/.*\/(\/([g[gimuy]*)$/imuy]*)$/,'$,'$1');1');const regexconst regex=new=new RegExp RegExp(pattern.replace(pattern.replace(/^\(/^\/(/(.*)\.*)\/[/[aa-z]*-z]*$/,'$/,'$1$1'),flags'),flags);const);const test= test=document.getElementByIddocument.getElementById('regex('regexTest').Test').value;value;constconst match match=test=test.match(re.match(regex);gex);document.getElementByIddocument.getElementById('regex('regexResult').Result').textContenttextContent=match?=match?`匹配: ${match[0`匹配: ${match[0]}`]}`:'无:'无匹配'}匹配'}catch{catch{ document.getElementById document.getElementById('regex('regexResult').Result').textContenttextContent='正则='正则无效无效'}}'}};
-
-           ;
-
-            //  // 时间戳时间戳
-           
-            document.getElementById document.getElementById('ts('tsConvertBtnConvertBtn').on').onclick=click=()=>{const()=>{const ts= ts=+document+document.getElementById('.getElementById('timestampInputtimestampInput').value').value;if;if(isNaN(isNaN((tsts))return))return;const;const d=new d=new Date( Date(ts*ts*10001000);document);document.getElementById('.getElementById('tsResulttsResult').text').textContent=dContent=d.toLocale.toLocaleString()String()};
-
-           };
-
-            //  // 哈希 (哈希 (简化简化用用 Subt SubtleCleCrypto)
-rypto)
-            document            document.getElementById('.getElementById('hashBtnhashBtn').on').onclick=click=async()async()=>{=>{const textconst text=document=document.getElementById('.getElementById('hashInputhashInput').value;const algo=').value;const algo=document.getElementByIddocument.getElementById('hashAlgo('hashAlgo').value').value.replace.replace('-','('-','--').').toLowerCasetoLowerCase();const();const enc=new enc=new TextEncoder TextEncoder().encode().encode(text);(text);const hashconst hashBufferBuffer=await=await crypto.sub crypto.subtletle.digest(al.digest(algo,go,enc);enc);const hashconst hashArray=Array=Array.fromArray.from(new U(new Uint8int8Array(hArray(hashBufferashBuffer));document));document.getElementById('.getElementById('hashResulthashResult').text').textContent=hashArrayContent=.map(bhashArray.map(b=>b=>b.toString(.toString(16).16).padStartpadStart(2(2,'0,'0')).join')).join('')('')};
-
-           };
-
-            // UUID // UUID / / ULID ULID
-           
-            document.getElementById document.getElementById('uuid('uuidBtn').Btn').onclickonclick=()=()=>{=>{document.getElementById('uuiddocument.getElementById('uuidList').List').textContenttextContent=c=cryptorypto.randomUUID()};
-.randomUUID()};
-            document            document.getElementById('.getElementById('ululididBtn').Btn').onclickonclick=()=()=>{const time=Date=>{const time=Date.now().toString(32);let.now().toString(32);let rand=' rand='';const';const arr=new arr=new Uint Uint32Array32Array(10(10);c);crypto.getrypto.getRandomValuesRandomValues(arr);(arr);arr.forEacharr.forEach(n=>(n=>rand+=rand+=n.toStringn.toString(32(32));document));document.getElementById('.getElementById('uuidListuuidList').text').textContent=(Content=(time+time+rand).rand).substringsubstring(0(0,26,26))};
-
-            // Worker};
-
-            // Worker 状态 状态 (静态 (静态)
-           )
-            //  // 剪贴板历史剪贴板历史
-           
-            document.addEventListener document.addEventListener('copy('copy',()',()=>{let=>{let hist= hist=JSON.parseJSON.parse(session(sessionStorage.getItemStorage.getItem('clip('clipHistHist')||')||'[]'[]');');histhist.unshift.unshift(window(window.getSelection.getSelection().toString().toString().().substringsubstring(0(0,50,50));session));sessionStorage.setStorage.setItem('Item('clipHist',JSONclipHist',JSON.stringify(.stringify(hist.slicehist.slice((0,50,5)));)));renderCliprenderClipHist()Hist()});
-           });
-            function render function renderClipHistClipHist(){const(){const ul ul=document=document.getElementById('.getElementById('clipboardclipboardHistory');History');ul.innerHTMLul.innerHTML==JSON.parseJSON.parse(session(sessionStorage.getItemStorage.getItem('clip('clipHistHist')')||'||'[]').[]').map(tmap(t=>`=>`<li<li>${>${t}</t}</li>`li>`).join).join('')('')}
-}
-            render            renderClipHistClipHist();
-
-           ();
-
-            //  // 客户端信息
-客户端信息
-                       fetch(' fetch('https://https://api.ipapi.ipify.orgify.org?format?format=json=json').then(r=>').then(r=>r.jsonr.json()).then()).then(d=>(d=>{document{document.getElementById('.getElementById('clientInfoclientInfo').inner').innerHTML=`HTML=`IP:IP: ${d ${d.ip.ip}<br>}<br>UA:UA: ${n ${navigatoravigator.userAgent.userAgent}<br}<br>屏幕>屏幕: ${: ${screen.widthscreen.width}x}x${screen${screen.height}`.height}`});
-
-});
-
-            //            // 反馈 反馈 (模拟)
-            document (模拟)
-            document.getElementById('.getElementById('feedbackBtnfeedbackBtn').on').onclick=click=()=>()=>showToastshowToast('('反馈反馈功能功能未配置未配置后端，后端，感谢感谢建议建议');
-
-           ');
-
-            //  // 访问访问统计统计
-           
-            let let count count==localStoragelocalStorage.getItem('.getItem('visitCount')||0;countvisitCount')||0;count++;localStorage++;.setItemlocalStorage.setItem('('visitvisitCount',count);Count',count);document.getElementByIddocument.getElementById('visit('visitCount').Count').textContenttextContent=count;
-
-           =count;
-
-            //  // 名言
-名言
-            const            const quotes=[" quotes=["TalkTalk is cheap is cheap. Show. Show me the me the code. code.","Stay","Stay hungry, hungry, stay foolish stay foolish.",".","Code is like humor.Code is like humor. When you When you have to have to explain it explain it, it, it’s’s bad." bad."];document];document.getElementById('quoteText.getElementById('quoteText').text').textContent=Content=quotesquotes[Math[Math.floor(Math.floor(Math.random().random()*qu*quotes.lengthotes.length)];
-
-)];
-
-            //            // 二维码 二维码
-           
-            document.getElementById document.getElementById('qr('qrGenBtn').onGenBtn').onclick=click=()=>()=>{const{const text= text=document.getElementByIddocument.getElementById('qrText').value;document.getElementById('qrText').value;document.getElementById('qr('qrImg').src=`Img').src=`https://https://api.qapi.qrserverrserver.com/v.com/v1/create1/create-qr-qr-code/?size=-code/?size=200x200&data200x200&data=${=${encodeencodeURIComponentURIComponent(text)}(text)}`};
-
-`};
-
-            //            // 渐变 渐变
-           
-            const const c1 c1=document=document.getElementById('gradColor.getElementById('gradColor1'),1'),c2c2=document=document.getElementById('.getElementById('gradColor2gradColor2'),'),prevprev=document=document.getElementById('.getElementById('gradPreviewgradPreview'),css'),css=document=document.getElementById('.getElementById('gradCgradCss');
-ss');
-            function            function updateG updateGrad(){rad(){const valconst val=`linear=`linear-gradient(to-gradient(to right, right, ${c ${c1.value1.value}, ${}, ${c2c2.value}).value})`;`;prev.styleprev.style.background.background=val=val;css;css.textContent.textContent=`background=`background: ${val};`}
-: ${val};`}
-            c            c1.on1.oninput=cinput=c2.on2.oninput=input=updateGrad;
-
-updateGrad;
-
-            // 便签
-            // 便签
-            const            const notepad= notepad=document.getElementByIddocument.getElementById('not('notepad');epad');notepadnotepad.value=.value=localStoragelocalStorage.getItem('.getItem('notepadnotepad')||')||'';'';notepadnotepad.oninput.oninput=()=()=>localStorage.set=>localStorage.setItem('Item('notepadnotepad',not',notepad.valueepad.value);
-
-           );
-
-            //  // 贪吃贪吃蛇 (极简)
-            const蛇 (极简)
-            const canvas= canvas=document.getElementByIddocument.getElementById('sn('snakeCanvasakeCanvas'),ctx'),ctx=canvas=canvas.getContext.getContext('2('2d');d');let snakelet snake=[{x=[{x:10:10,y:,y:1010}}],food={],food={x:x:15,y15,y:15:15},dir},dir='right='right',game',gameOver=falseOver=false;
-;
-            function            function draw(){ draw(){ctx.clearctx.clearRect(Rect(0,0,0,0,300,300,300);300);ctx.fillctx.fillStyle='Style='limelime';sn';snake.forEachake.forEach(s=>(s=>ctx.fillctx.fillRect(sRect(s.x*.x*1010,s,s.y*.y*10,10,1010,10,10));ctx));ctx.fillStyle.fillStyle='red='red';ctx';ctx.fillRect.fillRect(food(food.x*.x*10,f10,food.yood.y*10*10,10,10,10,10)}
-)}
-            function            function update(){ update(){const headconst head={={...sn...snakeake[0][0]};if};if(dir==(dir==='right='right')head')head.x++;.x++;if(dirif(dir==='==='left')head.x--;left')head.x--;if(dirif(dir==='==='up')up')head.yhead.y--;--;if(dirif(dir==='down')head.y++;if==='down')head.y++;if(head.x(head.x<0<0||head||head.x>=.x>=30||head.y<0||head30||head.y<0||head.y>=.y>=30||30||snakesnake.some.some(s=>(s=>s.xs.x===head===head.x&&s.y.x&&s.y===head===head.y)).y)){game{gameOver=trueOver=true;return;return}}snakesnake.unshift.unshift(head);(head);if(headif(head.x===.x===food.xfood.x&&head&&head.y===.y===food.yfood.y){food){food={x={x:Math:Math.floor(Math.floor(Math.random().random()*30*30),y),y:Math:Math.floor(Math.floor(Math.random().random()*30*30))}}else{snake}}else{snake.pop.pop()}}
-()}}
-            function            function gameLoop gameLoop(){if(){if(game(gameOver){Over){ctx.fillctx.fillStyle='Style='white';white';ctx.fillctx.fillText('Text('游戏结束游戏结束',100',100,150,150);return);return}}updateupdate();draw();draw();set();setTimeout(gameTimeout(gameLoop,Loop,150)}
-150)}
-            document            document.addEventListener('.addEventListener('keydownkeydown',e',e=>{=>{if(eif(e.key==.key==='Arrow='ArrowRight'Right'&&dir&&dir!=='!=='left')left')dir='dir='right';right';if(eif(e.key==='Arrow.key==='ArrowLeft'Left'&&dir&&dir!=='!=='right')dirright')dir='left';='left';if(eif(e.key==.key==='Arrow='ArrowUp'Up'&&dir!=='&&dir!=='down')down')dir='dir='up';up';if(eif(e.key==.key==='Arrow='ArrowDown'Down'&&dir&&dir!=='!=='up')up')dir='down'dir='down'});
-           });
-            document.getElementById document.getElementById('sn('snakeRestakeRestart').art').onclickonclick=()=()=>=>{snake=[{x:{snake=[{x:10,y10,y:10:10}];}];food={food={x:x:15,y15,y:15:15};dir};dir='right='right';game';gameOver=falseOver=false;game;gameLoop()Loop()};
-           };
-            gameLoop gameLoop();
-       ();
+            pwdGen.addEventListener('click', generatePassword);
+            pwdCopy.addEventListener('click', async () => {
+                if (!pwdDisplay.textContent || pwdDisplay.textContent.includes('点击')) return;
+                await navigator.clipboard.writeText(pwdDisplay.textContent);
+                const original = pwdCopy.textContent;
+                pwdCopy.textContent = '✅ 已复制';
+                setTimeout(() => pwdCopy.textContent = original, 1500);
+            });
         })();
- })();
-    </    </script>
-script>
-</body</body>
-</>
+    </script>
+</body>
 </html>
-html>
