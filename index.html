@@ -167,6 +167,13 @@
             line-height: 1;
         }
 
+        /* 卡片描述文本 */
+        .card-description {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            margin-bottom: 14px;
+        }
+
         /* ========== 按钮样式 ========== */
         .btn {
             display: inline-flex;
@@ -217,26 +224,6 @@
             background-color: #bae6fd;
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            width: 100%;
-            margin-top: 8px;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            background: rgba(56, 189, 248, 0.06);
-        }
-
-        .btn-outline:active {
-            transform: scale(0.975);
-            transition: transform 0.08s ease;
-            background: rgba(56, 189, 248, 0.14);
-        }
-
         .btn-sm {
             padding: 5px 11px;
             font-size: 0.78rem;
@@ -248,6 +235,7 @@
             font-weight: 500;
             transition: all var(--transition-fast);
             letter-spacing: -0.1px;
+            display: inline-block;
         }
 
         .btn-sm:hover {
@@ -293,25 +281,15 @@
             outline-offset: 2px;
         }
 
-        /* ========== 工具列表项 ========== */
-        .tool-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
+        /* 天气卡片内的刷新按钮 */
+        .weather-refresh-btn {
+            display: block;
+            margin: 10px auto 0;
         }
-        .tool-item:last-child {
-            border-bottom: none;
-        }
-        .tool-info h3 {
-            font-size: 0.98rem;
-            margin-bottom: 3px;
-        }
-        .tool-info p {
-            font-size: 0.8rem;
-            color: var(--text-sub);
+
+        /* 密码生成器内的生成按钮（移除多余外边距） */
+        .pwd-generate-btn {
+            margin-top: 0;
         }
 
         /* ========== 天气组件 ========== */
@@ -353,6 +331,9 @@
             background: var(--success-color);
             display: inline-block;
             animation: pulse-dot 1.8s ease-in-out infinite;
+        }
+        .weather-location .dot.error-dot {
+            background: var(--danger-color);
         }
         @keyframes pulse-dot {
             0%,
@@ -622,27 +603,22 @@
 </head>
 <body>
 
-    <!-- ========== Toast 通知 ========== -->
     <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- ========== 页面容器 ========== -->
     <div class="container">
 
-        <!-- ========== 头部 ========== -->
         <header>
             <h1>极客技术生态中心</h1>
             <p>Cloudflare Workers 生态工具箱与技术博客：网络诊断、M3U8 播放器、代理技术及开发者实用工具</p>
         </header>
 
-        <!-- ========== 核心内容区 ========== -->
         <main>
 
-            <!-- 网络诊断工具 -->
             <section class="card" aria-labelledby="netdiag-title">
                 <div class="card-title" id="netdiag-title">
                     <span class="icon" aria-hidden="true">🛠️</span> NetDiag 网络诊断
                 </div>
-                <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 14px;">
+                <p class="card-description">
                     基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。
                 </p>
                 <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="打开网络诊断工具（新窗口）">
@@ -650,12 +626,11 @@
                 </a>
             </section>
 
-            <!-- M3U8 播放器 -->
             <section class="card" aria-labelledby="player-title">
                 <div class="card-title" id="player-title">
                     <span class="icon" aria-hidden="true">📺</span> M3U8 播放器
                 </div>
-                <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 14px;">
+                <p class="card-description">
                     轻量、无广告的在线流媒体播放器。专为 HLS / M3U8 格式优化，支持低延迟播放与自定义 header。
                 </p>
                 <a href="https://asiacomkhk.github.io/CF-Wroker-M3U8Player/" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="打开 M3U8 播放器（新窗口）">
@@ -663,7 +638,6 @@
                 </a>
             </section>
 
-            <!-- 智能天气 -->
             <section class="card" aria-labelledby="weather-title">
                 <div class="card-title" id="weather-title">
                     <span class="icon" aria-hidden="true">☀️</span> 智能天气
@@ -672,17 +646,16 @@
                     <div class="weather-temp" id="weather-temp">31°C</div>
                     <div class="weather-desc" id="weather-desc">主要晴朗</div>
                     <div class="weather-location" id="weather-location">
-                        <span class="dot" aria-hidden="true"></span>
+                        <span class="dot" id="weather-dot" aria-label="定位状态指示灯"></span>
                         <span id="weather-location-text">正在定位...</span>
                     </div>
                     <div class="weather-error" id="weather-error" role="alert"></div>
                 </div>
-                <button class="btn btn-sm" id="weather-refresh" style="display:block; margin:10px auto 0;" aria-label="刷新天气数据">
+                <button class="btn btn-sm weather-refresh-btn" id="weather-refresh" aria-label="刷新天气数据">
                     <span aria-hidden="true">🔄</span> 刷新天气
                 </button>
             </section>
 
-            <!-- GitHub 动态 -->
             <section class="card" aria-labelledby="github-title">
                 <div class="card-title" id="github-title">
                     <span class="icon" aria-hidden="true">🐙</span> GitHub 动态
@@ -702,7 +675,6 @@
                 </a>
             </section>
 
-            <!-- 密码生成器 -->
             <section class="card" aria-labelledby="pwd-title">
                 <div class="card-title" id="pwd-title">
                     <span class="icon" aria-hidden="true">🔒</span> 安全密码生成
@@ -721,7 +693,7 @@
                     <span class="pwd-length-value" id="pwd-length-display" aria-hidden="true">16</span>
                 </div>
                 <div class="pwd-actions">
-                    <button class="btn btn-primary" id="pwd-generate-btn" style="margin-top:0;" aria-label="生成随机安全密码">
+                    <button class="btn btn-primary pwd-generate-btn" id="pwd-generate-btn" aria-label="生成随机安全密码">
                         <span aria-hidden="true">🎲</span> 生成密码
                     </button>
                 </div>
@@ -730,17 +702,14 @@
         </main>
     </div>
 
-    <!-- ========== 底部 ========== -->
     <footer>
         <p>&copy; 2026 <a href="https://github.com/ASIACOMKHK" target="_blank" rel="noopener noreferrer">ASIACOMKHK</a>. Powered by Cloudflare Workers.</p>
     </footer>
 
-    <!-- ========== 脚本 ========== -->
     <script>
         (function() {
             'use strict';
 
-            // ==================== Toast 通知 ====================
             const toastEl = document.getElementById('toast');
             let toastTimer = null;
 
@@ -754,40 +723,23 @@
                 }, duration);
             }
 
-            // ==================== 天气组件 ====================
             const weatherWidget = document.getElementById('weather-widget');
             const weatherTemp = document.getElementById('weather-temp');
             const weatherDesc = document.getElementById('weather-desc');
             const weatherLocationText = document.getElementById('weather-location-text');
             const weatherError = document.getElementById('weather-error');
             const weatherRefreshBtn = document.getElementById('weather-refresh');
-            const weatherDot = document.querySelector('.weather-location .dot');
+            const weatherDot = document.getElementById('weather-dot');
 
             const weatherCodeMap = {
-                0: '晴朗 ☀️',
-                1: '大部晴朗 🌤️',
-                2: '局部多云 ⛅',
-                3: '多云 ☁️',
-                45: '雾 🌫️',
-                48: '霜雾 🌫️',
-                51: '小毛毛雨 🌦️',
-                53: '毛毛雨 🌦️',
-                55: '大毛毛雨 🌧️',
-                61: '小雨 🌧️',
-                63: '中雨 🌧️',
-                65: '大雨 🌧️',
-                71: '小雪 ❄️',
-                73: '中雪 ❄️',
-                75: '大雪 ❄️',
-                77: '雪粒 ❄️',
-                80: '阵雨 🌦️',
-                81: '中阵雨 🌧️',
-                82: '大阵雨 🌧️',
-                85: '小阵雪 🌨️',
-                86: '大阵雪 🌨️',
-                95: '雷暴 ⛈️',
-                96: '雷暴+冰雹 ⛈️',
-                99: '强雷暴+冰雹 ⛈️',
+                0: '晴朗 ☀️', 1: '大部晴朗 🌤️', 2: '局部多云 ⛅', 3: '多云 ☁️',
+                45: '雾 🌫️', 48: '霜雾 🌫️',
+                51: '小毛毛雨 🌦️', 53: '毛毛雨 🌦️', 55: '大毛毛雨 🌧️',
+                61: '小雨 🌧️', 63: '中雨 🌧️', 65: '大雨 🌧️',
+                71: '小雪 ❄️', 73: '中雪 ❄️', 75: '大雪 ❄️', 77: '雪粒 ❄️',
+                80: '阵雨 🌦️', 81: '中阵雨 🌧️', 82: '大阵雨 🌧️',
+                85: '小阵雪 🌨️', 86: '大阵雪 🌨️',
+                95: '雷暴 ⛈️', 96: '雷暴+冰雹 ⛈️', 99: '强雷暴+冰雹 ⛈️',
             };
 
             function getUserPosition() {
@@ -797,12 +749,10 @@
                         return;
                     }
                     navigator.geolocation.getCurrentPosition(
-                        (pos) => {
-                            resolve({
-                                latitude: pos.coords.latitude,
-                                longitude: pos.coords.longitude,
-                            });
-                        },
+                        (pos) => resolve({
+                            latitude: pos.coords.latitude,
+                            longitude: pos.coords.longitude,
+                        }),
                         (err) => {
                             const messages = {
                                 1: '位置权限被拒绝',
@@ -820,20 +770,15 @@
             }
 
             async function fetchWeather(lat, lon) {
-                const url =
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&timezone=auto`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&timezone=auto`;
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' },
                     signal: AbortSignal.timeout(8000),
                 });
-                if (!response.ok) {
-                    throw new Error(`天气服务响应异常 (${response.status})`);
-                }
+                if (!response.ok) throw new Error(`天气服务响应异常 (${response.status})`);
                 const data = await response.json();
-                if (!data.current_weather) {
-                    throw new Error('天气数据不可用');
-                }
+                if (!data.current_weather) throw new Error('天气数据不可用');
                 const cw = data.current_weather;
                 return {
                     temperature: Math.round(cw.temperature),
@@ -846,10 +791,10 @@
                 weatherWidget.classList.remove('loading');
                 if (isError) {
                     weatherError.classList.add('visible');
-                    weatherDot?.style.setProperty('background', 'var(--danger-color)');
+                    weatherDot.classList.add('error-dot');
                 } else {
                     weatherError.classList.remove('visible');
-                    weatherDot?.style.setProperty('background', 'var(--success-color)');
+                    weatherDot.classList.remove('error-dot');
                 }
                 weatherTemp.textContent = `${temp}°C`;
                 weatherDesc.textContent = desc;
@@ -861,18 +806,14 @@
                     weatherWidget.classList.add('loading');
                     weatherLocationText.textContent = '正在定位...';
                     weatherError.classList.remove('visible');
+                    weatherDot.classList.remove('error-dot');
                 }
 
                 try {
                     const pos = await getUserPosition();
-                    weatherLocationText.textContent =
-                        `📍 ${pos.latitude.toFixed(2)}°, ${pos.longitude.toFixed(2)}°`;
+                    weatherLocationText.textContent = `📍 ${pos.latitude.toFixed(2)}°, ${pos.longitude.toFixed(2)}°`;
                     const weather = await fetchWeather(pos.latitude, pos.longitude);
-                    updateWeatherUI(
-                        weather.temperature,
-                        weather.description,
-                        `📍 ${pos.latitude.toFixed(1)}°, ${pos.longitude.toFixed(1)}°`
-                    );
+                    updateWeatherUI(weather.temperature, weather.description, `📍 ${pos.latitude.toFixed(1)}°, ${pos.longitude.toFixed(1)}°`);
                 } catch (err) {
                     console.warn('天气加载失败:', err.message);
                     updateWeatherUI(31, '主要晴朗', '默认位置', true);
@@ -881,18 +822,13 @@
                 }
             }
 
-            if (weatherRefreshBtn) {
-                weatherRefreshBtn.addEventListener('click', () => {
-                    loadWeather(true);
-                    showToast('正在刷新天气数据...', 1800);
-                });
-            }
-
-            setTimeout(() => {
+            weatherRefreshBtn.addEventListener('click', () => {
                 loadWeather(true);
-            }, 1500);
+                showToast('正在刷新天气数据...', 1800);
+            });
 
-            // ==================== 密码生成器 ====================
+            setTimeout(() => loadWeather(true), 1500);
+
             const pwdDisplay = document.getElementById('pwd-display');
             const pwdCopyBtn = document.getElementById('pwd-copy-btn');
             const pwdLengthSlider = document.getElementById('pwd-length-slider');
@@ -967,28 +903,18 @@
                 }
             }
 
-            if (pwdLengthSlider) {
-                pwdLengthSlider.addEventListener('input', () => {
-                    pwdLengthDisplay.textContent = pwdLengthSlider.value;
-                });
-            }
-            if (pwdGenerateBtn) {
-                pwdGenerateBtn.addEventListener('click', generateAndDisplay);
-            }
-            if (pwdCopyBtn) {
-                pwdCopyBtn.addEventListener('click', copyPassword);
-            }
-            if (pwdLengthSlider) {
-                pwdLengthSlider.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') generateAndDisplay();
-                });
-            }
+            pwdLengthSlider.addEventListener('input', () => {
+                pwdLengthDisplay.textContent = pwdLengthSlider.value;
+            });
+            pwdGenerateBtn.addEventListener('click', generateAndDisplay);
+            pwdCopyBtn.addEventListener('click', copyPassword);
+            pwdLengthSlider.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') generateAndDisplay();
+            });
 
             function init() {
                 setPasswordDisplay('');
-                if (pwdLengthSlider && pwdLengthDisplay) {
-                    pwdLengthDisplay.textContent = pwdLengthSlider.value;
-                }
+                pwdLengthDisplay.textContent = pwdLengthSlider.value;
             }
 
             if (document.readyState === 'loading') {
@@ -999,6 +925,5 @@
 
         })();
     </script>
-
 </body>
 </html>
