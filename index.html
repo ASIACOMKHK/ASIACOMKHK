@@ -645,7 +645,7 @@
                 <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 14px;">
                     基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。
                 </p>
-                <a href="#" class="btn btn-primary" data-service="netdiag" aria-label="打开网络诊断工具">
+                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="打开网络诊断工具（新窗口）">
                     <span aria-hidden="true">⚡</span> 立即测试
                 </a>
             </section>
@@ -658,7 +658,7 @@
                 <p style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 14px;">
                     轻量、无广告的在线流媒体播放器。专为 HLS / M3U8 格式优化，支持低延迟播放与自定义 header。
                 </p>
-                <a href="#" class="btn btn-primary" data-service="player" aria-label="打开 M3U8 播放器">
+                <a href="https://asiacomkhk.github.io/CF-Wroker-M3U8Player/" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="打开 M3U8 播放器（新窗口）">
                     <span aria-hidden="true">▶️</span> 立即播放
                 </a>
             </section>
@@ -744,11 +744,6 @@
             const toastEl = document.getElementById('toast');
             let toastTimer = null;
 
-            /**
-             * 显示简短的通知提示
-             * @param {string} message - 提示文字
-             * @param {number} [duration=2200] - 显示时长（毫秒）
-             */
             function showToast(message, duration = 2200) {
                 if (toastTimer) clearTimeout(toastTimer);
                 toastEl.textContent = message;
@@ -757,24 +752,6 @@
                     toastEl.classList.remove('visible');
                     toastTimer = null;
                 }, duration);
-            }
-
-            // ==================== 未配置服务的提示 ====================
-            /**
-             * 为尚未配置实际 URL 的服务按钮绑定点击提示
-             */
-            function setupServiceLinks() {
-                const serviceLinks = document.querySelectorAll('[data-service]');
-                serviceLinks.forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        if (this.getAttribute('href') === '#') {
-                            e.preventDefault();
-                            const serviceName = this.getAttribute('data-service') === 'netdiag' ?
-                                '网络诊断' : 'M3U8 播放器';
-                            showToast(`「${serviceName}」服务即将上线，敬请期待 🚀`, 2800);
-                        }
-                    });
-                });
             }
 
             // ==================== 天气组件 ====================
@@ -786,7 +763,6 @@
             const weatherRefreshBtn = document.getElementById('weather-refresh');
             const weatherDot = document.querySelector('.weather-location .dot');
 
-            /** Open-Meteo WMO 天气代码映射 */
             const weatherCodeMap = {
                 0: '晴朗 ☀️',
                 1: '大部晴朗 🌤️',
@@ -814,10 +790,6 @@
                 99: '强雷暴+冰雹 ⛈️',
             };
 
-            /**
-             * 通过浏览器 Geolocation API 获取用户坐标
-             * @returns {Promise<{latitude: number, longitude: number}>}
-             */
             function getUserPosition() {
                 return new Promise((resolve, reject) => {
                     if (!navigator.geolocation) {
@@ -841,18 +813,12 @@
                         }, {
                             enableHighAccuracy: false,
                             timeout: 8000,
-                            maximumAge: 600000, // 缓存10分钟
+                            maximumAge: 600000,
                         }
                     );
                 });
             }
 
-            /**
-             * 使用 Open-Meteo 免费 API 获取天气
-             * @param {number} lat - 纬度
-             * @param {number} lon - 经度
-             * @returns {Promise<{temperature: number, weatherCode: number, description: string}>}
-             */
             async function fetchWeather(lat, lon) {
                 const url =
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current_weather=true&timezone=auto`;
@@ -876,9 +842,6 @@
                 };
             }
 
-            /**
-             * 更新天气 UI
-             */
             function updateWeatherUI(temp, desc, locationLabel, isError = false) {
                 weatherWidget.classList.remove('loading');
                 if (isError) {
@@ -893,10 +856,6 @@
                 weatherLocationText.textContent = locationLabel;
             }
 
-            /**
-             * 主天气加载流程
-             * @param {boolean} [showLoading=true] - 是否显示加载状态
-             */
             async function loadWeather(showLoading = true) {
                 if (showLoading) {
                     weatherWidget.classList.add('loading');
@@ -906,7 +865,6 @@
 
                 try {
                     const pos = await getUserPosition();
-                    // 获取成功后先更新位置信息
                     weatherLocationText.textContent =
                         `📍 ${pos.latitude.toFixed(2)}°, ${pos.longitude.toFixed(2)}°`;
                     const weather = await fetchWeather(pos.latitude, pos.longitude);
@@ -917,14 +875,12 @@
                     );
                 } catch (err) {
                     console.warn('天气加载失败:', err.message);
-                    // 回退到默认值
                     updateWeatherUI(31, '主要晴朗', '默认位置', true);
                     weatherError.textContent = `⚠️ ${err.message}，使用默认数据`;
                     weatherError.classList.add('visible');
                 }
             }
 
-            // 页面加载后延迟获取天气（让用户先看到内容）
             if (weatherRefreshBtn) {
                 weatherRefreshBtn.addEventListener('click', () => {
                     loadWeather(true);
@@ -932,7 +888,6 @@
                 });
             }
 
-            // 首次加载：延迟 1.5 秒后开始定位
             setTimeout(() => {
                 loadWeather(true);
             }, 1500);
@@ -945,35 +900,25 @@
             const pwdGenerateBtn = document.getElementById('pwd-generate-btn');
             let currentPassword = '';
 
-            /**
-             * 密码学安全的字符集（排除易混淆字符）
-             */
             const CHARSET = (() => {
-                const lowercase = 'abcdefghjkmnpqrstuvwxyz'; // 排除 l, o
-                const uppercase = 'ABCDEFGHJKMNPQRSTUVWXYZ'; // 排除 I, O
-                const digits = '23456789'; // 排除 0, 1
+                const lowercase = 'abcdefghjkmnpqrstuvwxyz';
+                const uppercase = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+                const digits = '23456789';
                 const symbols = '!@#$%^&*_-+=?';
                 return lowercase + uppercase + digits + symbols;
             })();
 
-            /**
-             * 使用 crypto.getRandomValues 生成安全密码
-             * @param {number} length - 密码长度
-             * @returns {string} 生成的密码
-             */
             function generateSecurePassword(length) {
                 const charsetLength = CHARSET.length;
                 const randomValues = new Uint32Array(length);
                 crypto.getRandomValues(randomValues);
                 let password = '';
                 for (let i = 0; i < length; i++) {
-                    // 使用取模，对于 Uint32 范围来说均匀性足够好
                     password += CHARSET[randomValues[i] % charsetLength];
                 }
                 return password;
             }
 
-            /** 更新密码显示 */
             function setPasswordDisplay(password) {
                 currentPassword = password;
                 if (password) {
@@ -988,19 +933,16 @@
                 }
             }
 
-            /** 生成并显示密码 */
             function generateAndDisplay() {
                 const length = parseInt(pwdLengthSlider.value, 10);
                 const password = generateSecurePassword(length);
                 setPasswordDisplay(password);
-                // 微小的视觉反馈
                 pwdDisplay.style.borderColor = 'var(--success-color)';
                 setTimeout(() => {
                     pwdDisplay.style.borderColor = 'var(--border-color)';
                 }, 400);
             }
 
-            /** 复制密码到剪贴板 */
             async function copyPassword() {
                 if (!currentPassword) return;
                 try {
@@ -1016,7 +958,6 @@
                         pwdCopyBtn.style.borderColor = '';
                     }, 1800);
                 } catch {
-                    // 降级方案：选中文字提示用户手动复制
                     const range = document.createRange();
                     range.selectNodeContents(pwdDisplay);
                     const selection = window.getSelection();
@@ -1026,7 +967,6 @@
                 }
             }
 
-            // 绑定事件
             if (pwdLengthSlider) {
                 pwdLengthSlider.addEventListener('input', () => {
                     pwdLengthDisplay.textContent = pwdLengthSlider.value;
@@ -1038,60 +978,25 @@
             if (pwdCopyBtn) {
                 pwdCopyBtn.addEventListener('click', copyPassword);
             }
-            // 键盘快捷键：Ctrl+Enter 也能生成
             if (pwdLengthSlider) {
                 pwdLengthSlider.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') generateAndDisplay();
                 });
             }
 
-            // ==================== 初始化 ====================
             function init() {
-                setupServiceLinks();
-                // 初始状态：密码为空
                 setPasswordDisplay('');
-                // 确保 slider 显示值同步
                 if (pwdLengthSlider && pwdLengthDisplay) {
                     pwdLengthDisplay.textContent = pwdLengthSlider.value;
                 }
             }
 
-            // DOM 加载完成后初始化
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
                 init();
             }
 
-            // ==================== GitHub 数据（可选动态加载） ====================
-            /**
-             * 如果需要动态获取 GitHub 仓库数据，可取消下方注释。
-             * 替换 'USERNAME' 和 'REPO_NAME' 为实际值。
-             */
-            /*
-            async function fetchGitHubStats() {
-                try {
-                    const response = await fetch(
-                        'https://api.github.com/repos/USERNAME/REPO_NAME',
-                        { headers: { 'Accept': 'application/vnd.github.v3+json' } }
-                    );
-                    if (response.ok) {
-                        const data = await response.json();
-                        document.getElementById('gh-stars').textContent =
-                            data.stargazers_count ?? 9;
-                        document.getElementById('gh-forks').textContent =
-                            data.forks_count ?? 4;
-                    }
-                } catch {
-                    // 静默回退到静态数据
-                }
-            }
-            // 取消注释以启用:
-            // document.addEventListener('DOMContentLoaded', fetchGitHubStats);
-            */
-
-            console.log('🚀 极客技术生态中心已就绪 | Cloudflare Workers Ecosystem');
-            console.log('   NetDiag · M3U8 Player · Weather · Password Generator');
         })();
     </script>
 
