@@ -3,26 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="极客技术生态中心 - Cloudflare Workers 生态工具箱：网络诊断、M3U8播放器、代理技术及开发者实用工具">
+    <meta name="description" content="极客技术生态中心 - Cloudflare Workers 生态工具箱">
     <meta name="theme-color" content="#0f172a">
     <link rel="canonical" href="https://asiacomkhk.pages.dev/">
     <title>极客技术生态中心 | Cloudflare Workers 工具箱</title>
     <style>
         :root {
             --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.55);
+            --card-bg: rgba(30,41,59,0.55);
+            --card-bg-hover: rgba(30,41,59,0.75);
             --primary-color: #38bdf8;
+            --primary-glow: rgba(56,189,248,0.25);
             --text-main: #f1f5f9;
             --text-sub: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.12);
+            --text-muted: #64748b;
+            --border-color: rgba(148,163,184,0.12);
+            --border-hover: rgba(56,189,248,0.45);
             --success-color: #34d399;
             --danger-color: #f87171;
             --radius-lg: 18px;
             --radius-md: 12px;
             --radius-sm: 8px;
+            --transition-fast: 0.18s ease;
+            --transition-smooth: 0.28s cubic-bezier(0.4,0,0.2,1);
             --shadow-card: 0 2px 16px rgba(0,0,0,0.25);
+            --font-mono: "SF Mono","Cascadia Code","Fira Code","Consolas",monospace;
         }
         *{box-sizing:border-box;margin:0;padding:0}
+        html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
         body{
             font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
             background:var(--bg-color);color:var(--text-main);min-height:100vh;
@@ -35,7 +43,7 @@
         header{text-align:center;margin-bottom:32px;padding-top:16px}
         header h1{
             font-size:clamp(1.5rem,5vw,1.9rem);font-weight:700;
-            background:linear-gradient(135deg,#ffffff 0%,#b0c4de 45%,#94a3b8 100%);
+            background:linear-gradient(135deg,#fff 0%,#b0c4de 45%,#94a3b8 100%);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent;
             background-clip:text;color:transparent;margin-bottom:8px;
         }
@@ -45,17 +53,17 @@
             border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:18px;
             backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
             box-shadow:var(--shadow-card);
-            transition:transform 0.28s,border-color 0.28s,background 0.28s;
+            transition:transform var(--transition-smooth),border-color var(--transition-smooth),background var(--transition-smooth);
             position:relative;overflow:hidden;
         }
-        .card:hover{border-color:var(--primary-color);transform:translateY(-2px);background:rgba(30,41,59,0.75)}
+        .card:hover{border-color:var(--border-hover);transform:translateY(-2px);background:var(--card-bg-hover)}
         .card-title{font-size:1.05rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:9px}
         .card-title .icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--radius-sm);background:rgba(56,189,248,0.12);font-size:1.1rem}
         .btn{
             display:inline-flex;align-items:center;justify-content:center;gap:6px;
             padding:10px 18px;border-radius:var(--radius-sm);font-size:0.9rem;
-            font-weight:530;text-decoration:none;transition:all 0.18s;cursor:pointer;
-            border:none;font-family:inherit;letter-spacing:-0.1px;
+            font-weight:530;text-decoration:none;transition:all var(--transition-fast);
+            cursor:pointer;border:none;font-family:inherit;letter-spacing:-0.1px;
         }
         .btn-primary{background:var(--primary-color);color:#0f172a;width:100%;margin-top:8px;font-weight:600}
         .btn-primary:hover{background:#7dd3fc;box-shadow:0 4px 16px rgba(56,189,248,0.35)}
@@ -69,115 +77,223 @@
         .github-stat .stat-value{font-size:1.3rem;font-weight:700}
         .github-link{display:block;text-align:center;margin-top:12px;color:var(--primary-color);text-decoration:none}
         .pwd-display{background:rgba(0,0,0,0.35);border:1px solid var(--border-color);padding:10px;border-radius:var(--radius-sm);font-family:monospace;margin-bottom:10px}
+        textarea,input[type="text"],input[type="number"]{
+            width:100%;padding:10px;border-radius:var(--radius-sm);
+            border:1px solid var(--border-color);background:rgba(0,0,0,0.2);
+            color:var(--text-main);font-family:var(--font-mono);font-size:0.85rem;
+            margin-bottom:8px;transition:border-color var(--transition-fast);resize:vertical;
+        }
+        textarea:focus,input[type="text"]:focus,input[type="number"]:focus{border-color:var(--primary-color);outline:none}
+        .output-box{
+            background:rgba(0,0,0,0.35);border:1px solid var(--border-color);
+            border-radius:var(--radius-sm);padding:10px 14px;
+            font-family:var(--font-mono);font-size:0.85rem;color:var(--text-main);
+            min-height:44px;word-break:break-all;white-space:pre-wrap;
+        }
+        .btn-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+        .btn-row .btn-sm{flex:1;min-width:70px}
+        .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e3a5f;color:#e2e8f0;padding:10px 20px;border-radius:20px;font-size:0.84rem;z-index:100;opacity:0;transition:all 0.3s}
+        .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
         footer{margin-top:auto;text-align:center;padding:22px 0 8px;color:#64748b;font-size:0.78rem}
         @media(max-width:400px){.card{padding:16px 14px}}
     </style>
 </head>
 <body>
+    <div class="toast" id="toast"></div>
     <div class="container">
         <header>
             <h1>极客技术生态中心</h1>
-            <p>Cloudflare Workers 生态工具箱与技术博客：网络诊断、M3U8 播放器、代理技术及开发者实用工具</p>
+            <p>Cloudflare Workers 生态工具箱与技术博客</p>
         </header>
         <main>
-            <div class="card">
-                <div class="card-title"><span class="icon">🛠️</span> NetDiag 网络诊断</div>
-                <p style="color:var(--text-sub);margin-bottom:14px">基于 Cloudflare Workers 的边缘网络诊断工具。支持多节点延迟测试、带宽测速及路由追踪。</p>
-                <a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn btn-primary">⚡ 立即测试</a>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="icon">📺</span> M3U8 播放器</div>
-                <p style="color:var(--text-sub);margin-bottom:14px">轻量、无广告的在线流媒体播放器。专为 HLS / M3U8 格式优化，支持低延迟播放与自定义 header。</p>
-                <a href="https://asiacomkhk.github.io/CF-Wroker-M3U8Player/" target="_blank" class="btn btn-primary">▶️ 立即播放</a>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="icon">☀️</span> 智能天气</div>
-                <div style="text-align:center">
-                    <div class="weather-temp" id="weatherTemp">31°C</div>
-                    <div class="weather-desc" id="weatherDesc">主要晴朗</div>
-                    <div class="weather-location" id="weatherLocation">📍 正在定位...</div>
-                </div>
-                <button class="btn btn-sm" id="weatherRefresh" style="display:block;margin:10px auto 0">🔄 刷新天气</button>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="icon">🐙</span> GitHub 动态</div>
-                <div class="github-stats">
-                    <div class="github-stat"><div class="stat-value">9</div><div style="font-size:0.7rem">Stars</div></div>
-                    <div class="github-stat"><div class="stat-value">4</div><div style="font-size:0.7rem">Forks</div></div>
-                </div>
-                <a href="https://github.com/ASIACOMKHK" target="_blank" class="github-link">查看主页 →</a>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="icon">🔒</span> 安全密码生成</div>
-                <div class="pwd-display" id="pwdDisplay">点击生成按钮创建密码</div>
-                <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
-                    <label style="font-size:0.8rem">密码长度</label>
-                    <input type="range" id="pwdLength" min="6" max="64" value="16" style="flex:1">
-                    <span id="pwdLenValue">16</span>
-                </div>
-                <button class="btn btn-primary" id="pwdGen" style="margin-top:0">🎲 生成密码</button>
-                <button class="btn btn-sm" id="pwdCopy" style="margin-top:8px;width:100%">📋 复制密码</button>
-            </div>
+            <!-- 原有卡片：网络诊断、播放器、天气、GitHub、密码生成器、JSON、Base64、JWT、时间戳、UUID -->
+            <!-- 网络诊断 -->
+            <div class="card"><div class="card-title"><span class="icon">🛠️</span> NetDiag 网络诊断</div><p style="color:var(--text-sub);margin-bottom:14px">基于 Cloudflare Workers 的边缘网络诊断工具。</p><a href="https://asiacomkhk.github.io/CF-workers-netdiag/" target="_blank" class="btn btn-primary">⚡ 立即测试</a></div>
+            <!-- M3U8 播放器 -->
+            <div class="card"><div class="card-title"><span class="icon">📺</span> M3U8 播放器</div><p style="color:var(--text-sub);margin-bottom:14px">轻量、无广告的在线流媒体播放器。</p><a href="https://asiacomkhk.github.io/CF-Wroker-M3U8Player/" target="_blank" class="btn btn-primary">▶️ 立即播放</a></div>
+            <!-- 天气 -->
+            <div class="card"><div class="card-title"><span class="icon">☀️</span> 智能天气</div><div style="text-align:center"><div class="weather-temp" id="weatherTemp">31°C</div><div class="weather-desc" id="weatherDesc">主要晴朗</div><div class="weather-location" id="weatherLocation">📍 正在定位...</div></div><button class="btn btn-sm" id="weatherRefresh" style="display:block;margin:10px auto 0">🔄 刷新天气</button></div>
+            <!-- GitHub 动态 -->
+            <div class="card"><div class="card-title"><span class="icon">🐙</span> GitHub 动态</div><div class="github-stats"><div class="github-stat"><div class="stat-value">9</div><div style="font-size:0.7rem">Stars</div></div><div class="github-stat"><div class="stat-value">4</div><div style="font-size:0.7rem">Forks</div></div></div><a href="https://github.com/ASIACOMKHK" target="_blank" class="github-link">查看主页 →</a></div>
+            <!-- 密码生成器 -->
+            <div class="card"><div class="card-title"><span class="icon">🔒</span> 安全密码生成</div><div class="pwd-display" id="pwdDisplay">点击生成按钮创建密码</div><div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><label style="font-size:0.8rem">密码长度</label><input type="range" id="pwdLength" min="6" max="64" value="16" style="flex:1"><span id="pwdLenValue">16</span></div><button class="btn btn-primary" id="pwdGen" style="margin-top:0">🎲 生成密码</button><button class="btn btn-sm" id="pwdCopy" style="margin-top:8px;width:100%">📋 复制密码</button></div>
+            <!-- JSON 格式化 -->
+            <div class="card"><div class="card-title"><span class="icon">🧩</span> JSON 格式化校验</div><textarea id="jsonInput" rows="3" placeholder='{"hello":"world"}'></textarea><div class="btn-row"><button class="btn btn-sm" id="jsonFormat">✨ 格式化</button><button class="btn btn-sm" id="jsonMinify">📦 压缩</button></div><div class="output-box" id="jsonOutput">等待输入…</div></div>
+            <!-- Base64/URL 编解码 -->
+            <div class="card"><div class="card-title"><span class="icon">🔣</span> Base64 / URL 编解码</div><textarea id="codecInput" rows="2" placeholder="输入文本"></textarea><div class="btn-row"><button class="btn btn-sm" data-codec="base64-encode">🔒 Base64 编码</button><button class="btn btn-sm" data-codec="base64-decode">🔓 Base64 解码</button><button class="btn btn-sm" data-codec="url-encode">🔗 URL 编码</button><button class="btn btn-sm" data-codec="url-decode">🔗 URL 解码</button></div><div class="output-box" id="codecOutput">等待输入…</div></div>
+            <!-- JWT 解析 -->
+            <div class="card"><div class="card-title"><span class="icon">🔐</span> JWT 解析器</div><input type="text" id="jwtInput" placeholder="粘贴 JWT Token"><button class="btn btn-sm" id="jwtDecode" style="width:100%;margin-bottom:10px">🔍 解码</button><div style="margin-bottom:8px"><b>Header:</b><pre id="jwtHeader" style="white-space:pre-wrap;background:rgba(0,0,0,0.2);padding:5px;border-radius:6px"></pre></div><div><b>Payload:</b><pre id="jwtPayload" style="white-space:pre-wrap;background:rgba(0,0,0,0.2);padding:5px;border-radius:6px"></pre></div></div>
+            <!-- 时间戳转换 -->
+            <div class="card"><div class="card-title"><span class="icon">🕒</span> 时间戳转换</div><input type="number" id="tsInput" placeholder="Unix 时间戳 (秒)"><div class="btn-row"><button class="btn btn-sm" id="tsConvert">🔄 转换</button><button class="btn btn-sm" id="tsNow">🕐 当前时间戳</button></div><div class="output-box" id="tsOutput">等待输入…</div></div>
+            <!-- UUID 生成器 -->
+            <div class="card"><div class="card-title"><span class="icon">🆔</span> UUID 生成器</div><div class="output-box" id="uuidOutput">点击按钮生成</div><button class="btn btn-sm" id="uuidGen" style="width:100%">🎲 生成 UUID v4</button></div>
+            
+            <!-- 新增工具卡片开始 -->
+            <!-- 二维码生成器 -->
+            <div class="card"><div class="card-title"><span class="icon">📱</span> 二维码生成器</div><input type="text" id="qrText" value="https://asiacomkhk.github.io" placeholder="输入文本或 URL"><button class="btn btn-sm" id="qrGen" style="width:100%;margin-bottom:10px">📱 生成二维码</button><img id="qrImg" style="display:block;max-width:200px;margin:0 auto" alt="QR码"></div>
+            <!-- 颜色渐变生成器 -->
+            <div class="card"><div class="card-title"><span class="icon">🎨</span> 颜色渐变生成器</div><div style="display:flex;gap:10px;margin-bottom:10px"><input type="color" id="gradColor1" value="#38bdf8" style="flex:1"><span>→</span><input type="color" id="gradColor2" value="#818cf8" style="flex:1"></div><div id="gradPreview" style="height:80px;border-radius:8px;background:linear-gradient(to right, #38bdf8, #818cf8);margin-bottom:10px"></div><code id="gradCss" style="display:block;color:var(--primary-color)">background: linear-gradient(to right, #38bdf8, #818cf8);</code></div>
+            <!-- 简易便签 -->
+            <div class="card"><div class="card-title"><span class="icon">📝</span> 简易便签</div><textarea id="notepad" rows="4" placeholder="写点什么，自动保存…"></textarea></div>
+            <!-- 编程名言 -->
+            <div class="card"><div class="card-title"><span class="icon">💭</span> 编程名言</div><p id="quoteText" style="font-style:italic;font-size:0.9rem;color:var(--text-sub)"></p></div>
+            <!-- 客户端信息 -->
+            <div class="card"><div class="card-title"><span class="icon">📊</span> 客户端信息</div><div id="clientInfo" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-sub)">加载中…</div></div>
         </main>
     </div>
     <footer>© 2026 ASIACOMKHK. Powered by Cloudflare Workers.</footer>
 
     <script>
         (function() {
-            // 天气模块
+            const toast = document.getElementById('toast');
+            function showToast(msg){toast.textContent=msg;toast.classList.add('visible');setTimeout(()=>toast.classList.remove('visible'),2000)}
+
+            // 天气
             const tempEl = document.getElementById('weatherTemp');
             const descEl = document.getElementById('weatherDesc');
             const locEl = document.getElementById('weatherLocation');
             async function loadWeather() {
                 try {
-                    const pos = await new Promise((res, rej) =>
-                        navigator.geolocation.getCurrentPosition(
-                            p => res({ lat: p.coords.latitude, lon: p.coords.longitude }),
-                            rej, { timeout: 5000 }
-                        )
-                    );
-                    const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat.toFixed(4)}&longitude=${pos.lon.toFixed(4)}&current_weather=true`);
-                    const data = await resp.json();
+                    const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(p => res({lat:p.coords.latitude,lon:p.coords.longitude}), rej, {timeout:5000}));
+                    const data = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat.toFixed(4)}&longitude=${pos.lon.toFixed(4)}&current_weather=true`).then(r=>r.json());
                     const w = data.current_weather;
                     tempEl.textContent = w.temperature + '°C';
-                    descEl.textContent = ['晴朗','大部晴朗','多云','阴天'][w.weathercode] || '未知';
+                    descEl.textContent = ['晴朗','大部晴朗','多云'][w.weathercode] || '未知';
                     locEl.innerHTML = `📍 ${pos.lat.toFixed(1)}°, ${pos.lon.toFixed(1)}°`;
                 } catch {
-                    tempEl.textContent = '31°C';
-                    descEl.textContent = '主要晴朗';
-                    locEl.innerHTML = '📍 默认位置';
+                    tempEl.textContent = '31°C'; descEl.textContent = '主要晴朗'; locEl.innerHTML = '📍 默认位置';
                 }
             }
             loadWeather();
             document.getElementById('weatherRefresh').addEventListener('click', loadWeather);
 
-            // 密码模块
+            // 密码
             const pwdDisplay = document.getElementById('pwdDisplay');
             const pwdLength = document.getElementById('pwdLength');
             const pwdLenValue = document.getElementById('pwdLenValue');
-            const pwdGen = document.getElementById('pwdGen');
-            const pwdCopy = document.getElementById('pwdCopy');
             const charset = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#$%^&*_-+=';
-
-            pwdLength.addEventListener('input', () => pwdLenValue.textContent = pwdLength.value);
-
-            function generatePassword() {
-                const len = parseInt(pwdLength.value, 10);
-                const arr = new Uint32Array(len);
-                crypto.getRandomValues(arr);
-                let pwd = '';
-                for (let i = 0; i < len; i++) pwd += charset[arr[i] % charset.length];
-                pwdDisplay.textContent = pwd;
+            function genPwd(){
+                const len = +pwdLength.value;
+                const arr = new Uint32Array(len); crypto.getRandomValues(arr);
+                let p=''; for(let i=0;i<len;i++) p+=charset[arr[i]%charset.length];
+                pwdDisplay.textContent = p;
             }
-
-            pwdGen.addEventListener('click', generatePassword);
-            pwdCopy.addEventListener('click', async () => {
-                if (!pwdDisplay.textContent || pwdDisplay.textContent.includes('点击')) return;
+            document.getElementById('pwdGen').addEventListener('click', genPwd);
+            pwdLength.addEventListener('input', ()=> pwdLenValue.textContent = pwdLength.value);
+            document.getElementById('pwdCopy').addEventListener('click', async ()=>{
+                if(!pwdDisplay.textContent) return;
                 await navigator.clipboard.writeText(pwdDisplay.textContent);
-                const original = pwdCopy.textContent;
-                pwdCopy.textContent = '✅ 已复制';
-                setTimeout(() => pwdCopy.textContent = original, 1500);
+                showToast('密码已复制');
             });
+
+            // JSON
+            const jsonInput = document.getElementById('jsonInput'), jsonOutput = document.getElementById('jsonOutput');
+            function formatJson(minify){
+                try{
+                    const obj = JSON.parse(jsonInput.value);
+                    jsonOutput.textContent = minify ? JSON.stringify(obj) : JSON.stringify(obj, null, 2);
+                    jsonOutput.style.color = 'var(--text-main)';
+                }catch(e){
+                    jsonOutput.textContent = '无效 JSON: ' + e.message;
+                    jsonOutput.style.color = 'var(--danger-color)';
+                }
+            }
+            document.getElementById('jsonFormat').addEventListener('click', ()=> formatJson(false));
+            document.getElementById('jsonMinify').addEventListener('click', ()=> formatJson(true));
+
+            // Base64/URL
+            const codecInput = document.getElementById('codecInput'), codecOutput = document.getElementById('codecOutput');
+            document.querySelectorAll('[data-codec]').forEach(btn=>{
+                btn.addEventListener('click', ()=>{
+                    const input = codecInput.value, action = btn.dataset.codec;
+                    try{
+                        let result;
+                        switch(action){
+                            case 'base64-encode': result = btoa(unescape(encodeURIComponent(input))); break;
+                            case 'base64-decode': result = decodeURIComponent(escape(atob(input))); break;
+                            case 'url-encode': result = encodeURIComponent(input); break;
+                            case 'url-decode': result = decodeURIComponent(input); break;
+                        }
+                        codecOutput.textContent = result; codecOutput.style.color = 'var(--text-main)';
+                    }catch(e){
+                        codecOutput.textContent = '转换失败: '+e.message; codecOutput.style.color = 'var(--danger-color)';
+                    }
+                });
+            });
+
+            // JWT
+            document.getElementById('jwtDecode').addEventListener('click', ()=>{
+                const token = document.getElementById('jwtInput').value;
+                const parts = token.split('.');
+                if(parts.length !== 3) {
+                    document.getElementById('jwtHeader').textContent = '无效 JWT';
+                    document.getElementById('jwtPayload').textContent = '';
+                    return;
+                }
+                try{
+                    document.getElementById('jwtHeader').textContent = JSON.stringify(JSON.parse(atob(parts[0])), null, 2);
+                }catch{ document.getElementById('jwtHeader').textContent = 'Header 解码失败'; }
+                try{
+                    document.getElementById('jwtPayload').textContent = JSON.stringify(JSON.parse(atob(parts[1])), null, 2);
+                }catch{ document.getElementById('jwtPayload').textContent = 'Payload 解码失败'; }
+            });
+
+            // 时间戳
+            const tsInput = document.getElementById('tsInput'), tsOutput = document.getElementById('tsOutput');
+            document.getElementById('tsConvert').addEventListener('click', ()=>{
+                const ts = parseInt(tsInput.value);
+                if(isNaN(ts)){ tsOutput.textContent = '无效时间戳'; return; }
+                const d = new Date(ts*1000);
+                tsOutput.textContent = d.toLocaleString('zh-CN') + ' (UTC: ' + d.toUTCString() + ')';
+            });
+            document.getElementById('tsNow').addEventListener('click', ()=>{
+                tsInput.value = Math.floor(Date.now()/1000);
+                tsOutput.textContent = '已填入当前时间戳';
+            });
+
+            // UUID
+            document.getElementById('uuidGen').addEventListener('click', ()=>{
+                document.getElementById('uuidOutput').textContent = crypto.randomUUID();
+            });
+
+            // 新增工具脚本
+            // 二维码
+            document.getElementById('qrGen').addEventListener('click', ()=>{
+                const text = document.getElementById('qrText').value;
+                document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`;
+            });
+            // 渐变生成器
+            const gradC1 = document.getElementById('gradColor1'), gradC2 = document.getElementById('gradColor2');
+            const gradPrev = document.getElementById('gradPreview'), gradCss = document.getElementById('gradCss');
+            function updateGrad(){
+                const css = `linear-gradient(to right, ${gradC1.value}, ${gradC2.value})`;
+                gradPrev.style.background = css;
+                gradCss.textContent = `background: ${css};`;
+            }
+            gradC1.addEventListener('input', updateGrad);
+            gradC2.addEventListener('input', updateGrad);
+            // 便签
+            const notepad = document.getElementById('notepad');
+            notepad.value = localStorage.getItem('notepad') || '';
+            notepad.addEventListener('input', ()=> localStorage.setItem('notepad', notepad.value));
+            // 名言
+            const quotes = [
+                "Talk is cheap. Show me the code. - Linus Torvalds",
+                "First, solve the problem. Then, write the code. - John Johnson",
+                "Code is like humor. When you have to explain it, it’s bad. - Cory House",
+                "Make it work, make it right, make it fast. - Kent Beck"
+            ];
+            document.getElementById('quoteText').textContent = quotes[Math.floor(Math.random()*quotes.length)];
+            // 客户端信息
+            fetch('https://api.ipify.org?format=json')
+                .then(r=>r.json())
+                .then(d=>{
+                    document.getElementById('clientInfo').innerHTML = 
+                        `IP: ${d.ip}<br>UA: ${navigator.userAgent}<br>屏幕: ${screen.width}x${screen.height}`;
+                })
+                .catch(()=>{
+                    document.getElementById('clientInfo').textContent = '无法获取 IP 信息';
+                });
         })();
     </script>
 </body>
